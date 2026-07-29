@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}Upload Dataset — ModelFlow AI{% endblock %}
+{% block header_title %}Dataset Ingestion & Upload Hub{% endblock %}
+{% block header_sub %}Upload structured tabular data files (CSV, TSV, XLSX, XLS) up to 200MB{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto space-y-6">
+    <!-- Upload Dropzone Card -->
+    <div class="p-8 rounded-2xl bg-slate-900/90 border border-slate-800 shadow-2xl space-y-6">
+        <div class="text-center space-y-2">
+            <div class="w-16 h-16 rounded-2xl bg-indigo-600/20 border border-indigo-500/30 text-indigo-400 flex items-center justify-center text-3xl mx-auto shadow-lg shadow-indigo-500/10">
+                <i class="fas fa-cloud-upload-alt"></i>
+            </div>
+            <h2 class="text-xl font-bold text-white tracking-tight">Upload Your Tabular Dataset</h2>
+            <p class="text-xs text-slate-400">Supported formats: <strong class="text-slate-200">CSV, TSV, Excel (.xlsx, .xls)</strong> • Max file size: <strong class="text-slate-200">200MB</strong></p>
+        </div>
+
+        <form action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data" id="uploadForm" class="space-y-6">
+            <div id="dropZone" class="p-10 border-2 border-dashed border-slate-700 hover:border-indigo-500 rounded-2xl text-center bg-slate-950/50 hover:bg-slate-950/80 transition-all cursor-pointer group">
+                <i class="fas fa-file-csv text-4xl text-slate-500 group-hover:text-indigo-400 group-hover:scale-110 transition-all mb-3 block"></i>
+                <span class="text-sm font-semibold text-slate-300 group-hover:text-white block mb-1">Drag & drop your dataset file here</span>
+                <span class="text-xs text-slate-500 block mb-4">or click to browse from local computer</span>
+                
+                <input type="file" name="file" id="fileInput" accept=".csv,.xlsx,.xls,.tsv" required class="hidden">
+                
+                <div id="fileSelectedBadge" class="hidden inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-500/20 border border-indigo-500/40 text-indigo-300 text-xs font-mono font-semibold">
+                    <i class="fas fa-file-alt"></i> <span id="fileNameDisplay">Selected file</span>
+                </div>
+            </div>
+
+            <!-- Upload CTA Button -->
+            <button type="submit" id="submitBtn" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white text-sm font-bold shadow-xl shadow-indigo-600/30 transition-all flex items-center justify-center gap-2">
+                <i class="fas fa-arrow-right"></i> Upload & Initialize AI Profiler
+            </button>
+        </form>
+
+        <!-- Current Active Dataset Status (If Present) -->
+        {% if state.file_info %}
+        <div class="p-4 rounded-xl bg-slate-950/60 border border-slate-800 flex items-center justify-between text-xs">
+            <div class="flex items-center gap-3">
+                <i class="fas fa-database text-emerald-400 text-base"></i>
+                <div>
+                    <span class="text-slate-400 block font-semibold">Current Session Dataset</span>
+                    <span class="text-white font-mono font-bold">{{ state.file_info.filename }}</span>
+                </div>
+            </div>
+            <div class="text-right font-mono">
+                <span class="text-indigo-400 font-bold block">{{ state.file_info.rows }} rows • {{ state.file_info.columns }} cols</span>
+                <span class="text-slate-500 text-[10px]">{{ state.file_info.memory_usage }}</span>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const badge = document.getElementById('fileSelectedBadge');
+        const fileNameDisplay = document.getElementById('fileNameDisplay');
+
+        dropZone.addEventListener('click', () => fileInput.click());
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('border-indigo-500', 'bg-slate-950/80');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('border-indigo-500', 'bg-slate-950/80');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('border-indigo-500', 'bg-slate-950/80');
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+                updateFileDisplay();
+            }
+        });
+
+        fileInput.addEventListener('change', updateFileDisplay);
+
+        function updateFileDisplay() {
+            if (fileInput.files.length) {
+                fileNameDisplay.textContent = fileInput.files[0].name;
+                badge.classList.remove('hidden');
+            }
+        }
+    });
+</script>
+{% endblock %}

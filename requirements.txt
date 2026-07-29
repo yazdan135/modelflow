@@ -1,0 +1,17 @@
+flask
+flask-pymongo
+flask-login
+authlib
+bcrypt
+python-dotenv
+pandas
+numpy
+scikit-learn
+xgboost
+lightgbm
+joblib
+plotly
+reportlab
+openpyxl
+chardet
+requests

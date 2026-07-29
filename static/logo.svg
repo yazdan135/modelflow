@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4f46e5"/>
+      <stop offset="50%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#06b6d4"/>
+    </linearGradient>
+    <linearGradient id="glowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#818cf8"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Outer Rounded Badge -->
+  <rect x="32" y="32" width="448" height="448" rx="112" fill="url(#bgGrad)" />
+  <rect x="32" y="32" width="448" height="448" rx="112" fill="none" stroke="#ffffff" stroke-width="8" stroke-opacity="0.25"/>
+
+  <!-- Neural Connection Flow Paths -->
+  <path d="M 140 256 C 190 150, 240 150, 300 256 C 340 330, 370 330, 372 256" 
+        fill="none" stroke="#ffffff" stroke-width="24" stroke-linecap="round" stroke-linejoin="round" opacity="0.95" />
+  <path d="M 140 256 C 180 340, 260 340, 372 256" 
+        fill="none" stroke="url(#glowGrad)" stroke-width="16" stroke-linecap="round" opacity="0.85" />
+
+  <!-- Flow Spark Triangles -->
+  <polygon points="220,185 280,240 220,270" fill="#ffffff" opacity="0.35" />
+
+  <!-- Neural Nodes -->
+  <circle cx="140" cy="256" r="42" fill="#ffffff"/>
+  <circle cx="140" cy="256" r="24" fill="#4f46e5"/>
+
+  <circle cx="225" cy="180" r="32" fill="#38bdf8" />
+  <circle cx="225" cy="180" r="16" fill="#ffffff"/>
+
+  <circle cx="225" cy="332" r="32" fill="#818cf8" />
+  <circle cx="225" cy="332" r="16" fill="#ffffff"/>
+
+  <circle cx="300" cy="256" r="48" fill="#ffffff" />
+  <circle cx="300" cy="256" r="30" fill="#06b6d4" />
+  <circle cx="300" cy="256" r="14" fill="#ffffff" />
+
+  <circle cx="372" cy="256" r="36" fill="#ffffff" />
+  <circle cx="372" cy="256" r="20" fill="#4338ca" />
+</svg>

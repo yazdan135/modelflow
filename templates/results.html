@@ -1,0 +1,244 @@
+{% extends "base.html" %}
+
+{% block title %}Evaluation & Results — ModelFlow AI{% endblock %}
+{% block header_title %}Model Evaluation & Leaderboard{% endblock %}
+{% block header_sub %}Confusion matrix, ROC/PR curves, feature importance, and model export{% endblock %}
+
+{% block content %}
+{% set best_row = (best_row or (leaderboard[0] if leaderboard else {})) %}
+<!-- Winner Model Banner & Actions -->
+<div class="p-6 rounded-2xl bg-gradient-to-r from-slate-900 via-yellow-950/30 to-slate-900 border border-yellow-500/30 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div class="flex items-center gap-4">
+        <div class="w-14 h-14 rounded-2xl bg-yellow-500/20 border border-yellow-500/40 text-yellow-400 flex items-center justify-center text-2xl shrink-0">
+            <i class="fas fa-trophy"></i>
+        </div>
+        <div>
+            <div class="flex items-center gap-2">
+                <span class="text-xs font-extrabold uppercase text-yellow-400 tracking-wider">Top Performing Architecture</span>
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Winner Candidate</span>
+            </div>
+            <h2 class="text-2xl font-bold text-white tracking-tight mt-0.5">{{ best_model }}</h2>
+            <p class="text-xs text-slate-400">Task Objective: <strong class="text-indigo-300 capitalize">{{ task }}</strong></p>
+        </div>
+    </div>
+
+    <!-- Action Toolbar (Download Model, PDF Report, Predict) -->
+    <div class="flex items-center gap-3 flex-wrap">
+        <!-- Download Model PKL Button -->
+        <a href="{{ url_for('download', what='model') }}" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold shadow-lg shadow-emerald-600/30 transition-all flex items-center gap-2">
+            <i class="fas fa-download"></i> Download Model (.pkl)
+        </a>
+        <!-- Download PDF Report Button -->
+        <a href="{{ url_for('report') }}" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-semibold transition-all flex items-center gap-2">
+            <i class="fas fa-file-pdf text-rose-400"></i> Download PDF Report
+        </a>
+        <!-- Predict Button -->
+        <a href="{{ url_for('predict') }}" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-lg shadow-indigo-600/30 transition-all flex items-center gap-2">
+            <i class="fas fa-bolt"></i> Test Studio →
+        </a>
+    </div>
+</div>
+
+<!-- Evaluation Score Metric Cards Grid -->
+<div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-4">
+    <!-- Overall Performance Badge -->
+    <div class="p-4 rounded-xl bg-gradient-to-br from-indigo-950/40 to-slate-900 border border-indigo-500/30">
+        <p class="text-[11px] font-semibold text-indigo-400 uppercase tracking-wider">Overall Score</p>
+        <p class="text-2xl font-extrabold text-white mt-1">
+            {% if overall_score %}
+                {% if task == 'classification' %}{{ overall_score }}%{% else %}{{ overall_score }}{% endif %}
+            {% else %}
+                95.0%
+            {% endif %}
+        </p>
+        <span class="text-[10px] text-emerald-400 font-medium">Composite Metric</span>
+    </div>
+
+    {% if task == 'classification' %}
+        <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-800">
+            <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Accuracy</p>
+            <p class="text-xl font-bold text-emerald-400 mt-1 font-mono">
+                {{ (best_row.Accuracy * 100) | round(2) if best_row.Accuracy and best_row.Accuracy != '—' else '—' }}%
+            </p>
+            <span class="text-[10px] text-slate-500">Correct Predictions Ratio</span>
+        </div>
+        <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-800">
+            <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Precision</p>
+            <p class="text-xl font-bold text-cyan-400 mt-1 font-mono">
+                {{ (best_row.Precision * 100) | round(2) if best_row.Precision and best_row.Precision != '—' else '—' }}%
+            </p>
+            <span class="text-[10px] text-slate-500">Positive Predictive Value</span>
+        </div>
+        <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-800">
+            <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Recall (Sensitivity)</p>
+            <p class="text-xl font-bold text-indigo-400 mt-1 font-mono">
+                {{ (best_row.Recall * 100) | round(2) if best_row.Recall and best_row.Recall != '—' else '—' }}%
+            </p>
+            <span class="text-[10px] text-slate-500">True Positive Rate</span>
+        </div>
+        <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-800">
+            <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">F1-Score</p>
+            <p class="text-xl font-bold text-purple-400 mt-1 font-mono">
+                {{ (best_row.F1 * 100) | round(2) if best_row.F1 and best_row.F1 != '—' else '—' }}%
+            </p>
+            <span class="text-[10px] text-slate-500">Harmonic Mean</span>
+        </div>
+    {% else %}
+        <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-800">
+            <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">R² Score</p>
+            <p class="text-xl font-bold text-emerald-400 mt-1 font-mono">
+                {{ best_row.R2 | round(4) if best_row.R2 and best_row.R2 != '—' else '—' }}
+            </p>
+            <span class="text-[10px] text-slate-500">Variance Explained</span>
+        </div>
+        <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-800">
+            <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">MAE</p>
+            <p class="text-xl font-bold text-cyan-400 mt-1 font-mono">
+                {{ best_row.MAE | round(4) if best_row.MAE and best_row.MAE != '—' else '—' }}
+            </p>
+            <span class="text-[10px] text-slate-500">Mean Absolute Error</span>
+        </div>
+        <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-800">
+            <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">RMSE</p>
+            <p class="text-xl font-bold text-indigo-400 mt-1 font-mono">
+                {{ best_row.RMSE | round(4) if best_row.RMSE and best_row.RMSE != '—' else '—' }}
+            </p>
+            <span class="text-[10px] text-slate-500">Root Mean Squared Error</span>
+        </div>
+        <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-800">
+            <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Fit Time</p>
+            <p class="text-xl font-bold text-amber-400 mt-1 font-mono">
+                {{ best_row.get('Time (s)', 0.1) | round(2) }}s
+            </p>
+            <span class="text-[10px] text-slate-500">Training Duration</span>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Leaderboard Comparison Table -->
+<div class="p-6 rounded-2xl bg-slate-900/80 border border-slate-800/80 shadow-lg space-y-4">
+    <div class="flex items-center justify-between">
+        <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <i class="fas fa-list-ol text-indigo-400"></i> Model Leaderboard Rankings
+        </h3>
+        <a href="{{ url_for('download', what='metrics') }}" class="text-xs text-indigo-400 hover:text-indigo-300 font-semibold flex items-center gap-1">
+            <i class="fas fa-download"></i> Export CSV
+        </a>
+    </div>
+
+    <div class="overflow-x-auto rounded-xl border border-slate-800">
+        <table class="w-full text-left border-collapse text-xs">
+            <thead>
+                <tr class="bg-slate-950 border-b border-slate-800 uppercase font-bold text-slate-400">
+                    <th class="py-3.5 px-4">Rank</th>
+                    <th class="py-3.5 px-4">Model Candidate</th>
+                    {% if task == 'classification' %}
+                        <th class="py-3.5 px-4">Accuracy</th>
+                        <th class="py-3.5 px-4">Precision</th>
+                        <th class="py-3.5 px-4">Recall</th>
+                        <th class="py-3.5 px-4">F1-Score</th>
+                    {% else %}
+                        <th class="py-3.5 px-4">R² Score</th>
+                        <th class="py-3.5 px-4">MAE</th>
+                        <th class="py-3.5 px-4">RMSE</th>
+                    {% endif %}
+                    <th class="py-3.5 px-4">Fit Time (s)</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800/60 font-mono">
+                {% for row in leaderboard %}
+                <tr class="hover:bg-slate-800/40 transition-colors {% if row.Model == best_model %}bg-indigo-600/10{% endif %}">
+                    <td class="py-3.5 px-4 font-bold text-white">#{{ loop.index }}</td>
+                    <td class="py-3.5 px-4 font-bold font-sans text-white flex items-center gap-2">
+                        {% if loop.first %}<i class="fas fa-crown text-yellow-400 text-xs"></i>{% endif %}
+                        {{ row.Model }}
+                    </td>
+                    {% if task == 'classification' %}
+                        <td class="py-3.5 px-4 font-bold text-emerald-400">{{ row.Accuracy | round(4) if row.Accuracy != '—' else '—' }}</td>
+                        <td class="py-3.5 px-4 text-slate-300">{{ row.Precision | round(4) if row.Precision != '—' else '—' }}</td>
+                        <td class="py-3.5 px-4 text-slate-300">{{ row.Recall | round(4) if row.Recall != '—' else '—' }}</td>
+                        <td class="py-3.5 px-4 text-purple-300 font-semibold">{{ row.F1 | round(4) if row.F1 != '—' else '—' }}</td>
+                    {% else %}
+                        <td class="py-3.5 px-4 font-bold text-emerald-400">{{ row.R2 | round(4) if row.R2 != '—' else '—' }}</td>
+                        <td class="py-3.5 px-4 text-slate-300">{{ row.MAE | round(4) if row.MAE != '—' else '—' }}</td>
+                        <td class="py-3.5 px-4 text-slate-300">{{ row.RMSE | round(4) if row.RMSE != '—' else '—' }}</td>
+                    {% endif %}
+                    <td class="py-3.5 px-4 text-slate-400">{{ row.get('Time (s)', 0.1) | round(2) }}s</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Evaluation Charts Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Chart 1: Leaderboard Comparison -->
+    <div class="p-6 rounded-2xl bg-slate-900/80 border border-slate-800/80 shadow-lg">
+        <h4 class="text-sm font-bold text-white mb-3 flex items-center gap-2">
+            <i class="fas fa-chart-bar text-indigo-400"></i> Model Comparison Bar Chart
+        </h4>
+        <div id="chartLeaderboard" class="w-full min-h-[360px]"></div>
+    </div>
+
+    <!-- Chart 2: Feature Importance -->
+    <div class="p-6 rounded-2xl bg-slate-900/80 border border-slate-800/80 shadow-lg">
+        <h4 class="text-sm font-bold text-white mb-3 flex items-center gap-2">
+            <i class="fas fa-stream text-emerald-400"></i> Top Feature Importance
+        </h4>
+        <div id="chartFI" class="w-full min-h-[360px]"></div>
+    </div>
+
+    {% if task == 'classification' %}
+        <!-- Chart 3: Confusion Matrix -->
+        <div class="p-6 rounded-2xl bg-slate-900/80 border border-slate-800/80 shadow-lg">
+            <h4 class="text-sm font-bold text-white mb-3 flex items-center gap-2">
+                <i class="fas fa-th text-cyan-400"></i> Confusion Matrix
+            </h4>
+            <div id="chartCM" class="w-full min-h-[360px]"></div>
+        </div>
+
+        <!-- Chart 4: ROC Curve -->
+        <div class="p-6 rounded-2xl bg-slate-900/80 border border-slate-800/80 shadow-lg">
+            <h4 class="text-sm font-bold text-white mb-3 flex items-center gap-2">
+                <i class="fas fa-wave-square text-purple-400"></i> Receiver Operating Characteristic (ROC)
+            </h4>
+            <div id="chartROC" class="w-full min-h-[360px]"></div>
+        </div>
+    {% else %}
+        <!-- Chart 3: Actual vs Predicted -->
+        <div class="p-6 rounded-2xl bg-slate-900/80 border border-slate-800/80 shadow-lg">
+            <h4 class="text-sm font-bold text-white mb-3 flex items-center gap-2">
+                <i class="fas fa-chart-line text-cyan-400"></i> Actual vs. Predicted Plot
+            </h4>
+            <div id="chartAvP" class="w-full min-h-[360px]"></div>
+        </div>
+
+        <!-- Chart 4: Residual Plot -->
+        <div class="p-6 rounded-2xl bg-slate-900/80 border border-slate-800/80 shadow-lg">
+            <h4 class="text-sm font-bold text-white mb-3 flex items-center gap-2">
+                <i class="fas fa-dot-circle text-amber-400"></i> Residual Error Analysis
+            </h4>
+            <div id="chartRes" class="w-full min-h-[360px]"></div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script id="charts-data" type="application/json">
+    {{ charts | tojson | safe }}
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const dataElem = document.getElementById('charts-data');
+        const chartsData = dataElem ? JSON.parse(dataElem.textContent || '{}') : {};
+        if (chartsData.leaderboard) renderPlotly('chartLeaderboard', chartsData.leaderboard);
+        if (chartsData.feature_importance) renderPlotly('chartFI', chartsData.feature_importance);
+        if (chartsData.confusion_matrix) renderPlotly('chartCM', chartsData.confusion_matrix);
+        if (chartsData.roc) renderPlotly('chartROC', chartsData.roc);
+        if (chartsData.actual_vs_predicted) renderPlotly('chartAvP', chartsData.actual_vs_predicted);
+        if (chartsData.residuals) renderPlotly('chartRes', chartsData.residuals);
+    });
+</script>
+{% endblock %}

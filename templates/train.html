@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+
+{% block title %}AutoML Model Trainer — ModelFlow AI{% endblock %}
+{% block header_title %}AutoML Training Hub{% endblock %}
+{% block header_sub %}Configure target objectives, model zoo algorithms, validation splits, and execution{% endblock %}
+
+{% block content %}
+<form action="{{ url_for('train') }}" method="POST" id="trainForm" class="space-y-6">
+    <!-- Top Card: Target Selection & Objective -->
+    <div class="p-6 rounded-2xl bg-gradient-to-r from-slate-900 via-purple-950/30 to-slate-900 border border-slate-800 shadow-xl space-y-4">
+        <h2 class="text-xl font-bold text-white tracking-tight flex items-center gap-2">
+            <i class="fas fa-bullseye text-purple-400"></i> Objective & Target Definition
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Target Feature Column</label>
+                <select name="target" id="targetSelect" class="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-700 text-white font-semibold text-sm focus:border-purple-500 outline-none">
+                    {% for col in columns %}
+                        <option value="{{ col }}" {% if ai and ai.suggested_target == col %}selected{% endif %}>
+                            {{ col }} {% if ai and ai.suggested_target == col %}(AI Recommended Target){% endif %}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="p-4 rounded-xl bg-slate-950/60 border border-slate-800 flex items-center justify-between">
+                <div>
+                    <span class="text-xs font-semibold text-slate-400 uppercase">AI Task Detection</span>
+                    <h4 class="text-base font-bold text-indigo-300 capitalize mt-0.5" id="taskHint">
+                        {{ ai.suggested_task or 'Auto-Detected Task' }}
+                    </h4>
+                </div>
+                <div class="px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 text-xs font-bold">
+                    Supervised ML
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Middle Card: Train / Test Split Config -->
+    <div class="p-6 rounded-2xl bg-slate-900/80 border border-slate-800/80 shadow-lg space-y-4">
+        <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <i class="fas fa-sliders-h text-indigo-400"></i> Validation & Data Splitting
+        </h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+            <div>
+                <div class="flex items-center justify-between mb-1.5">
+                    <label class="text-xs font-semibold text-slate-400 uppercase">Test Dataset Split</label>
+                    <span class="text-xs font-bold text-indigo-400 font-mono" id="splitVal">20% Test</span>
+                </div>
+                <input type="range" name="split" min="0.1" max="0.4" step="0.05" value="0.2" id="splitSlider" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500">
+            </div>
+
+            <div class="flex items-center gap-6">
+                <label class="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-300">
+                    <input type="checkbox" name="shuffle" checked class="w-4 h-4 rounded bg-slate-950 border-slate-700 text-indigo-600 focus:ring-indigo-500">
+                    <span>Shuffle Samples</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-300">
+                    <input type="checkbox" name="stratify" class="w-4 h-4 rounded bg-slate-950 border-slate-700 text-indigo-600 focus:ring-indigo-500">
+                    <span>Stratified Split</span>
+                </label>
+            </div>
+
+            <div class="flex justify-end">
+                <label class="flex items-center gap-2 p-3 rounded-xl bg-purple-500/10 border border-purple-500/30 text-purple-300 text-xs font-bold cursor-pointer">
+                    <input type="checkbox" name="train_all" checked id="trainAllToggle" class="w-4 h-4 rounded bg-slate-950 border-slate-700 text-purple-600">
+                    <span>Train All Algorithms in Zoo</span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Model Zoo Selection Grid -->
+    <div class="p-6 rounded-2xl bg-slate-900/80 border border-slate-800/80 shadow-lg space-y-4">
+        <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <i class="fas fa-boxes text-indigo-400"></i> Model Zoo Architecture Candidates
+        </h3>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {% for mname in zoo_class %}
+            <label class="p-4 rounded-xl bg-slate-800/40 border border-slate-800 hover:border-indigo-500/50 cursor-pointer transition-all flex items-center gap-3">
+                <input type="checkbox" name="models" value="{{ mname }}" checked class="model-check w-4 h-4 rounded bg-slate-950 border-slate-700 text-indigo-600">
+                <div>
+                    <span class="text-xs font-bold text-white block">{{ mname }}</span>
+                    <span class="text-[10px] text-slate-400">Supervised Classification</span>
+                </div>
+            </label>
+            {% endfor %}
+            {% for mname in zoo_reg %}
+            <label class="p-4 rounded-xl bg-slate-800/40 border border-slate-800 hover:border-indigo-500/50 cursor-pointer transition-all flex items-center gap-3">
+                <input type="checkbox" name="models" value="{{ mname }}" checked class="model-check w-4 h-4 rounded bg-slate-950 border-slate-700 text-indigo-600">
+                <div>
+                    <span class="text-xs font-bold text-white block">{{ mname }}</span>
+                    <span class="text-[10px] text-slate-400">Supervised Regression</span>
+                </div>
+            </label>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Execution CTA -->
+    <div class="flex items-center justify-end">
+        <button type="submit" id="startTrainBtn" class="px-8 py-4 rounded-xl bg-gradient-to-r from-purple-600 via-indigo-600 to-cyan-500 hover:from-purple-500 hover:to-cyan-400 text-white text-sm font-bold shadow-xl shadow-indigo-600/30 transition-all flex items-center gap-3">
+            <i class="fas fa-rocket text-lg"></i> Launch AutoML Model Training
+        </button>
+    </div>
+</form>
+
+<!-- Training Progress Modal Overlay -->
+<div id="trainingOverlay" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden flex-col items-center justify-center text-center p-6">
+    <div class="w-16 h-16 rounded-2xl bg-indigo-600/30 border border-indigo-500/50 flex items-center justify-center text-indigo-400 text-3xl mb-4 animate-pulse">
+        <i class="fas fa-brain"></i>
+    </div>
+    <h3 class="text-xl font-bold text-white mb-2">AutoML Training in Progress...</h3>
+    <p class="text-xs text-slate-400 max-w-sm mb-6">Fitting models across hyperparameter spaces, cross-validating metrics, and selecting the optimal predictor.</p>
+    <div class="w-64 h-2 bg-slate-800 rounded-full overflow-hidden">
+        <div class="w-full h-full bg-gradient-to-r from-indigo-500 to-cyan-400 animate-pulse"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const slider = document.getElementById('splitSlider');
+        const splitVal = document.getElementById('splitVal');
+        const form = document.getElementById('trainForm');
+        const overlay = document.getElementById('trainingOverlay');
+        const trainAllToggle = document.getElementById('trainAllToggle');
+        const modelChecks = document.querySelectorAll('.model-check');
+
+        if (slider && splitVal) {
+            slider.addEventListener('input', (e) => {
+                const pct = Math.round(e.target.value * 100);
+                splitVal.textContent = `${pct}% Test`;
+            });
+        }
+
+        if (trainAllToggle) {
+            trainAllToggle.addEventListener('change', (e) => {
+                modelChecks.forEach(chk => chk.checked = e.target.checked);
+            });
+        }
+
+        if (form && overlay) {
+            form.addEventListener('submit', () => {
+                overlay.classList.remove('hidden');
+                overlay.classList.add('flex');
+            });
+        }
+    });
+</script>
+{% endblock %}

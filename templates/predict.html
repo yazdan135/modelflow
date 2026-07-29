@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}Model Inference & Predictions — ModelFlow AI{% endblock %}
+{% block header_title %}Model Inference & Prediction Studio{% endblock %}
+{% block header_sub %}Single sample prediction forms and batch CSV batch inference execution{% endblock %}
+
+{% block content %}
+<!-- Active Model Banner -->
+<div class="p-6 rounded-2xl bg-gradient-to-r from-slate-900 via-pink-950/30 to-slate-900 border border-slate-800 shadow-xl flex items-center justify-between">
+    <div>
+        <span class="text-xs font-bold uppercase text-pink-400 tracking-wider">Active Model Deployment</span>
+        <h2 class="text-2xl font-bold text-white tracking-tight mt-0.5">{{ state.best_model }}</h2>
+        <p class="text-xs text-slate-400 mt-1">Objective: <strong class="text-indigo-300 font-mono capitalize">{{ state.task }}</strong> • Target Feature: <strong class="text-white font-mono">'{{ state.target }}'</strong></p>
+    </div>
+    <div class="px-4 py-2 rounded-xl bg-pink-500/20 text-pink-300 border border-pink-500/30 text-xs font-bold flex items-center gap-2">
+        <i class="fas fa-check-circle text-pink-400"></i> Model Ready
+    </div>
+</div>
+
+<!-- Output Prediction Result Banner (If Single Prediction Available) -->
+{% if prediction is not none %}
+<div class="p-6 rounded-2xl bg-gradient-to-r from-emerald-950/60 via-slate-900 to-slate-900 border border-emerald-500/50 shadow-2xl flex items-center justify-between animate-pulse">
+    <div>
+        <span class="text-xs font-extrabold uppercase text-emerald-400 tracking-wider">Single Prediction Output Result</span>
+        <h3 class="text-3xl font-extrabold text-white mt-1 font-mono">{{ prediction }}</h3>
+    </div>
+    <div class="w-14 h-14 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center text-2xl font-bold">
+        <i class="fas fa-magic"></i>
+    </div>
+</div>
+{% endif %}
+
+<!-- Batch Download Banner (If Available) -->
+{% if batch_download %}
+<div class="p-6 rounded-2xl bg-gradient-to-r from-indigo-950/60 via-slate-900 to-slate-900 border border-indigo-500/50 shadow-2xl flex items-center justify-between">
+    <div>
+        <h3 class="text-lg font-bold text-white">Batch Prediction Completed!</h3>
+        <p class="text-xs text-slate-300 mt-0.5">Predictions appended to every row in your uploaded batch dataset.</p>
+    </div>
+    <a href="{{ url_for('download', what='predictions') }}" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-lg shadow-emerald-600/30 transition-all flex items-center gap-2">
+        <i class="fas fa-download"></i> Download Predictions CSV
+    </a>
+</div>
+{% endif %}
+
+<!-- Main Grid: Single Form vs Batch CSV -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Left Column: Single Instance Prediction Form -->
+    <div class="p-6 rounded-2xl bg-slate-900/80 border border-slate-800/80 shadow-lg space-y-4">
+        <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <i class="fas fa-edit text-indigo-400"></i> Single Instance Inference Form
+        </h3>
+
+        <form action="{{ url_for('predict') }}" method="POST" class="space-y-4">
+            <input type="hidden" name="single_submit" value="1">
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-96 overflow-y-auto custom-scrollbar pr-1">
+                {% for col in feature_columns %}
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1 truncate" title="{{ col }}">{{ col }}</label>
+                    <input type="text" name="{{ col }}" value="0" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-white font-mono text-xs focus:border-indigo-500 outline-none">
+                </div>
+                {% endfor %}
+            </div>
+
+            <button type="submit" class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow-lg shadow-indigo-600/30 transition-all flex items-center justify-center gap-2">
+                <i class="fas fa-calculator"></i> Run Single Prediction
+            </button>
+        </form>
+    </div>
+
+    <!-- Right Column: Batch CSV Upload -->
+    <div class="p-6 rounded-2xl bg-slate-900/80 border border-slate-800/80 shadow-lg space-y-4 flex flex-col justify-between">
+        <div>
+            <h3 class="text-base font-bold text-white flex items-center gap-2 mb-4">
+                <i class="fas fa-file-csv text-cyan-400"></i> Batch File Inference
+            </h3>
+            <p class="text-xs text-slate-400 mb-4">
+                Upload a CSV or Excel file containing the required feature columns (<strong class="text-white">{{ feature_columns|length }} features</strong>) to score all rows simultaneously.
+            </p>
+        </div>
+
+        <form action="{{ url_for('predict') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+            <div class="p-8 border-2 border-dashed border-slate-700 hover:border-cyan-500/50 rounded-2xl text-center bg-slate-950/40 transition-all">
+                <i class="fas fa-cloud-upload-alt text-4xl text-cyan-400 mb-3"></i>
+                <input type="file" name="batch_file" accept=".csv,.xlsx,.xls" required class="block w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-cyan-600 file:text-white hover:file:bg-cyan-500">
+            </div>
+
+            <button type="submit" class="w-full py-3 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold shadow-lg shadow-cyan-600/30 transition-all flex items-center justify-center gap-2">
+                <i class="fas fa-bolt"></i> Process Batch File
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

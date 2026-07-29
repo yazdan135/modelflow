@@ -1,0 +1,286 @@
+{% extends "base.html" %}
+
+{% block title %}Interactive Chart Studio — ModelFlow AI{% endblock %}
+{% block header_title %}Dynamic Plotly Visualization Studio{% endblock %}
+{% block header_sub %}Exploratory data graphics, correlation heatmaps, distributions, and scatter analysis{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
+    <!-- Left Column (1 Col): Interactive Controls Panel -->
+    <div class="p-6 rounded-2xl bg-slate-900/90 border border-slate-800 shadow-xl space-y-6">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <h3 class="text-base font-bold text-white flex items-center gap-2">
+                <i class="fas fa-sliders-h text-indigo-400"></i> Chart Controls
+            </h3>
+            <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">v2.5</span>
+        </div>
+
+        <!-- Quick Presets -->
+        <div>
+            <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Quick Presets</label>
+            <div class="grid grid-cols-2 gap-2">
+                <button type="button" onclick="setPreset('histogram')" class="px-2.5 py-2 rounded-xl bg-slate-800/80 hover:bg-indigo-600/30 hover:border-indigo-500/40 border border-slate-700/60 text-slate-300 text-[11px] font-medium transition-all flex items-center gap-1.5">
+                    <i class="fas fa-chart-bar text-indigo-400"></i> Histogram
+                </button>
+                <button type="button" onclick="setPreset('scatter')" class="px-2.5 py-2 rounded-xl bg-slate-800/80 hover:bg-indigo-600/30 hover:border-indigo-500/40 border border-slate-700/60 text-slate-300 text-[11px] font-medium transition-all flex items-center gap-1.5">
+                    <i class="fas fa-braille text-cyan-400"></i> Scatter X/Y
+                </button>
+                <button type="button" onclick="setPreset('correlation')" class="px-2.5 py-2 rounded-xl bg-slate-800/80 hover:bg-indigo-600/30 hover:border-indigo-500/40 border border-slate-700/60 text-slate-300 text-[11px] font-medium transition-all flex items-center gap-1.5">
+                    <i class="fas fa-th text-purple-400"></i> Correlation
+                </button>
+                <button type="button" onclick="setPreset('missing')" class="px-2.5 py-2 rounded-xl bg-slate-800/80 hover:bg-indigo-600/30 hover:border-indigo-500/40 border border-slate-700/60 text-slate-300 text-[11px] font-medium transition-all flex items-center gap-1.5">
+                    <i class="fas fa-exclamation-triangle text-amber-400"></i> Missing Data
+                </button>
+            </div>
+        </div>
+
+        <div class="space-y-4 text-xs">
+            <!-- Chart Type Selector -->
+            <div>
+                <label for="chartType" class="block font-semibold text-slate-300 mb-1.5 uppercase tracking-wider">Visualization Type</label>
+                <select id="chartType" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white font-medium focus:border-indigo-500 outline-none transition-all">
+                    <option value="histogram">Histogram (Distribution & Frequency)</option>
+                    <option value="bar">Bar Chart (Categorical Frequencies)</option>
+                    <option value="scatter">Scatter Plot (X vs Y Relationship)</option>
+                    <option value="box">Box Plot (Summary & Outliers)</option>
+                    <option value="violin">Violin Plot (Density & Probability)</option>
+                    <option value="correlation">Correlation Heatmap (Numeric Matrix)</option>
+                    <option value="missing">Missing Values Analysis</option>
+                    <option value="pie">Pie Chart (Proportional Breakdown)</option>
+                </select>
+                <p id="chartDesc" class="text-[11px] text-slate-400 mt-1.5 leading-normal bg-slate-950/60 p-2.5 rounded-xl border border-slate-800/80"></p>
+            </div>
+
+            <!-- Primary Column Selector (X-Axis) -->
+            <div id="col1Group">
+                <label id="col1Label" for="col1" class="block font-semibold text-slate-300 mb-1.5 uppercase tracking-wider">Primary Column (X)</label>
+                <select id="col1" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white font-medium focus:border-indigo-500 outline-none transition-all">
+                    {% if types and types.numeric %}
+                    <optgroup label="📊 Numeric Columns">
+                        {% for col in types.numeric %}
+                            <option value="{{ col }}">{{ col }}</option>
+                        {% endfor %}
+                    </optgroup>
+                    {% endif %}
+                    {% if types and types.categorical %}
+                    <optgroup label="🔤 Categorical Columns">
+                        {% for col in types.categorical %}
+                            <option value="{{ col }}">{{ col }}</option>
+                        {% endfor %}
+                    </optgroup>
+                    {% endif %}
+                    {% if types and types.datetime %}
+                    <optgroup label="📅 Datetime Columns">
+                        {% for col in types.datetime %}
+                            <option value="{{ col }}">{{ col }}</option>
+                        {% endfor %}
+                    </optgroup>
+                    {% endif %}
+                </select>
+            </div>
+
+            <!-- Secondary Column Selector (Y-Axis / Grouping) -->
+            <div id="col2Group">
+                <label id="col2Label" for="col2" class="block font-semibold text-slate-300 mb-1.5 uppercase tracking-wider">Secondary Column (Y / Group)</label>
+                <select id="col2" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white font-medium focus:border-indigo-500 outline-none transition-all">
+                    <option value="">None (Single Variable)</option>
+                    {% if types and types.numeric %}
+                    <optgroup label="📊 Numeric Columns">
+                        {% for col in types.numeric %}
+                            <option value="{{ col }}">{{ col }}</option>
+                        {% endfor %}
+                    </optgroup>
+                    {% endif %}
+                    {% if types and types.categorical %}
+                    <optgroup label="🔤 Categorical Columns">
+                        {% for col in types.categorical %}
+                            <option value="{{ col }}">{{ col }}</option>
+                        {% endfor %}
+                    </optgroup>
+                    {% endif %}
+                </select>
+            </div>
+        </div>
+
+        <!-- Render Chart Action Button -->
+        <div class="pt-4 border-t border-slate-800 space-y-2">
+            <button id="updateChartBtn" type="button" class="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white text-xs font-bold shadow-lg shadow-indigo-600/30 transition-all flex items-center justify-center gap-2">
+                <i class="fas fa-sync-alt"></i> Generate Visualization
+            </button>
+        </div>
+    </div>
+
+    <!-- Right Column (3 Cols): Main Plotly Interactive Canvas Card -->
+    <div class="lg:col-span-3 p-6 rounded-2xl bg-slate-900/90 border border-slate-800 shadow-xl space-y-4">
+        <!-- Canvas Top Toolbar Header -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
+            <div>
+                <h3 class="text-base font-bold text-white flex items-center gap-2" id="canvasTitle">
+                    <i class="fas fa-chart-line text-indigo-400"></i> Interactive Plotly Canvas
+                </h3>
+                <p id="canvasSubtitle" class="text-xs text-slate-400 mt-0.5 font-mono">Dynamic Telemetry Engine</p>
+            </div>
+
+            <!-- Canvas Quick Actions -->
+            <div class="flex items-center gap-2">
+                <button id="downloadPngBtn" title="Download Chart PNG" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium border border-slate-700 transition-all flex items-center gap-1.5">
+                    <i class="fas fa-download text-indigo-400"></i> Export PNG
+                </button>
+                <button id="fullscreenBtn" title="Toggle Fullscreen" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium border border-slate-700 transition-all flex items-center gap-1.5">
+                    <i class="fas fa-expand text-slate-400"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Chart Render Container -->
+        <div id="chartCanvasWrapper" class="relative w-full min-h-[480px] bg-slate-950/60 rounded-2xl border border-slate-800/80 p-3 flex flex-col justify-center overflow-hidden">
+            <div id="chartContainer" class="w-full min-h-[450px] flex-1">
+                <div class="flex flex-col items-center justify-center h-full text-slate-400 space-y-3 py-24">
+                    <i class="fas fa-spinner fa-spin text-4xl text-indigo-500"></i>
+                    <span class="text-xs font-medium">Generating Plotly graphic...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const chartDescriptions = {
+        histogram: "Shows value frequency distributions across continuous numeric intervals (bins).",
+        bar: "Shows count or frequency per discrete categorical class.",
+        scatter: "Plots continuous X versus Y to detect correlations, clusters, or non-linear patterns.",
+        box: "Displays median, quartiles (25%-75%), and individual statistical outliers.",
+        violin: "Combines box plots with Kernel Density Estimation (KDE) probability shapes.",
+        correlation: "Color-coded correlation coefficient matrix across all numeric dataset features.",
+        missing: "Quality control bar chart identifying columns with missing null values.",
+        pie: "Displays proportional breakdown of top categorical categories."
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const chartType = document.getElementById('chartType');
+        const col1Group = document.getElementById('col1Group');
+        const col1Label = document.getElementById('col1Label');
+        const col1 = document.getElementById('col1');
+        const col2Group = document.getElementById('col2Group');
+        const col2Label = document.getElementById('col2Label');
+        const col2 = document.getElementById('col2');
+        const updateBtn = document.getElementById('updateChartBtn');
+        const chartDesc = document.getElementById('chartDesc');
+        const canvasTitle = document.getElementById('canvasTitle');
+        const canvasSubtitle = document.getElementById('canvasSubtitle');
+
+        function updateControlVisibility() {
+            const kind = chartType.value;
+            chartDesc.textContent = chartDescriptions[kind] || "";
+
+            if (kind === 'correlation' || kind === 'missing') {
+                col1Group.style.display = 'none';
+                col2Group.style.display = 'none';
+            } else if (kind === 'scatter') {
+                col1Group.style.display = 'block';
+                col2Group.style.display = 'block';
+                col1Label.textContent = "X-Axis Column";
+                col2Label.textContent = "Y-Axis Column (Required)";
+                if (!col2.value || col2.value === col1.value) {
+                    for (let i = 0; i < col2.options.length; i++) {
+                        if (col2.options[i].value && col2.options[i].value !== col1.value) {
+                            col2.selectedIndex = i;
+                            break;
+                        }
+                    }
+                }
+            } else if (kind === 'box' || kind === 'violin') {
+                col1Group.style.display = 'block';
+                col2Group.style.display = 'block';
+                col1Label.textContent = "Numeric Feature (Y)";
+                col2Label.textContent = "Grouping Feature (X - Optional)";
+            } else {
+                col1Group.style.display = 'block';
+                col2Group.style.display = 'none';
+                col1Label.textContent = "Target Column";
+            }
+        }
+
+        function fetchAndRenderChart() {
+            const kind = chartType.value;
+            let c1 = col1.value;
+            let c2 = col2.value;
+
+            if (!c1 && col1.options.length > 0) {
+                c1 = col1.options[0].value;
+            }
+
+            const chartNames = {
+                histogram: `Histogram: ${c1 || ''}`,
+                bar: `Bar Chart: ${c1 || ''}`,
+                scatter: `Scatter Plot: ${c1 || 'X'} vs ${c2 || 'Y'}`,
+                box: `Box Plot: ${c1 || ''}${c2 ? ' by ' + c2 : ''}`,
+                violin: `Violin Plot: ${c1 || ''}${c2 ? ' by ' + c2 : ''}`,
+                correlation: `Correlation Matrix (Numeric Features)`,
+                missing: `Missing Values Analysis`,
+                pie: `Proportion Breakdown: ${c1 || ''}`
+            };
+
+            canvasTitle.innerHTML = `<i class="fas fa-chart-area text-indigo-400 mr-2"></i>${chartNames[kind] || 'Plotly Canvas'}`;
+            canvasSubtitle.textContent = `Mode: ${kind.toUpperCase()} • Filter: ${c1 || 'All'} ${c2 ? '× ' + c2 : ''}`;
+
+            let url = `/api/chart?kind=${encodeURIComponent(kind)}&dark_mode=true`;
+            if (c1) url += `&column=${encodeURIComponent(c1)}`;
+            if (c2) url += `&column2=${encodeURIComponent(c2)}`;
+
+            loadChartFromApi('chartContainer', url);
+        }
+
+        let debounceTimer = null;
+        function debouncedFetch() {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                fetchAndRenderChart();
+            }, 100);
+        }
+
+        window.setPreset = function(presetKind) {
+            chartType.value = presetKind;
+            updateControlVisibility();
+            debouncedFetch();
+        };
+
+        chartType.addEventListener('change', () => {
+            updateControlVisibility();
+            debouncedFetch();
+        });
+        col1.addEventListener('change', debouncedFetch);
+        col2.addEventListener('change', debouncedFetch);
+        updateBtn.addEventListener('click', () => {
+            clearTimeout(debounceTimer);
+            fetchAndRenderChart();
+        });
+
+        document.getElementById('downloadPngBtn').addEventListener('click', () => {
+            const container = document.getElementById('chartContainer');
+            if (container && window.Plotly) {
+                Plotly.downloadImage(container, {
+                    format: 'png',
+                    width: 1000,
+                    height: 600,
+                    filename: `automl_${chartType.value}_chart`
+                });
+            }
+        });
+
+        document.getElementById('fullscreenBtn').addEventListener('click', () => {
+            const wrapper = document.getElementById('chartCanvasWrapper');
+            if (!document.fullscreenElement) {
+                wrapper.requestFullscreen().catch(err => console.error(err));
+            } else {
+                document.exitFullscreen();
+            }
+        });
+
+        updateControlVisibility();
+        fetchAndRenderChart();
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,4 @@
+.env
+session_data/
+__pycache__/
+*.pkl

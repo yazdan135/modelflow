@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ModelFlow AI Platform{% endblock %}</title>
+
+    <!-- ModelFlow AI Favicon -->
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.svg') }}">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ["Inter", "sans-serif"],
+                        mono: ["JetBrains Mono", "monospace"]
+                    },
+                    colors: {
+                        navy: {
+                            50: "#e2e8f0",
+                            100: "#cbd5e1",
+                            700: "#1e293b",
+                            800: "#0f172a",
+                            900: "#0b1220"
+                        },
+                        brand: {
+                            50: "#eeefee",
+                            100: "#e0e7ff",
+                            400: "#818cf8",
+                            500: "#6366f1",
+                            600: "#4f46e5",
+                            700: "#4338ca"
+                        },
+                        cyan: {
+                            400: "#38bdf8",
+                            500: "#06b6d4"
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Font Awesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+
+    <!-- Custom Styles -->
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+
+    <!-- Plotly Charts Library -->
+    <script src="https://cdn.plot.ly/plotly-2.35.0.min.js"></script>
+</head>
+
+<body
+    class="font-sans bg-[#0B1220] text-slate-100 min-h-screen antialiased selection:bg-indigo-500 selection:text-white">
+
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar Navigation -->
+        <aside id="sidebar"
+            class="fixed inset-y-0 left-0 z-50 w-72 bg-slate-900/95 backdrop-blur-2xl border-r border-slate-800/80 flex flex-col transition-transform duration-300 transform -translate-x-full lg:translate-x-0">
+            <!-- Sidebar Header / Brand -->
+            <div class="h-20 flex items-center justify-between px-6 border-b border-slate-800/80">
+                <a href="{{ url_for('index') }}" class="flex items-center gap-3 group">
+                    <img src="{{ url_for('static', filename='logo.svg') }}" alt="ModelFlow AI Logo" class="w-10 h-10 rounded-xl shadow-lg shadow-indigo-500/25 group-hover:scale-105 transition-transform object-cover">
+                    <div>
+                        <span class="text-lg font-bold tracking-tight text-white flex items-center gap-1.5">
+                            ModelFlow <span
+                                class="text-xs px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-400 font-semibold border border-indigo-500/30">AI</span>
+                        </span>
+                        <p class="text-[11px] font-medium text-slate-400">Enterprise AutoML SaaS</p>
+                    </div>
+                </a>
+                <button id="closeSidebar" class="lg:hidden text-slate-400 hover:text-white p-1">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Sidebar Navigation Links -->
+            <nav class="flex-1 overflow-y-auto px-4 py-6 space-y-1 custom-scrollbar">
+                <div class="px-3 mb-2 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Platform Core</div>
+
+                <a href="{{ url_for('index') }}"
+                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-xs transition-all {% if request.endpoint == 'index' %}bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-lg shadow-indigo-600/25 font-semibold{% else %}text-slate-300 hover:bg-slate-800/60 hover:text-white{% endif %}">
+                    <i
+                        class="fas fa-chart-pie w-4 text-center {% if request.endpoint == 'index' %}text-white{% else %}text-indigo-400{% endif %}"></i>
+                    <span>Dashboard KPIs</span>
+                </a>
+
+                <a href="{{ url_for('upload_page') }}"
+                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-xs transition-all {% if request.endpoint == 'upload_page' %}bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-lg shadow-indigo-600/25 font-semibold{% else %}text-slate-300 hover:bg-slate-800/60 hover:text-white{% endif %}">
+                    <i
+                        class="fas fa-cloud-upload-alt w-4 text-center {% if request.endpoint == 'upload_page' %}text-white{% else %}text-cyan-400{% endif %}"></i>
+                    <span>Dataset Ingestion</span>
+                </a>
+
+                <div class="pt-4 px-3 mb-2 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Analysis &
+                    Prep</div>
+
+                <a href="{{ url_for('explore') }}"
+                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-xs transition-all {% if request.endpoint == 'explore' %}bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-lg shadow-indigo-600/25 font-semibold{% else %}text-slate-300 hover:bg-slate-800/60 hover:text-white{% endif %}">
+                    <i
+                        class="fas fa-robot w-4 text-center {% if request.endpoint == 'explore' %}text-white{% else %}text-indigo-400{% endif %}"></i>
+                    <span>AI Profiler & Copilot</span>
+                </a>
+
+                <a href="{{ url_for('clean') }}"
+                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-xs transition-all {% if request.endpoint == 'clean' %}bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-lg shadow-indigo-600/25 font-semibold{% else %}text-slate-300 hover:bg-slate-800/60 hover:text-white{% endif %}">
+                    <i
+                        class="fas fa-magic w-4 text-center {% if request.endpoint == 'clean' %}text-white{% else %}text-emerald-400{% endif %}"></i>
+                    <span>Auto Dataset Cleaning</span>
+                </a>
+
+                <a href="{{ url_for('visualize') }}"
+                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-xs transition-all {% if request.endpoint == 'visualize' %}bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-lg shadow-indigo-600/25 font-semibold{% else %}text-slate-300 hover:bg-slate-800/60 hover:text-white{% endif %}">
+                    <i
+                        class="fas fa-chart-bar w-4 text-center {% if request.endpoint == 'visualize' %}text-white{% else %}text-purple-400{% endif %}"></i>
+                    <span>Visualization Studio</span>
+                </a>
+
+                <div class="pt-4 px-3 mb-2 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Modeling & Ops
+                </div>
+
+                <a href="{{ url_for('train') }}"
+                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-xs transition-all {% if request.endpoint == 'train' %}bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-lg shadow-indigo-600/25 font-semibold{% else %}text-slate-300 hover:bg-slate-800/60 hover:text-white{% endif %}">
+                    <i
+                        class="fas fa-cogs w-4 text-center {% if request.endpoint == 'train' %}text-white{% else %}text-amber-400{% endif %}"></i>
+                    <span>AutoML Trainer</span>
+                </a>
+
+                <a href="{{ url_for('results') }}"
+                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-xs transition-all {% if request.endpoint == 'results' %}bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-lg shadow-indigo-600/25 font-semibold{% else %}text-slate-300 hover:bg-slate-800/60 hover:text-white{% endif %}">
+                    <i
+                        class="fas fa-trophy w-4 text-center {% if request.endpoint == 'results' %}text-white{% else %}text-amber-400{% endif %}"></i>
+                    <span>Evaluation Leaderboard</span>
+                </a>
+
+                <a href="{{ url_for('predict') }}"
+                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-xs transition-all {% if request.endpoint == 'predict' %}bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-lg shadow-indigo-600/25 font-semibold{% else %}text-slate-300 hover:bg-slate-800/60 hover:text-white{% endif %}">
+                    <i
+                        class="fas fa-bolt w-4 text-center {% if request.endpoint == 'predict' %}text-white{% else %}text-cyan-400{% endif %}"></i>
+                    <span>Inference Studio</span>
+                </a>
+
+                <a href="{{ url_for('deploy') }}"
+                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-xs transition-all {% if request.endpoint == 'deploy' %}bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-lg shadow-indigo-600/25 font-semibold{% else %}text-slate-300 hover:bg-slate-800/60 hover:text-white{% endif %}">
+                    <i
+                        class="fas fa-server w-4 text-center {% if request.endpoint == 'deploy' %}text-white{% else %}text-emerald-400{% endif %}"></i>
+                    <span>API Deployment</span>
+                </a>
+
+                <a href="{{ url_for('code') }}"
+                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-xs transition-all {% if request.endpoint == 'code' %}bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-lg shadow-indigo-600/25 font-semibold{% else %}text-slate-300 hover:bg-slate-800/60 hover:text-white{% endif %}">
+                    <i
+                        class="fas fa-code w-4 text-center {% if request.endpoint == 'code' %}text-white{% else %}text-rose-400{% endif %}"></i>
+                    <span>Python Code Playground</span>
+                </a>
+
+                <div class="pt-4 px-3 mb-2 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Account & Intelligence</div>
+
+                <a href="{{ url_for('analytics') }}"
+                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-xs transition-all {% if request.endpoint == 'analytics' %}bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-lg shadow-indigo-600/25 font-semibold{% else %}text-slate-300 hover:bg-slate-800/60 hover:text-white{% endif %}">
+                    <i
+                        class="fas fa-chart-line w-4 text-center {% if request.endpoint == 'analytics' %}text-white{% else %}text-teal-400{% endif %}"></i>
+                    <span>User Analytics Studio</span>
+                </a>
+            </nav>
+
+            <!-- Sidebar User Profile Footer -->
+            <div class="p-4 border-t border-slate-800/80 bg-slate-900/60 flex items-center justify-between">
+                <a href="{{ url_for('analytics') }}" class="flex items-center gap-3 overflow-hidden group/user hover:opacity-90 transition-opacity">
+                    {% if current_user.is_authenticated and current_user.picture %}
+                    <img src="{{ current_user.picture }}" alt="{{ current_user.name }}"
+                        class="w-9 h-9 rounded-xl object-cover border border-indigo-500/40 shrink-0 shadow-md group-hover/user:border-indigo-400">
+                    {% else %}
+                    <div
+                        class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-cyan-500 flex items-center justify-center font-bold text-white text-sm shrink-0 shadow-md">
+                        {{ current_user.name[0]|upper if current_user.is_authenticated and current_user.name else 'U' }}
+                    </div>
+                    {% endif %}
+                    <div class="truncate">
+                        <p class="text-xs font-semibold text-white truncate flex items-center gap-1 group-hover/user:text-indigo-300 transition-colors">
+                            {{ current_user.name if current_user.is_authenticated else 'User' }}
+                            {% if current_user.is_authenticated and current_user.provider == 'google' %}
+                            <i class="fab fa-google text-[10px] text-indigo-400"
+                                title="Signed in with Google Account"></i>
+                            {% endif %}
+                        </p>
+                        <p class="text-[11px] text-slate-400 truncate">{{ current_user.email if
+                            current_user.is_authenticated else '' }}</p>
+                    </div>
+                </a>
+                <a href="{{ url_for('logout') }}" title="Logout"
+                    class="p-2 text-slate-400 hover:text-rose-400 transition-colors">
+                    <i class="fas fa-sign-out-alt"></i>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Wrapper -->
+        <div class="flex-1 flex flex-col min-w-0 overflow-hidden lg:pl-72">
+            <!-- Topbar Header -->
+            <header
+                class="h-20 border-b border-slate-800/80 bg-slate-900/80 backdrop-blur-xl px-6 flex items-center justify-between sticky top-0 z-40">
+                <div class="flex items-center gap-4">
+                    <button id="openSidebar"
+                        class="lg:hidden text-slate-400 hover:text-white p-2 rounded-lg bg-slate-800">
+                        <i class="fas fa-bars text-lg"></i>
+                    </button>
+                    <div>
+                        <h1 class="text-lg font-bold text-white tracking-tight">{% block header_title %}Dashboard{%
+                            endblock %}</h1>
+                        <p class="text-xs text-slate-400 hidden sm:block">{% block header_sub %}Enterprise AI Automated
+                            Modeling Platform{% endblock %}</p>
+                    </div>
+                </div>
+
+                <!-- Topbar Actions -->
+                <div class="flex items-center gap-3">
+                    <!-- Keyboard Shortcuts Guide Button -->
+                    <button id="shortcutsBtn" title="Keyboard Shortcuts Guide (Ctrl+Shift+K)"
+                        class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold border border-slate-700/80 transition-all flex items-center gap-1.5">
+                        <i class="fas fa-keyboard text-indigo-400"></i>
+                        <span class="hidden md:inline">Shortcuts</span>
+                        <kbd
+                            class="hidden lg:inline-block px-1.5 py-0.5 text-[10px] font-mono bg-slate-900 border border-slate-700 rounded text-slate-400">Ctrl+K</kbd>
+                    </button>
+
+                    <!-- Active Project Session Badge -->
+                    {% if current_project %}
+                    <div
+                        class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-800/80 border border-slate-700/80 text-xs">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        <span class="text-slate-300 font-medium">Active Project: <strong class="text-white">{{
+                                current_project.name }}</strong></span>
+                    </div>
+                    {% endif %}
+
+                    <!-- New Project Button -->
+                    <a href="{{ url_for('new_project') }}"
+                        class="px-3.5 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white text-xs font-semibold shadow-lg shadow-indigo-600/20 transition-all flex items-center gap-2">
+                        <i class="fas fa-plus text-xs"></i> <span class="hidden sm:inline">New Project</span>
+                    </a>
+
+                    <!-- User Profile Avatar in Topbar -->
+                    {% if current_user.is_authenticated and current_user.picture %}
+                    <img src="{{ current_user.picture }}" alt="{{ current_user.name }}"
+                        class="w-8 h-8 rounded-xl object-cover border border-indigo-500/40 hidden md:block shadow-md">
+                    {% endif %}
+                </div>
+            </header>
+
+            <!-- Main Scrollable Content -->
+            <main class="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
+                <!-- Flash Notification Banner -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                <div class="space-y-3">
+                    {% for category, message in messages %}
+                    <div
+                        class="p-4 rounded-xl border flex items-center justify-between backdrop-blur-md shadow-lg {% if category == 'success' %}bg-emerald-950/40 border-emerald-500/30 text-emerald-300{% elif category == 'danger' %}bg-rose-950/40 border-rose-500/30 text-rose-300{% elif category == 'warning' %}bg-amber-950/40 border-amber-500/30 text-amber-300{% else %}bg-indigo-950/40 border-indigo-500/30 text-indigo-300{% endif %}">
+                        <div class="flex items-center gap-3 text-sm font-medium">
+                            <i
+                                class="fas {% if category == 'success' %}fa-check-circle text-emerald-400{% elif category == 'danger' %}fa-exclamation-circle text-rose-400{% elif category == 'warning' %}fa-exclamation-triangle text-amber-400{% else %}fa-info-circle text-indigo-400{% endif %} text-base"></i>
+                            <span>{{ message }}</span>
+                        </div>
+                        <button onclick="this.parentElement.remove()"
+                            class="opacity-60 hover:opacity-100 text-xs p-1"><i class="fas fa-times"></i></button>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                {% endwith %}
+
+                {% block content %}{% endblock %}
+            </main>
+
+            <!-- Footer -->
+            <footer
+                class="h-12 border-t border-slate-800/80 bg-slate-900/40 px-6 flex items-center justify-between text-xs text-slate-500 shrink-0">
+                <p>&copy; 2026 ModelFlow AI SaaS Platform. All rights reserved.</p>
+                <div class="flex items-center gap-4">
+                    <span class="flex items-center gap-1.5"><i class="fas fa-shield-alt text-indigo-400"></i> Enterprise
+                        Standard</span>
+                    <span>v2.5.0</span>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Keyboard Shortcuts Guide Modal -->
+    <div id="shortcutsModal"
+        class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl p-6 max-w-lg w-full space-y-5">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <h3 class="text-base font-bold text-white flex items-center gap-2">
+                    <i class="fas fa-keyboard text-indigo-400"></i> Platform Keyboard Shortcuts
+                </h3>
+                <button id="closeShortcutsModal" class="text-slate-400 hover:text-white p-1">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                <div class="p-3 rounded-xl bg-slate-950/60 border border-slate-800 flex items-center justify-between">
+                    <span class="text-slate-300">Dashboard KPIs</span>
+                    <kbd class="px-2 py-1 rounded bg-slate-800 text-indigo-300 font-mono font-bold">Alt + 1</kbd>
+                </div>
+                <div class="p-3 rounded-xl bg-slate-950/60 border border-slate-800 flex items-center justify-between">
+                    <span class="text-slate-300">Dataset Ingestion</span>
+                    <kbd class="px-2 py-1 rounded bg-slate-800 text-indigo-300 font-mono font-bold">Alt + 2</kbd>
+                </div>
+                <div class="p-3 rounded-xl bg-slate-950/60 border border-slate-800 flex items-center justify-between">
+                    <span class="text-slate-300">AI Profiler & Copilot</span>
+                    <kbd class="px-2 py-1 rounded bg-slate-800 text-indigo-300 font-mono font-bold">Alt + 3</kbd>
+                </div>
+                <div class="p-3 rounded-xl bg-slate-950/60 border border-slate-800 flex items-center justify-between">
+                    <span class="text-slate-300">Auto Dataset Cleaning</span>
+                    <kbd class="px-2 py-1 rounded bg-slate-800 text-indigo-300 font-mono font-bold">Alt + 4</kbd>
+                </div>
+                <div class="p-3 rounded-xl bg-slate-950/60 border border-slate-800 flex items-center justify-between">
+                    <span class="text-slate-300">Visualization Studio</span>
+                    <kbd class="px-2 py-1 rounded bg-slate-800 text-indigo-300 font-mono font-bold">Alt + 5</kbd>
+                </div>
+                <div class="p-3 rounded-xl bg-slate-950/60 border border-slate-800 flex items-center justify-between">
+                    <span class="text-slate-300">AutoML Trainer</span>
+                    <kbd class="px-2 py-1 rounded bg-slate-800 text-indigo-300 font-mono font-bold">Alt + 6</kbd>
+                </div>
+                <div class="p-3 rounded-xl bg-slate-950/60 border border-slate-800 flex items-center justify-between">
+                    <span class="text-slate-300">Model Leaderboard</span>
+                    <kbd class="px-2 py-1 rounded bg-slate-800 text-indigo-300 font-mono font-bold">Alt + 7</kbd>
+                </div>
+                <div class="p-3 rounded-xl bg-slate-950/60 border border-slate-800 flex items-center justify-between">
+                    <span class="text-slate-300">Inference Studio</span>
+                    <kbd class="px-2 py-1 rounded bg-slate-800 text-indigo-300 font-mono font-bold">Alt + 8</kbd>
+                </div>
+                <div class="p-3 rounded-xl bg-slate-950/60 border border-slate-800 flex items-center justify-between">
+                    <span class="text-slate-300">REST API Deploy</span>
+                    <kbd class="px-2 py-1 rounded bg-slate-800 text-indigo-300 font-mono font-bold">Alt + 9</kbd>
+                </div>
+                <div class="p-3 rounded-xl bg-slate-950/60 border border-slate-800 flex items-center justify-between">
+                    <span class="text-slate-300">Code Playground</span>
+                    <kbd class="px-2 py-1 rounded bg-slate-800 text-indigo-300 font-mono font-bold">Alt + 0</kbd>
+                </div>
+            </div>
+
+            <div class="text-center pt-2 border-t border-slate-800">
+                <p class="text-[11px] text-slate-500">Press <kbd
+                        class="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 font-mono">Esc</kbd> or click anywhere
+                    outside to close guide.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Global Plotly JS helper functions & Keyboard Shortcuts Listener -->
+    <script>
+        let currentChartFetchController = null;
+
+        function renderPlotly(containerId, figureJson, options = {}) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+
+            if (!figureJson) {
+                container.innerHTML = '<div class="flex items-center justify-center h-48 text-slate-500 text-xs font-medium">No visual chart data available</div>';
+                return;
+            }
+
+            try {
+                let parsed = (typeof figureJson === 'string') ? JSON.parse(figureJson) : figureJson;
+                if (typeof parsed === 'string') {
+                    parsed = JSON.parse(parsed); // Double-parse safety
+                }
+
+                const data = parsed.data || parsed.chart_data || [];
+                const layout = Object.assign({
+                    paper_bgcolor: 'rgba(0,0,0,0)',
+                    plot_bgcolor: 'rgba(0,0,0,0)',
+                    font: { color: '#cbd5e1', family: 'Inter, sans-serif', size: 11 },
+                    margin: { t: 40, r: 25, b: 40, l: 55 },
+                    autosize: true
+                }, parsed.layout || {});
+
+                const config = Object.assign({
+                    responsive: true,
+                    displaylogo: false
+                }, parsed.config || {});
+
+                if (window.Plotly) {
+                    if (!container.classList.contains('js-plotly-plot') && !container.querySelector('.js-plotly-plot')) {
+                        container.innerHTML = '';
+                    }
+                    Plotly.react(containerId, data, layout, config);
+                    setTimeout(() => {
+                        window.dispatchEvent(new Event('resize'));
+                    }, 50);
+                } else {
+                    container.innerHTML = '<div class="flex items-center justify-center h-48 text-rose-400 text-xs font-mono">Plotly library not loaded</div>';
+                }
+            } catch (err) {
+                console.error(`[Plotly Render Error] #${containerId}:`, err);
+                container.innerHTML = `<div class="flex flex-col items-center justify-center h-48 text-rose-400 text-xs font-mono"><i class="fas fa-exclamation-triangle text-xl mb-2"></i><span>Chart render error: ${err.message}</span></div>`;
+            }
+        }
+
+        function loadChartFromApi(containerId, url) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+
+            if (currentChartFetchController) {
+                currentChartFetchController.abort();
+            }
+            currentChartFetchController = new AbortController();
+
+const hasExistingPlot = container.classList.contains('js-plotly-plot') || container.querySelector('.js-plotly-plot') !== null;            if (!hasExistingPlot) {
+                container.innerHTML = '<div class="flex flex-col items-center justify-center h-full min-h-[380px] text-indigo-400 py-16"><i class="fas fa-spinner fa-spin text-3xl mb-2"></i><span class="text-xs text-slate-400 font-medium">Generating Plotly graphic...</span></div>';
+            }
+
+            fetch(url, { signal: currentChartFetchController.signal })
+                .then(res => {
+                    if (!res.ok) {
+                        return res.json().then(errData => { throw new Error(errData.error || `HTTP error ${res.status}`); });
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    if (data.error) throw new Error(data.error);
+                    renderPlotly(containerId, data);
+                })
+                .catch(err => {
+                    if (err.name === 'AbortError') return;
+                    if (container) {
+                        container.innerHTML = `<div class="flex flex-col items-center justify-center h-64 text-rose-400 text-xs font-mono p-4 text-center"><i class="fas fa-exclamation-triangle text-2xl mb-2"></i><span>${err.message}</span></div>`;
+                    }
+                });
+        }
+
+        // Global Keyboard Shortcuts Listener
+        document.addEventListener('keydown', (e) => {
+            const shortcutsModal = document.getElementById('shortcutsModal');
+            const routes = {
+                '1': '{{ url_for("index") }}',
+                '2': '{{ url_for("upload_page") }}',
+                '3': '{{ url_for("explore") }}',
+                '4': '{{ url_for("clean") }}',
+                '5': '{{ url_for("visualize") }}',
+                '6': '{{ url_for("train") }}',
+                '7': '{{ url_for("results") }}',
+                '8': '{{ url_for("predict") }}',
+                '9': '{{ url_for("deploy") }}',
+                '0': '{{ url_for("code") }}'
+            };
+
+            // Toggle modal via Ctrl+K or Ctrl+Shift+K
+            if ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) {
+                e.preventDefault();
+                shortcutsModal.classList.toggle('hidden');
+                return;
+            }
+
+            // Close modal on Escape
+            if (e.key === 'Escape' && !shortcutsModal.classList.contains('hidden')) {
+                shortcutsModal.classList.add('hidden');
+                return;
+            }
+
+            // Navigation via Alt + Number
+            if (e.altKey && routes[e.key]) {
+                e.preventDefault();
+                window.location.href = routes[e.key];
+            }
+        });
+
+        // Modal Open/Close Event Handlers
+        document.addEventListener('DOMContentLoaded', () => {
+            const shortcutsBtn = document.getElementById('shortcutsBtn');
+            const shortcutsModal = document.getElementById('shortcutsModal');
+            const closeShortcutsModal = document.getElementById('closeShortcutsModal');
+
+            if (shortcutsBtn && shortcutsModal) {
+                shortcutsBtn.addEventListener('click', () => shortcutsModal.classList.remove('hidden'));
+            }
+            if (closeShortcutsModal && shortcutsModal) {
+                closeShortcutsModal.addEventListener('click', () => shortcutsModal.classList.add('hidden'));
+            }
+            if (shortcutsModal) {
+                shortcutsModal.addEventListener('click', (e) => {
+                    if (e.target === shortcutsModal) shortcutsModal.classList.add('hidden');
+                });
+            }
+        });
+    </script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>
