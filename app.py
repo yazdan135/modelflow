@@ -34,7 +34,7 @@ os.makedirs(DATA_DIR, exist_ok=True)
 app = Flask(__name__)
 app.url_map.strict_slashes = False
 app.config["TEMPLATES_AUTO_RELOAD"] = True
-DEFAULT_MONGO_URI = "mongodb+srv://shoppro271_db_user:LOG81tNMvqpFeiCT@automl.5bfoz9h.mongodb.net/automl_app?retryWrites=true&w=majority"
+DEFAULT_MONGO_URI = os.getenv("MONGO_URI")
 ADMIN_EMAIL = os.getenv("ADMIN_EMAIL").strip().lower()
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD").strip()
 
