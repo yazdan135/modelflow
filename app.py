@@ -34,16 +34,20 @@ os.makedirs(DATA_DIR, exist_ok=True)
 app = Flask(__name__)
 app.url_map.strict_slashes = False
 app.config["TEMPLATES_AUTO_RELOAD"] = True
-DEFAULT_MONGO_URI = os.getenv("MONGO_URI")
-ADMIN_EMAIL = (os.getenv("ADMIN_EMAIL") or "").strip().lower()
-ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD").strip()
+
+ATLAS_MONGO_URI = "mongodb+srv://shoppro271_db_user:LOG81tNMvqpFeiCT@automl.5bfoz9h.mongodb.net/automl_app?retryWrites=true&w=majority&tls=true&tlsAllowInvalidCertificates=true"
+ADMIN_EMAIL = (os.getenv("ADMIN_EMAIL") or "admin@yazdan.com").strip().lower()
+ADMIN_PASSWORD = (os.getenv("ADMIN_PASSWORD") or "yazdan243").strip()
 
 mongo_uri = os.getenv("MONGO_URI")
 if not mongo_uri or "<db_password>" in mongo_uri or "<password>" in mongo_uri or "localhost" in mongo_uri:
-    print(f"WARNING: MONGO_URI not configured or localhost. Using production Atlas MongoDB connection.")
-    mongo_uri = DEFAULT_MONGO_URI
+    mongo_uri = ATLAS_MONGO_URI
 elif mongo_uri.endswith("/") and not mongo_uri.startswith("mongodb+srv://"):
     mongo_uri += "automl_app"
+
+if "tls=" not in mongo_uri and "ssl=" not in mongo_uri and "mongodb+srv://" in mongo_uri:
+    sep = "&" if "?" in mongo_uri else "?"
+    mongo_uri += f"{sep}tls=true&tlsAllowInvalidCertificates=true"
 
 app.config["MONGO_URI"] = mongo_uri
 app.secret_key = os.getenv("SECRET_KEY", "dev-secret-key-very-insecure-change-me")
@@ -58,8 +62,8 @@ try:
     if hasattr(mongo, "cx") and mongo.cx is not None:
         mongo.cx.admin.command('ping')
 except Exception as mongo_err:
-    print(f"WARNING: MongoDB connection failed ({mongo_err}). Falling back to Atlas MongoDB {DEFAULT_MONGO_URI}")
-    app.config["MONGO_URI"] = DEFAULT_MONGO_URI
+    print(f"WARNING: Initial MongoDB connection failed ({mongo_err}). Connecting with Atlas TLS configuration...")
+    app.config["MONGO_URI"] = ATLAS_MONGO_URI
     mongo = PyMongo(app)
     db = mongo.db
     if db is None and hasattr(mongo, "cx") and mongo.cx is not None:

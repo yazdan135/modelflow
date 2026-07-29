@@ -15,3 +15,5 @@ reportlab
 openpyxl
 chardet
 requests
+certifi
+
