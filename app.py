@@ -35,7 +35,7 @@ app = Flask(__name__)
 app.url_map.strict_slashes = False
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 DEFAULT_MONGO_URI = os.getenv("MONGO_URI")
-ADMIN_EMAIL = os.getenv("ADMIN_EMAIL").strip().lower()
+ADMIN_EMAIL = (os.getenv("ADMIN_EMAIL") or "").strip().lower()
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD").strip()
 
 mongo_uri = os.getenv("MONGO_URI")
