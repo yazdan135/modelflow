@@ -176,6 +176,22 @@
                         class="fas fa-chart-line w-4 text-center {% if request.endpoint == 'analytics' %}text-white{% else %}text-teal-400{% endif %}"></i>
                     <span>User Analytics Studio</span>
                 </a>
+
+                <a href="{{ url_for('support') }}"
+                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-xs transition-all {% if request.endpoint == 'support' %}bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-lg shadow-indigo-600/25 font-semibold{% else %}text-slate-300 hover:bg-slate-800/60 hover:text-white{% endif %}">
+                    <i
+                        class="fas fa-headset w-4 text-center {% if request.endpoint == 'support' %}text-white{% else %}text-indigo-400{% endif %}"></i>
+                    <span>Contact Admin & Help</span>
+                </a>
+
+                {% if current_user.is_authenticated and current_user.is_admin %}
+                <a href="{{ url_for('admin_dashboard') }}"
+                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-xs transition-all {% if request.endpoint == 'admin_dashboard' %}bg-gradient-to-r from-purple-600 to-indigo-700 text-white shadow-lg shadow-purple-600/25 font-semibold{% else %}text-purple-300 hover:bg-slate-800/60 hover:text-white{% endif %}">
+                    <i
+                        class="fas fa-user-shield w-4 text-center {% if request.endpoint == 'admin_dashboard' %}text-white{% else %}text-purple-400{% endif %}"></i>
+                    <span>Admin Control Center</span>
+                </a>
+                {% endif %}
             </nav>
 
             <!-- Sidebar User Profile Footer -->

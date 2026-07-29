@@ -1,0 +1,386 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Control Panel — ModelFlow AI{% endblock %}
+{% block header_title %}Platform Admin Control Center{% endblock %}
+{% block header_sub %}Super Admin SaaS Management, User Directory, Feedbacks, & Support Inbox{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+    <!-- Admin Header Banner -->
+    <div class="relative overflow-hidden rounded-3xl bg-slate-900/90 border border-slate-800/80 p-6 md:p-8 backdrop-blur-xl shadow-2xl">
+        <div class="absolute -right-16 -top-16 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -left-16 -bottom-16 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <div class="flex items-center gap-4">
+                <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-cyan-400 flex items-center justify-center font-bold text-white text-2xl shadow-xl shadow-indigo-600/25 border border-indigo-400/30">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <div class="space-y-1">
+                    <div class="flex items-center gap-3">
+                        <h2 class="text-2xl font-extrabold text-white tracking-tight">Super Admin Dashboard</h2>
+                        <span class="px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-semibold border border-emerald-500/30 flex items-center gap-1">
+                            <i class="fas fa-check-circle"></i> Authenticated Admin
+                        </span>
+                    </div>
+                    <p class="text-xs text-slate-400">Logins, Workspaces, Feedbacks, and User Support Control System</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <span class="px-3.5 py-2 rounded-xl bg-slate-800/80 border border-slate-700 text-xs font-mono text-slate-300">
+                    Admin Account: <strong class="text-indigo-400">{{ current_user.email }}</strong>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- SaaS Platform KPI Row -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+        <!-- Total Registered Users -->
+        <div class="bg-slate-900/80 border border-slate-800/80 rounded-2xl p-4 space-y-2 backdrop-blur-xl relative overflow-hidden group hover:border-indigo-500/50 transition-all">
+            <div class="flex items-center justify-between text-slate-400">
+                <span class="text-xs font-semibold uppercase tracking-wider">Total Users</span>
+                <div class="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-400">
+                    <i class="fas fa-users"></i>
+                </div>
+            </div>
+            <p class="text-2xl font-black text-white">{{ kpis.total_users }}</p>
+            <p class="text-[11px] text-slate-400">Registered Accounts</p>
+        </div>
+
+        <!-- Total Workspaces -->
+        <div class="bg-slate-900/80 border border-slate-800/80 rounded-2xl p-4 space-y-2 backdrop-blur-xl relative overflow-hidden group hover:border-cyan-500/50 transition-all">
+            <div class="flex items-center justify-between text-slate-400">
+                <span class="text-xs font-semibold uppercase tracking-wider">Workspaces</span>
+                <div class="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center text-cyan-400">
+                    <i class="fas fa-folder-tree"></i>
+                </div>
+            </div>
+            <p class="text-2xl font-black text-white">{{ kpis.total_projects }}</p>
+            <p class="text-[11px] text-slate-400">Active User Projects</p>
+        </div>
+
+        <!-- Total Models Trained -->
+        <div class="bg-slate-900/80 border border-slate-800/80 rounded-2xl p-4 space-y-2 backdrop-blur-xl relative overflow-hidden group hover:border-amber-500/50 transition-all">
+            <div class="flex items-center justify-between text-slate-400">
+                <span class="text-xs font-semibold uppercase tracking-wider">Models Trained</span>
+                <div class="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-400">
+                    <i class="fas fa-robot"></i>
+                </div>
+            </div>
+            <p class="text-2xl font-black text-amber-300">{{ kpis.total_models }}</p>
+            <p class="text-[11px] text-slate-400">Total ML Pipeline Builds</p>
+        </div>
+
+        <!-- Feedbacks Received -->
+        <div class="bg-slate-900/80 border border-slate-800/80 rounded-2xl p-4 space-y-2 backdrop-blur-xl relative overflow-hidden group hover:border-emerald-500/50 transition-all">
+            <div class="flex items-center justify-between text-slate-400">
+                <span class="text-xs font-semibold uppercase tracking-wider">User Feedbacks</span>
+                <div class="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400">
+                    <i class="fas fa-star"></i>
+                </div>
+            </div>
+            <p class="text-2xl font-black text-emerald-400">{{ kpis.total_feedbacks }}</p>
+            <p class="text-[11px] text-slate-400">First-Model Reviews</p>
+        </div>
+
+        <!-- Unread Support Messages -->
+        <div class="bg-slate-900/80 border border-slate-800/80 rounded-2xl p-4 space-y-2 backdrop-blur-xl relative overflow-hidden group hover:border-rose-500/50 transition-all">
+            <div class="flex items-center justify-between text-slate-400">
+                <span class="text-xs font-semibold uppercase tracking-wider">Unread Messages</span>
+                <div class="w-8 h-8 rounded-lg bg-rose-500/10 flex items-center justify-center text-rose-400">
+                    <i class="fas fa-envelope"></i>
+                </div>
+            </div>
+            <p class="text-2xl font-black text-rose-400">{{ kpis.unread_messages }}</p>
+            <p class="text-[11px] text-slate-400">Pending User Tickets</p>
+        </div>
+    </div>
+
+    <!-- Admin Section Tabs & Controls -->
+    <div class="bg-slate-900/90 border border-slate-800/80 rounded-3xl p-6 backdrop-blur-xl shadow-xl space-y-6">
+
+        <!-- Tab Header Controls -->
+        <div class="flex items-center gap-2 border-b border-slate-800 pb-3 overflow-x-auto custom-scrollbar">
+            <button onclick="switchAdminTab('users')" id="tabBtnUsers"
+                class="admin-tab-btn px-4 py-2 rounded-xl text-xs font-semibold transition-all bg-indigo-600 text-white shadow-md">
+                <i class="fas fa-users mr-1.5"></i> All Users Directory ({{ users|length }})
+            </button>
+
+            <button onclick="switchAdminTab('messages')" id="tabBtnMessages"
+                class="admin-tab-btn px-4 py-2 rounded-xl text-xs font-semibold transition-all text-slate-400 hover:text-white hover:bg-slate-800">
+                <i class="fas fa-inbox mr-1.5"></i> Support Messages ({{ messages|length }})
+                {% if kpis.unread_messages > 0 %}
+                <span class="ml-1.5 px-2 py-0.5 rounded-full bg-rose-500 text-white text-[10px]">{{ kpis.unread_messages }}</span>
+                {% endif %}
+            </button>
+
+            <button onclick="switchAdminTab('feedbacks')" id="tabBtnFeedbacks"
+                class="admin-tab-btn px-4 py-2 rounded-xl text-xs font-semibold transition-all text-slate-400 hover:text-white hover:bg-slate-800">
+                <i class="fas fa-star mr-1.5"></i> User Feedbacks ({{ feedbacks|length }})
+            </button>
+
+            <button onclick="switchAdminTab('activities')" id="tabBtnActivities"
+                class="admin-tab-btn px-4 py-2 rounded-xl text-xs font-semibold transition-all text-slate-400 hover:text-white hover:bg-slate-800">
+                <i class="fas fa-history mr-1.5"></i> Global Activity Logs
+            </button>
+        </div>
+
+        <!-- Tab 1: All Users Directory -->
+        <div id="tabContentUsers" class="admin-tab-content space-y-4">
+            <div class="flex items-center justify-between">
+                <h3 class="text-sm font-bold text-white">Registered Users Directory</h3>
+                <input type="text" id="userSearch" placeholder="Search user by name or email..."
+                    class="bg-slate-950/80 border border-slate-800 rounded-xl px-3.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500 w-64">
+            </div>
+
+            {% if users %}
+            <div class="overflow-x-auto custom-scrollbar">
+                <table class="w-full text-left text-xs text-slate-300">
+                    <thead class="bg-slate-800/60 text-slate-400 font-semibold uppercase tracking-wider border-b border-slate-800">
+                        <tr>
+                            <th class="px-4 py-3">User Name</th>
+                            <th class="px-4 py-3">Email Address</th>
+                            <th class="px-4 py-3">Auth Provider</th>
+                            <th class="px-4 py-3">Joined Date</th>
+                            <th class="px-4 py-3">Projects</th>
+                            <th class="px-4 py-3">Models Trained</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800/60" id="userTableBody">
+                        {% for u in users %}
+                        <tr class="user-row hover:bg-slate-800/40 transition-colors">
+                            <td class="px-4 py-3.5 font-semibold text-white flex items-center gap-2">
+                                <div class="w-7 h-7 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold text-xs">
+                                    {{ u.name[0]|upper if u.name else 'U' }}
+                                </div>
+                                {{ u.name }}
+                            </td>
+                            <td class="px-4 py-3.5 font-mono text-slate-300">{{ u.email }}</td>
+                            <td class="px-4 py-3.5">
+                                {% if u.provider == 'google' %}
+                                <span class="px-2 py-0.5 rounded-full bg-slate-800 text-indigo-300 text-[11px] font-medium border border-indigo-500/30">
+                                    <i class="fab fa-google text-[10px] mr-1"></i> Google
+                                </span>
+                                {% else %}
+                                <span class="px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 text-[11px] font-medium border border-slate-700">
+                                    Local
+                                </span>
+                                {% endif %}
+                            </td>
+                            <td class="px-4 py-3.5 font-mono text-slate-400">
+                                {% if u.created_at and u.created_at.strftime %}
+                                    {{ u.created_at.strftime('%Y-%m-%d %H:%M') }}
+                                {% else %}
+                                    Active
+                                {% endif %}
+                            </td>
+                            <td class="px-4 py-3.5 font-bold text-cyan-400">{{ u.projects_count }}</td>
+                            <td class="px-4 py-3.5 font-bold text-emerald-400">{{ u.models_count }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-xs text-slate-500 text-center py-6">No users registered yet.</p>
+            {% endif %}
+        </div>
+
+        <!-- Tab 2: Support Messages Inbox -->
+        <div id="tabContentMessages" class="admin-tab-content hidden space-y-4">
+            <h3 class="text-sm font-bold text-white">Support Messages & User Inquiries Inbox</h3>
+
+            {% if messages %}
+            <div class="space-y-3">
+                {% for m in messages %}
+                <div class="p-5 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-3 relative group">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800/80 pb-3">
+                        <div class="flex items-center gap-3">
+                            <span class="px-2.5 py-1 rounded-full text-[11px] font-semibold border {% if m.category == 'Bug Report' %}bg-rose-500/15 border-rose-500/30 text-rose-300{% elif m.category == 'Feature Request' %}bg-purple-500/15 border-purple-500/30 text-purple-300{% else %}bg-indigo-500/15 border-indigo-500/30 text-indigo-300{% endif %}">
+                                {{ m.category }}
+                            </span>
+                            <h4 class="text-sm font-bold text-white">{{ m.subject }}</h4>
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                            <span class="px-2.5 py-1 rounded-full text-[11px] font-semibold border {% if m.status == 'resolved' %}bg-emerald-500/15 border-emerald-500/30 text-emerald-300{% elif m.status == 'read' %}bg-cyan-500/15 border-cyan-500/30 text-cyan-300{% else %}bg-amber-500/15 border-amber-500/30 text-amber-300{% endif %}">
+                                {{ m.status|upper }}
+                            </span>
+
+                            <!-- Admin Actions -->
+                            <div class="flex items-center gap-1 ml-2">
+                                {% if m.status == 'unread' %}
+                                <a href="{{ url_for('admin_message_action', msg_id=m._id, action='read') }}" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-300 text-[11px] font-medium transition-all">
+                                    Mark Read
+                                </a>
+                                {% endif %}
+                                {% if m.status != 'resolved' %}
+                                <a href="{{ url_for('admin_message_action', msg_id=m._id, action='resolve') }}" class="px-2.5 py-1 rounded-lg bg-emerald-950/60 hover:bg-emerald-900/60 border border-emerald-500/30 text-emerald-300 text-[11px] font-medium transition-all">
+                                    Resolve
+                                </a>
+                                {% endif %}
+                                <a href="{{ url_for('admin_message_action', msg_id=m._id, action='delete') }}" onclick="return confirm('Delete this message?')" class="p-1.5 rounded-lg text-slate-500 hover:text-rose-400 transition-colors">
+                                    <i class="fas fa-trash-alt text-xs"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="text-xs text-slate-200 leading-relaxed whitespace-pre-line">{{ m.message }}</p>
+
+                    <div class="flex items-center justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-900">
+                        <span class="flex items-center gap-1.5">
+                            <i class="fas fa-user text-indigo-400"></i> From: <strong class="text-slate-200">{{ m.user_name }}</strong> ({{ m.user_email }})
+                        </span>
+                        <span class="font-mono">
+                            {% if m.timestamp and m.timestamp.strftime %}
+                                {{ m.timestamp.strftime('%Y-%m-%d %H:%M') }}
+                            {% else %}
+                                {{ m.timestamp }}
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-xs text-slate-500 text-center py-6">No support messages submitted by users.</p>
+            {% endif %}
+        </div>
+
+        <!-- Tab 3: User Feedbacks & Reviews -->
+        <div id="tabContentFeedbacks" class="admin-tab-content hidden space-y-4">
+            <h3 class="text-sm font-bold text-white">First-Model Training User Reviews & Star Ratings</h3>
+
+            {% if feedbacks %}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {% for f in feedbacks %}
+                <div class="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-1 text-amber-400 text-sm">
+                            {% for i in range(1, 6) %}
+                                {% if i <= f.rating %}
+                                <i class="fas fa-star"></i>
+                                {% else %}
+                                <i class="far fa-star text-slate-700"></i>
+                                {% endif %}
+                            {% endfor %}
+                            <span class="text-xs font-bold text-amber-300 ml-1.5">{{ f.rating }}.0 Stars</span>
+                        </div>
+
+                        <span class="px-2 py-0.5 rounded-full bg-slate-800 text-indigo-300 text-[10px] font-semibold border border-indigo-500/30">
+                            {{ f.category }}
+                        </span>
+                    </div>
+
+                    {% if f.comment %}
+                    <p class="text-xs text-slate-200 italic">"{{ f.comment }}"</p>
+                    {% else %}
+                    <p class="text-xs text-slate-500 italic">(No written comment provided)</p>
+                    {% endif %}
+
+                    <div class="flex items-center justify-between text-[11px] text-slate-400 pt-2 border-t border-slate-900">
+                        <span><strong class="text-slate-300">{{ f.user_name }}</strong> ({{ f.user_email }})</span>
+                        <span class="font-mono text-[10px]">
+                            {% if f.timestamp and f.timestamp.strftime %}
+                                {{ f.timestamp.strftime('%Y-%m-%d %H:%M') }}
+                            {% else %}
+                                {{ f.timestamp }}
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-xs text-slate-500 text-center py-6">No user feedback reviews submitted yet.</p>
+            {% endif %}
+        </div>
+
+        <!-- Tab 4: Global Activity Logs -->
+        <div id="tabContentActivities" class="admin-tab-content hidden space-y-4">
+            <h3 class="text-sm font-bold text-white">Global User Operations Timeline</h3>
+
+            {% if activities %}
+            <div class="overflow-x-auto custom-scrollbar">
+                <table class="w-full text-left text-xs text-slate-300">
+                    <thead class="bg-slate-800/60 text-slate-400 font-semibold uppercase tracking-wider border-b border-slate-800">
+                        <tr>
+                            <th class="px-4 py-3">Timestamp</th>
+                            <th class="px-4 py-3">User ID</th>
+                            <th class="px-4 py-3">Action Type</th>
+                            <th class="px-4 py-3">Details</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800/60">
+                        {% for a in activities %}
+                        <tr class="hover:bg-slate-800/40 transition-colors">
+                            <td class="px-4 py-3 font-mono text-slate-400 whitespace-nowrap">
+                                {% if a.timestamp and a.timestamp.strftime %}
+                                    {{ a.timestamp.strftime('%Y-%m-%d %H:%M') }}
+                                {% else %}
+                                    {{ a.timestamp }}
+                                {% endif %}
+                            </td>
+                            <td class="px-4 py-3 font-mono text-indigo-300 text-[11px]">
+                                {{ a.user_id[:8] }}...
+                            </td>
+                            <td class="px-4 py-3 capitalize">
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold border bg-slate-800 border-slate-700 text-slate-300">
+                                    {{ a.action_type }}
+                                </span>
+                            </td>
+                            <td class="px-4 py-3 text-slate-200 font-medium">
+                                {{ a.description }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-xs text-slate-500 text-center py-6">No global activity logs available.</p>
+            {% endif %}
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Admin Tab Switching JS -->
+<script>
+    function switchAdminTab(tabName) {
+        document.querySelectorAll('.admin-tab-content').forEach(el => el.classList.add('hidden'));
+        document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+            btn.classList.remove('bg-indigo-600', 'text-white', 'shadow-md');
+            btn.classList.add('text-slate-400', 'hover:text-white', 'hover:bg-slate-800');
+        });
+
+        const targetContent = document.getElementById('tabContent' + tabName.charAt(0).toUpperCase() + tabName.slice(1));
+        const targetBtn = document.getElementById('tabBtn' + tabName.charAt(0).toUpperCase() + tabName.slice(1));
+
+        if (targetContent) targetContent.classList.remove('hidden');
+        if (targetBtn) {
+            targetBtn.classList.remove('text-slate-400', 'hover:text-white', 'hover:bg-slate-800');
+            targetBtn.classList.add('bg-indigo-600', 'text-white', 'shadow-md');
+        }
+    }
+
+    // User Search Script
+    document.addEventListener("DOMContentLoaded", function() {
+        const searchInput = document.getElementById("userSearch");
+        if (searchInput) {
+            searchInput.addEventListener("keyup", function() {
+                const query = this.value.toLowerCase();
+                document.querySelectorAll(".user-row").forEach(row => {
+                    const text = row.innerText.toLowerCase();
+                    row.style.display = text.includes(query) ? "" : "none";
+                });
+            });
+        }
+    });
+</script>
+{% endblock %}

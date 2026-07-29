@@ -5,6 +5,7 @@ import uuid
 import shutil
 import traceback
 from datetime import datetime
+from functools import wraps
 import numpy as np
 import pandas as pd
 import bcrypt
@@ -33,10 +34,14 @@ os.makedirs(DATA_DIR, exist_ok=True)
 app = Flask(__name__)
 app.url_map.strict_slashes = False
 app.config["TEMPLATES_AUTO_RELOAD"] = True
-mongo_uri = os.getenv("MONGO_URI", "mongodb://localhost:27017/automl_app")
-if "<db_password>" in mongo_uri or "<password>" in mongo_uri:
-    print("WARNING: MONGO_URI in .env contains placeholder '<db_password>'. Falling back to local MongoDB mongodb://localhost:27017/automl_app")
-    mongo_uri = "mongodb://localhost:27017/automl_app"
+DEFAULT_MONGO_URI = "mongodb+srv://shoppro271_db_user:LOG81tNMvqpFeiCT@automl.5bfoz9h.mongodb.net/automl_app?retryWrites=true&w=majority"
+ADMIN_EMAIL = os.getenv("ADMIN_EMAIL").strip().lower()
+ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD").strip()
+
+mongo_uri = os.getenv("MONGO_URI")
+if not mongo_uri or "<db_password>" in mongo_uri or "<password>" in mongo_uri or "localhost" in mongo_uri:
+    print(f"WARNING: MONGO_URI not configured or localhost. Using production Atlas MongoDB connection.")
+    mongo_uri = DEFAULT_MONGO_URI
 elif mongo_uri.endswith("/") and not mongo_uri.startswith("mongodb+srv://"):
     mongo_uri += "automl_app"
 
@@ -53,8 +58,8 @@ try:
     if hasattr(mongo, "cx") and mongo.cx is not None:
         mongo.cx.admin.command('ping')
 except Exception as mongo_err:
-    print(f"WARNING: MongoDB connection failed with provided MONGO_URI ({mongo_err}). Falling back to local MongoDB mongodb://localhost:27017/automl_app")
-    app.config["MONGO_URI"] = "mongodb://localhost:27017/automl_app"
+    print(f"WARNING: MongoDB connection failed ({mongo_err}). Falling back to Atlas MongoDB {DEFAULT_MONGO_URI}")
+    app.config["MONGO_URI"] = DEFAULT_MONGO_URI
     mongo = PyMongo(app)
     db = mongo.db
     if db is None and hasattr(mongo, "cx") and mongo.cx is not None:
@@ -85,6 +90,17 @@ class User(UserMixin):
         self.name = user_data["name"]
         self.provider = user_data.get("provider", "local")
         self.picture = user_data.get("picture")
+        self.is_admin = user_data.get("is_admin", False) or (self.email.lower() == ADMIN_EMAIL)
+        self.has_submitted_feedback = user_data.get("has_submitted_feedback", False)
+
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_authenticated or not getattr(current_user, "is_admin", False):
+            flash("Admin privilege required to access this section.", "danger")
+            return redirect(url_for("index"))
+        return f(*args, **kwargs)
+    return decorated_function
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -370,6 +386,28 @@ def login():
             flash("Please fill all fields", "danger")
             return redirect(url_for("login"))
         
+        # Special check for Admin Credentials
+        if email.lower() == ADMIN_EMAIL and password == ADMIN_PASSWORD:
+            admin_user = db.users.find_one({"email": ADMIN_EMAIL})
+            if not admin_user:
+                hashed = bcrypt.hashpw(ADMIN_PASSWORD.encode('utf-8'), bcrypt.gensalt())
+                admin_id = str(uuid.uuid4())
+                db.users.insert_one({
+                    "_id": admin_id,
+                    "email": ADMIN_EMAIL,
+                    "password": hashed,
+                    "name": "Platform Admin",
+                    "provider": "local",
+                    "is_admin": True,
+                    "created_at": datetime.utcnow()
+                })
+                admin_user = db.users.find_one({"_id": admin_id})
+            
+            user = User(admin_user)
+            login_user(user)
+            flash("Welcome to the Admin Control Panel!", "success")
+            return redirect(url_for("admin_dashboard"))
+
         user_data = db.users.find_one({"email": email.lower(), "provider": "local"})
         if not user_data:
             flash("Invalid email or password.", "danger")
@@ -379,6 +417,8 @@ def login():
             user = User(user_data)
             login_user(user)
             flash("Logged in successfully!", "success")
+            if user.is_admin:
+                return redirect(url_for("admin_dashboard"))
             return redirect(url_for("index"))
         else:
             flash("Invalid email or password.", "danger")
@@ -1026,6 +1066,8 @@ def results():
     fi = mu.get_feature_importance(best_obj, feature_cols) if best_obj is not None else None
     charts["feature_importance"] = vu.feature_importance_fig(fi).to_json()
 
+    show_feedback_modal = not getattr(current_user, "has_submitted_feedback", False)
+
     return render_template(
         "results.html",
         leaderboard=leaderboard,
@@ -1035,7 +1077,8 @@ def results():
         charts=charts,
         state=state,
         overall_score=overall_score,
-        current_project=project
+        current_project=project,
+        show_feedback_modal=show_feedback_modal
     )
 
 @app.route("/predict", methods=["GET", "POST"])
@@ -1448,6 +1491,140 @@ def analytics():
         charts=charts,
         current_project=project
     )
+
+@app.route("/api/feedback", methods=["POST"])
+@login_required
+def submit_feedback():
+    try:
+        data = request.get_json(silent=True) or request.form.to_dict()
+        rating = int(data.get("rating", 5))
+        category = data.get("category", "General Experience")
+        comment = data.get("comment", "").strip()
+        project_id = session.get("project_id")
+
+        feedback_doc = {
+            "user_id": current_user.id,
+            "user_name": current_user.name,
+            "user_email": current_user.email,
+            "rating": rating,
+            "category": category,
+            "comment": comment,
+            "project_id": project_id,
+            "timestamp": datetime.utcnow()
+        }
+        db.feedbacks.insert_one(feedback_doc)
+        db.users.update_one({"_id": current_user.id}, {"$set": {"has_submitted_feedback": True}})
+        log_user_activity(current_user.id, project_id, "feedback", f"Submitted {rating}-star model training feedback", metadata={"rating": rating, "category": category})
+
+        return jsonify({"success": True, "message": "Thank you for your valuable feedback!"})
+    except Exception as e:
+        return jsonify({"error": f"Failed to record feedback: {str(e)}"}), 500
+
+@app.route("/support", methods=["GET", "POST"])
+@login_required
+def support():
+    project = get_current_project()
+    if request.method == "POST":
+        subject = request.form.get("subject", "").strip()
+        category = request.form.get("category", "General Question")
+        message = request.form.get("message", "").strip()
+
+        if not subject or not message:
+            flash("Please enter both subject and message details.", "warning")
+            return redirect(url_for("support"))
+
+        msg_doc = {
+            "user_id": current_user.id,
+            "user_name": current_user.name,
+            "user_email": current_user.email,
+            "subject": subject,
+            "category": category,
+            "message": message,
+            "status": "unread",
+            "timestamp": datetime.utcnow()
+        }
+        db.messages.insert_one(msg_doc)
+        log_user_activity(current_user.id, session.get("project_id"), "support", f"Sent support ticket to admin: '{subject}'")
+
+        flash("Your message has been sent to the Admin! We will review it shortly.", "success")
+        return redirect(url_for("support"))
+
+    user_messages = list(db.messages.find({"user_id": current_user.id}).sort("timestamp", -1))
+    return render_template("support.html", messages=user_messages, current_project=project)
+
+@app.route("/admin")
+@login_required
+@admin_required
+def admin_dashboard():
+    all_users = list(db.users.find().sort("created_at", -1))
+    all_projects = list(db.projects.find().sort("updated_at", -1))
+    all_feedbacks = list(db.feedbacks.find().sort("timestamp", -1))
+    all_messages = list(db.messages.find().sort("timestamp", -1))
+    all_activities = list(db.activities.find().sort("timestamp", -1).limit(100))
+
+    user_stats = []
+    total_models_all = 0
+    for u in all_users:
+        uid = str(u["_id"])
+        u_projects = [p for p in all_projects if p.get("user_id") == uid]
+        models_count = 0
+        for p in u_projects:
+            pdir = os.path.join(DATA_DIR, uid, p["_id"])
+            p_state = du.load_state(pdir) if os.path.exists(pdir) else p.get("state", {})
+            models_count += len(p_state.get("leaderboard", []))
+        
+        total_models_all += models_count
+        user_stats.append({
+            "user_id": uid,
+            "name": u.get("name", "User"),
+            "email": u.get("email", ""),
+            "provider": u.get("provider", "local"),
+            "created_at": u.get("created_at"),
+            "projects_count": len(u_projects),
+            "models_count": models_count
+        })
+
+    unread_messages = sum(1 for m in all_messages if m.get("status") == "unread")
+
+    kpis = {
+        "total_users": len(all_users),
+        "total_projects": len(all_projects),
+        "total_models": total_models_all,
+        "total_feedbacks": len(all_feedbacks),
+        "unread_messages": unread_messages
+    }
+
+    return render_template(
+        "admin.html",
+        kpis=kpis,
+        users=user_stats,
+        feedbacks=all_feedbacks,
+        messages=all_messages,
+        activities=all_activities,
+        current_project=get_current_project()
+    )
+
+@app.route("/admin/message/<msg_id>/<action>", methods=["POST", "GET"])
+@login_required
+@admin_required
+def admin_message_action(msg_id, action):
+    from bson.objectid import ObjectId
+    try:
+        query = {"_id": ObjectId(msg_id)} if len(str(msg_id)) == 24 else {"_id": msg_id}
+    except Exception:
+        query = {"_id": msg_id}
+
+    if action == "read":
+        db.messages.update_one(query, {"$set": {"status": "read"}})
+        flash("Support message marked as read.", "success")
+    elif action == "resolve":
+        db.messages.update_one(query, {"$set": {"status": "resolved"}})
+        flash("Support message marked as resolved.", "success")
+    elif action == "delete":
+        db.messages.delete_one(query)
+        flash("Support message deleted.", "info")
+
+    return redirect(url_for("admin_dashboard"))
 
 @app.route("/reset")
 @login_required
