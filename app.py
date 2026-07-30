@@ -485,10 +485,15 @@ def logout():
     flash("You have been logged out successfully.", "info")
     return redirect(url_for("login"))
 
+@app.route("/landing", methods=["GET"])
+def landing():
+    return render_template("landing.html")
+
 # Dynamic SaaS Dashboard & Project Routes
 @app.route("/", methods=["GET"])
-@login_required
 def index():
+    if not current_user.is_authenticated:
+        return render_template("landing.html")
     projects = get_user_projects(current_user.id)
     current_project = get_current_project()
 
