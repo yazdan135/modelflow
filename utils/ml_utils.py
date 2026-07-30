@@ -135,7 +135,7 @@ def evaluate_regression(y_true, y_pred):
     }
 
 
-def run_automl(X_train, X_test, y_train, y_test, task, model_names=None):
+def run_automl(X_train, X_test, y_train, y_test, task, model_names=None, progress_callback=None):
     """Train selected (or all) models, return leaderboard + fitted models + curves."""
     zoo = get_model_zoo(task)
     if model_names:
@@ -144,15 +144,40 @@ def run_automl(X_train, X_test, y_train, y_test, task, model_names=None):
     leaderboard = []
     fitted = {}
     extras = {}
+    total_models = len(zoo)
 
-    for name, model in zoo.items():
+    for idx, (name, model) in enumerate(zoo.items(), 1):
+        if progress_callback:
+            progress_callback({
+                "stage": "train_start",
+                "model": name,
+                "index": idx,
+                "total": total_models
+            })
         start = time.time()
         try:
             model.fit(X_train, y_train)
         except Exception as e:
             leaderboard.append({"Model": name, "Error": str(e)})
+            if progress_callback:
+                progress_callback({
+                    "stage": "train_error",
+                    "model": name,
+                    "index": idx,
+                    "total": total_models,
+                    "error": str(e)
+                })
             continue
         elapsed = round(time.time() - start, 3)
+
+        if progress_callback:
+            progress_callback({
+                "stage": "evaluating",
+                "model": name,
+                "index": idx,
+                "total": total_models
+            })
+
         y_pred = model.predict(X_test)
 
         row = {"Model": name, "Training_Time_sec": elapsed}
@@ -179,6 +204,17 @@ def run_automl(X_train, X_test, y_train, y_test, task, model_names=None):
         leaderboard.append(row)
         fitted[name] = model
 
+        if progress_callback:
+            metric_str = f"Accuracy: {metrics.get('Accuracy') * 100:.1f}%" if (task == "classification" and metrics.get('Accuracy') is not None) else (f"R²: {metrics.get('R2')}" if metrics.get('R2') is not None else "Complete")
+            progress_callback({
+                "stage": "train_complete",
+                "model": name,
+                "index": idx,
+                "total": total_models,
+                "metrics": metrics,
+                "summary": metric_str
+            })
+
     lb_df = pd.DataFrame(leaderboard)
     if task == "classification" and "Accuracy" in lb_df.columns:
         lb_df = lb_df.sort_values("Accuracy", ascending=False)
@@ -187,6 +223,98 @@ def run_automl(X_train, X_test, y_train, y_test, task, model_names=None):
 
     best_model_name = lb_df.iloc[0]["Model"] if len(lb_df) else None
     return lb_df, fitted, extras, best_model_name
+
+
+def run_automl_stream(X_train, X_test, y_train, y_test, task, model_names=None):
+    """Generator yielding step events during training, finishing with final result dict."""
+    zoo = get_model_zoo(task)
+    if model_names:
+        zoo = {k: v for k, v in zoo.items() if k in model_names}
+
+    leaderboard = []
+    fitted = {}
+    extras = {}
+    total_models = len(zoo)
+
+    for idx, (name, model) in enumerate(zoo.items(), 1):
+        yield {
+            "stage": "train_start",
+            "model": name,
+            "index": idx,
+            "total": total_models
+        }
+        start = time.time()
+        try:
+            model.fit(X_train, y_train)
+        except Exception as e:
+            leaderboard.append({"Model": name, "Error": str(e)})
+            yield {
+                "stage": "train_error",
+                "model": name,
+                "index": idx,
+                "total": total_models,
+                "error": str(e)
+            }
+            continue
+        elapsed = round(time.time() - start, 3)
+
+        yield {
+            "stage": "evaluating",
+            "model": name,
+            "index": idx,
+            "total": total_models
+        }
+
+        y_pred = model.predict(X_test)
+        row = {"Model": name, "Training_Time_sec": elapsed}
+
+        if task == "classification":
+            proba = _safe_proba(model, X_test)
+            metrics = evaluate_classification(y_test, y_pred, proba)
+            row.update(metrics)
+            cm = confusion_matrix(y_test, y_pred).tolist()
+            extras[name] = {"confusion_matrix": cm}
+            if proba is not None and len(np.unique(y_test)) == 2:
+                fpr, tpr, _ = roc_curve(y_test, proba)
+                prec, rec, _ = precision_recall_curve(y_test, proba)
+                extras[name]["roc"] = {"fpr": fpr.tolist(), "tpr": tpr.tolist()}
+                extras[name]["pr"] = {"precision": prec.tolist(), "recall": rec.tolist()}
+        else:
+            metrics = evaluate_regression(y_test, y_pred)
+            row.update(metrics)
+            extras[name] = {
+                "y_true": np.asarray(y_test).tolist(),
+                "y_pred": np.asarray(y_pred).tolist(),
+                "residuals": (np.asarray(y_test) - np.asarray(y_pred)).tolist(),
+            }
+
+        leaderboard.append(row)
+        fitted[name] = model
+
+        metric_str = f"Accuracy: {metrics.get('Accuracy') * 100:.1f}%" if (task == "classification" and metrics.get('Accuracy') is not None) else (f"R²: {metrics.get('R2')}" if metrics.get('R2') is not None else "Complete")
+        yield {
+            "stage": "train_complete",
+            "model": name,
+            "index": idx,
+            "total": total_models,
+            "metrics": metrics,
+            "summary": metric_str
+        }
+
+    lb_df = pd.DataFrame(leaderboard)
+    if task == "classification" and "Accuracy" in lb_df.columns:
+        lb_df = lb_df.sort_values("Accuracy", ascending=False)
+    elif "R2" in lb_df.columns:
+        lb_df = lb_df.sort_values("R2", ascending=False)
+
+    best_model_name = lb_df.iloc[0]["Model"] if len(lb_df) else None
+    yield {
+        "stage": "result",
+        "lb_df": lb_df,
+        "fitted": fitted,
+        "extras": extras,
+        "best_model_name": best_model_name
+    }
 
 
 def get_feature_importance(model, feature_names):

@@ -11,7 +11,7 @@ import pandas as pd
 import bcrypt
 from flask import (
     Flask, render_template, request, redirect, url_for, session,
-    send_file, jsonify, flash
+    send_file, jsonify, flash, Response, stream_with_context
 )
 from flask_pymongo import PyMongo
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
@@ -1000,6 +1000,141 @@ def train():
     zoo_reg = list(mu.get_model_zoo("regression").keys())
     return render_template("train.html", columns=list(df.columns), ai=ai,
                             zoo_class=zoo_class, zoo_reg=zoo_reg, state=state, current_project=project)
+
+@app.route("/train_stream", methods=["POST"])
+@login_required
+def train_stream():
+    project, df = require_project()
+    if not project or df is None:
+        return jsonify({"error": "No active project or dataset loaded."}), 400
+
+    project_dir = get_project_dir(current_user.id, project["_id"])
+    state = du.load_state(project_dir)
+
+    target = request.form.get("target")
+    split = float(request.form.get("split", 0.2))
+    shuffle = request.form.get("shuffle", "on") == "on"
+    stratify_flag = request.form.get("stratify", "off") == "on"
+    model_choice = request.form.getlist("models")
+    train_all = request.form.get("train_all") == "on"
+
+    def generate_events():
+        def make_sse(pct, msg, model_name="", log_entry=""):
+            payload = {
+                "percent": int(pct),
+                "message": msg,
+                "model": model_name,
+                "log": log_entry
+            }
+            return f"data: {json.dumps(payload)}\n\n"
+
+        yield make_sse(5, "Initializing AutoML dataset pipeline...", log_entry="[INIT] Dataset loaded and objective verified.")
+
+        work_df = df.copy()
+        task = mu.detect_task_type(work_df[target])
+
+        yield make_sse(8, "Encoding categorical features & handling missing values...", log_entry=f"[PREPROCESS] Task auto-detected as '{task.upper()}'. Encoding columns...")
+
+        feature_df = work_df.drop(columns=[target])
+        cat_cols = du.column_types(feature_df)["categorical"] + du.column_types(feature_df)["datetime"]
+        for c in cat_cols:
+            feature_df = du.encode_column(feature_df, c, "onehot" if feature_df[c].nunique() <= 15 else "label")
+
+        feature_df = feature_df.select_dtypes(include=[np.number, "bool"])
+        feature_df = feature_df.fillna(feature_df.median(numeric_only=True))
+
+        y = work_df[target]
+        if task == "classification" and not pd.api.types.is_numeric_dtype(y):
+            from sklearn.preprocessing import LabelEncoder
+            le = LabelEncoder()
+            y = pd.Series(le.fit_transform(y.astype(str)), index=y.index)
+            class_labels = le.classes_.tolist()
+        else:
+            class_labels = sorted(y.dropna().unique().tolist()) if task == "classification" else None
+
+        combined = pd.concat([feature_df, y.rename("__target__")], axis=1).dropna()
+        feature_df = combined.drop(columns="__target__")
+        y = combined["__target__"]
+
+        yield make_sse(15, f"Splitting data into Training & Testing sets ({int((1-split)*100)}% Train / {int(split*100)}% Test)...", log_entry="[DATA] Data split completed.")
+
+        X_train, X_test, y_train, y_test = mu.train_test_split_data(
+            feature_df, y, test_size=split, shuffle=shuffle,
+            stratify_flag=stratify_flag, task=task
+        )
+
+        model_names = None if train_all else (model_choice or None)
+        lb_df = None
+        fitted = {}
+        extras = {}
+        best_name = None
+
+        for evt in mu.run_automl_stream(X_train, X_test, y_train, y_test, task, model_names):
+            if evt.get("stage") == "result":
+                lb_df = evt["lb_df"]
+                fitted = evt["fitted"]
+                extras = evt["extras"]
+                best_name = evt["best_model_name"]
+            else:
+                m_name = evt.get("model", "")
+                idx = evt.get("index", 1)
+                tot = evt.get("total", 1)
+                stage = evt.get("stage")
+
+                pct_start = 15 + int(((idx - 1) / tot) * 70)
+                pct_mid = 15 + int(((idx - 0.5) / tot) * 70)
+                pct_end = 15 + int((idx / tot) * 70)
+
+                if stage == "train_start":
+                    yield make_sse(pct_start, f"Training Model [{idx}/{tot}]: {m_name}...", model_name=m_name, log_entry=f"⚡ [{idx}/{tot}] Fitting model '{m_name}' on training split...")
+                elif stage == "evaluating":
+                    yield make_sse(pct_mid, f"Evaluating accuracy & cross-validation metrics for {m_name}...", model_name=m_name, log_entry=f"📊 Computing performance metrics for '{m_name}'...")
+                elif stage == "train_complete":
+                    summary = evt.get("summary", "")
+                    yield make_sse(pct_end, f"Completed {m_name}! {summary}", model_name=m_name, log_entry=f"✔ [{idx}/{tot}] '{m_name}' trained. Score: {summary}")
+                elif stage == "train_error":
+                    yield make_sse(pct_end, f"Error in {m_name}", model_name=m_name, log_entry=f"⚠️ [{idx}/{tot}] Error training '{m_name}': {evt.get('error')}")
+
+        yield make_sse(90, "Evaluating AutoML leaderboard & selecting optimal model...", log_entry=f"🏆 Winner Model selected: '{best_name}'")
+
+        du.save_df(project_dir, feature_df, name="feature_df.pkl")
+        du.save_df(project_dir, X_test, name="X_test.pkl")
+        du.save_df(project_dir, y_test, name="y_test.pkl")
+
+        import pickle
+        with open(os.path.join(project_dir, "fitted_models.pkl"), "wb") as f:
+            pickle.dump(fitted, f)
+        with open(os.path.join(project_dir, "extras.pkl"), "wb") as f:
+            pickle.dump(extras, f)
+
+        state["target"] = target
+        state["task"] = task
+        state["class_labels"] = class_labels
+        state["feature_columns"] = feature_df.columns.tolist()
+        state["leaderboard"] = lb_df.to_dict(orient="records") if lb_df is not None else []
+        state["best_model"] = best_name
+        du.save_state(project_dir, state)
+        update_project_state(project["_id"], state)
+
+        if best_name and best_name in fitted:
+            best_model_obj = fitted[best_name]
+            model_path = os.path.join(project_dir, "best_model.pkl")
+            mu.save_model_bundle(model_path, best_model_obj, feature_df.columns.tolist(), target, task)
+
+        log_user_activity(current_user.id, project["_id"], "training", f"Trained AutoML pipeline. Top model: '{best_name}'", metadata={"best_model": best_name, "task": task})
+
+        yield make_sse(98, "Saving model pipeline & preparing results...", log_entry="💾 Saved fitted models & artifacts to workspace.")
+
+        final_payload = {
+            "percent": 100,
+            "message": f"Training Complete! Top Model: {best_name}",
+            "model": best_name,
+            "log": "🚀 Redirecting to results dashboard...",
+            "redirect": url_for("results")
+        }
+        yield f"data: {json.dumps(final_payload)}\n\n"
+
+    return Response(stream_with_context(generate_events()), mimetype="text/event-stream")
 
 @app.route("/results")
 @login_required
