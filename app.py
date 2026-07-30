@@ -35,15 +35,13 @@ app = Flask(__name__)
 app.url_map.strict_slashes = False
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 
-ATLAS_MONGO_URI = "mongodb+srv://shoppro271_db_user:LOG81tNMvqpFeiCT@automl.5bfoz9h.mongodb.net/automl_app?retryWrites=true&w=majority&tls=true&tlsAllowInvalidCertificates=true"
+ATLAS_MONGO_URI = os.getenv("MONGO_URI") or "mongodb+srv://muhammadyazdan375_db_user:apd0QkBc5zOcxoog@modelflow.vveha5i.mongodb.net/modelflow?retryWrites=true&w=majority&tls=true&tlsAllowInvalidCertificates=true"
 ADMIN_EMAIL = (os.getenv("ADMIN_EMAIL") or "admin@yazdan.com").strip().lower()
 ADMIN_PASSWORD = (os.getenv("ADMIN_PASSWORD") or "yazdan243").strip()
 
 mongo_uri = os.getenv("MONGO_URI")
 if not mongo_uri or "<db_password>" in mongo_uri or "<password>" in mongo_uri or "localhost" in mongo_uri:
     mongo_uri = ATLAS_MONGO_URI
-elif mongo_uri.endswith("/") and not mongo_uri.startswith("mongodb+srv://"):
-    mongo_uri += "automl_app"
 
 if "tls=" not in mongo_uri and "ssl=" not in mongo_uri and "mongodb+srv://" in mongo_uri:
     sep = "&" if "?" in mongo_uri else "?"
@@ -58,16 +56,22 @@ try:
     mongo = PyMongo(app)
     db = mongo.db
     if db is None and hasattr(mongo, "cx") and mongo.cx is not None:
-        db = mongo.cx.get_database("automl_app")
+        try:
+            db = mongo.cx.get_default_database()
+        except Exception:
+            db = mongo.cx.get_database("modelflow")
     if hasattr(mongo, "cx") and mongo.cx is not None:
         mongo.cx.admin.command('ping')
 except Exception as mongo_err:
-    print(f"WARNING: Initial MongoDB connection failed ({mongo_err}). Connecting with Atlas TLS configuration...")
+    print(f"WARNING: Initial MongoDB connection failed ({mongo_err}). Reconnecting...")
     app.config["MONGO_URI"] = ATLAS_MONGO_URI
     mongo = PyMongo(app)
     db = mongo.db
     if db is None and hasattr(mongo, "cx") and mongo.cx is not None:
-        db = mongo.cx.get_database("automl_app")
+        try:
+            db = mongo.cx.get_default_database()
+        except Exception:
+            db = mongo.cx.get_database("modelflow")
 
 # Initialize Flask-Login
 login_manager = LoginManager()
@@ -117,6 +121,12 @@ def get_user_dir(user_id):
     user_dir = os.path.join(DATA_DIR, user_id)
     os.makedirs(user_dir, exist_ok=True)
     return user_dir
+
+def get_claimed_user_count():
+    try:
+        return db.users.count_documents({})
+    except Exception:
+        return 0
 
 def get_project_dir(user_id, project_id):
     project_dir = os.path.join(get_user_dir(user_id), project_id)
@@ -487,13 +497,17 @@ def logout():
 
 @app.route("/landing", methods=["GET"])
 def landing():
-    return render_template("landing.html")
+    return render_template("landing.html", user_count=get_claimed_user_count())
+
+@app.route("/api/user-count", methods=["GET"])
+def api_user_count():
+    return jsonify({"claimed": get_claimed_user_count(), "total": 100})
 
 # Dynamic SaaS Dashboard & Project Routes
 @app.route("/", methods=["GET"])
 def index():
     if not current_user.is_authenticated:
-        return render_template("landing.html")
+        return render_template("landing.html", user_count=get_claimed_user_count())
     projects = get_user_projects(current_user.id)
     current_project = get_current_project()
 
@@ -1786,7 +1800,7 @@ if __name__ == "__main__":
     sys.stderr.flush()
     
     try:
-        app.run(debug=False, host="0.0.0.0", port=5050)
+        app.run(debug=True, host="0.0.0.0", port=5050)
     except Exception as e:
         print(f"ERROR in app.run(): {str(e)}", file=sys.stderr)
         import traceback

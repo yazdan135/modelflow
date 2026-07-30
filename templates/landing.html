@@ -74,8 +74,8 @@
     <style>
         /* Custom Glassmorphic Utilities & Smooth Scrollbar */
         html, body {
-            max-width: 100vw;
-            overflow-x: hidden;
+            max-width: 100%;
+            overflow-x: clip;
         }
         img, svg, video {
             max-width: 100%;
@@ -154,7 +154,7 @@
         }
     </style>
 </head>
-<body class="bg-[#07090E] text-slate-200 antialiased font-sans selection:bg-indigo-500 selection:text-white overflow-x-hidden">
+<body class="bg-[#07090E] text-slate-200 antialiased font-sans selection:bg-indigo-500 selection:text-white">
 
     <!-- Ambient Glowing Light Orbs -->
     <div class="fixed top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-gradient-to-tr from-indigo-600/20 via-purple-600/20 to-pink-500/10 rounded-full blur-[140px] pointer-events-none -z-10 animate-pulse-slow"></div>
@@ -167,7 +167,7 @@
     <!-- ========================================== -->
     <!-- 1. STICKY HEADER & NAVIGATION -->
     <!-- ========================================== -->
-    <header class="sticky top-0 z-50 backdrop-blur-xl bg-[#07090E]/80 border-b border-white/10 transition-all duration-300">
+    <header class="sticky top-0 z-50 backdrop-blur-xl bg-[#07090E]/90 border-b border-white/10 shadow-lg shadow-black/40 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
             <!-- Brand Logo -->
             <a href="#" class="flex items-center gap-3 group">
@@ -179,7 +179,7 @@
                 <div class="flex flex-col">
                     <span class="text-xl font-extrabold tracking-tight text-white flex items-center gap-2">
                         ModelFlow
-                        <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 font-semibold">v2.4</span>
+                        <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 font-semibold">Beta</span>
                     </span>
                     <span class="text-[10px] font-mono text-slate-400 tracking-wider">AUTOML PLATFORM</span>
                 </div>
@@ -239,14 +239,25 @@
                 
                 <!-- Left Content -->
                 <div class="lg:col-span-7 space-y-8 text-center lg:text-left">
-                    <!-- Feature Announcement Pill -->
-                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-panel border-indigo-500/30 text-xs text-indigo-300 font-medium shadow-xl hover:border-indigo-400/50 transition-all cursor-pointer">
-                        <span class="flex h-2 w-2 relative">
-                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-                            <span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
-                        </span>
-                        <span class="font-bold text-white">ModelFlow v2.4</span> — One-Click AutoML & Instant API Deployment
-                        <i class="fas fa-chevron-right text-[10px] text-indigo-400"></i>
+                    <!-- Feature Announcement & Free Offer Badges -->
+                    <div class="flex flex-wrap items-center justify-center lg:justify-start gap-3">
+                        <!-- <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-panel border-indigo-500/30 text-xs text-indigo-300 font-medium shadow-xl hover:border-indigo-400/50 transition-all cursor-pointer">
+                            <span class="flex h-2 w-2 relative">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
+                            </span>
+                            <span class="font-bold text-white">ModelFlow Beta</span> — One-Click AutoML & Instant API Deployment
+                            <i class="fas fa-chevron-right text-[10px] text-indigo-400"></i>
+                        </div> -->
+
+                        <div class="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-amber-500/20 via-indigo-500/20 to-purple-500/20 border border-amber-500/40 text-amber-300 text-xs font-semibold shadow-lg shadow-amber-500/10 backdrop-blur-md">
+                            <i class="fas fa-crown text-amber-400 text-xs"></i>
+                            <span>Pro Developer is free for first 100 users</span>
+                            <span class="ml-1 px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-200 border border-amber-400/30 text-[11px] font-mono font-bold flex items-center gap-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                                <span class="claimed-user-count">{{ user_count if user_count is defined else 3 }}</span>/100
+                            </span>
+                        </div>
                     </div>
 
                     <!-- Main Headline -->
@@ -1322,6 +1333,15 @@ prediction = client.predict(
                         <div class="text-4xl font-extrabold text-white font-mono">
                             <span class="price-val">$29</span><span class="text-sm font-sans font-normal text-slate-400">/month</span>
                         </div>
+                        <div class="inline-flex items-center justify-between gap-2 px-3 py-1 rounded-lg bg-amber-500/20 border border-amber-500/40 text-amber-300 text-xs font-semibold">
+                            <div class="flex items-center gap-1.5">
+                                <i class="fas fa-crown text-amber-400 text-xs"></i>
+                                <span>FREE for first 100 users</span>
+                            </div>
+                            <span class="px-2 py-0.5 rounded bg-amber-400/20 text-amber-200 border border-amber-400/30 text-[11px] font-mono font-bold">
+                                <span class="claimed-user-count">{{ user_count if user_count is defined else 3 }}</span>/100
+                            </span>
+                        </div>
                         <p class="text-xs text-slate-400">Ideal for data scientists, engineers, and growing SaaS startups.</p>
                         <hr class="border-slate-800">
                         <ul class="space-y-3 text-xs text-slate-200 font-medium">
@@ -1642,6 +1662,18 @@ prediction = client.predict(
     <!-- ========================================== -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Realtime user count fetcher
+            fetch('/api/user-count')
+                .then(res => res.json())
+                .then(data => {
+                    if (data && typeof data.claimed === 'number') {
+                        document.querySelectorAll('.claimed-user-count').forEach(el => {
+                            el.textContent = data.claimed;
+                        });
+                    }
+                })
+                .catch(() => {});
+
             // Mobile Menu Toggle & Auto Close
             const mobileBtn = document.getElementById('mobileMenuBtn');
             const mobileMenu = document.getElementById('mobileMenu');
