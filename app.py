@@ -4,6 +4,7 @@ import json
 import uuid
 import shutil
 import traceback
+import time
 from datetime import datetime
 from functools import wraps
 import numpy as np
@@ -1369,6 +1370,7 @@ def download(what):
 
 @app.route("/api/v1/predict", methods=["POST"])
 def api_v1_predict():
+    start_time = time.time()
     try:
         # Extract API key from headers or request payload
         api_key = (
@@ -1458,9 +1460,73 @@ def api_v1_predict():
             except Exception:
                 probabilities = None
 
+        # 1. Execution Latency (execution_time_ms)
+        execution_time_ms = round((time.time() - start_time) * 1000, 2)
+
+        # 2. Required Feature Columns (expected_features)
+        expected_features = feature_cols
+
+        # 3. Confidence Score & Percentage (confidence_percentage)
+        confidence_score = None
+        confidence_percentage = None
+        if task == "classification" and probabilities:
+            try:
+                max_prob = max(probabilities.values())
+                confidence_score = round(float(max_prob), 4)
+                confidence_percentage = f"{round(max_prob * 100, 2)}%"
+            except Exception:
+                pass
+
+        # 4. Human-Readable Label (predicted_label)
+        predicted_label = str(prediction_val)
+        if task == "classification":
+            labels = state.get("class_labels")
+            if labels and isinstance(prediction_val, (int, float, np.number)) and 0 <= int(prediction_val) < len(labels):
+                lbl_text = str(labels[int(prediction_val)])
+                if f"class {prediction_val}" in lbl_text.lower():
+                    predicted_label = lbl_text
+                else:
+                    predicted_label = f"Class {prediction_val}: {lbl_text}"
+            elif labels and str(prediction_val) in [str(k) for k in labels]:
+                predicted_label = f"Class {prediction_val}"
+            else:
+                predicted_label = f"Class {prediction_val}"
+        else:
+            predicted_label = f"Predicted Value: {prediction_val}"
+
+        # 5. Model Performance Metrics (model_accuracy)
+        model_accuracy = None
+        leaderboard = state.get("leaderboard", [])
+        best_model_name = state.get("best_model", "Best Model")
+        best_row = next((r for r in leaderboard if r.get("Model") == best_model_name), (leaderboard[0] if leaderboard else {}))
+
+        if task == "classification":
+            acc = best_row.get("Accuracy")
+            f1 = best_row.get("F1")
+            if acc is not None and acc != "—":
+                val = float(acc)
+                model_accuracy = f"{round(val * 100 if val <= 1.0 else val, 2)}%"
+            elif f1 is not None and f1 != "—":
+                val = float(f1)
+                model_accuracy = f"F1: {round(val * 100 if val <= 1.0 else val, 2)}%"
+            else:
+                model_accuracy = "N/A"
+        else:
+            r2 = best_row.get("R2")
+            if r2 is not None and r2 != "—":
+                model_accuracy = f"R²: {round(float(r2), 4)}"
+            else:
+                model_accuracy = "N/A"
+
         return jsonify({
             "success": True,
             "prediction": prediction_val,
+            "predicted_label": predicted_label,
+            "confidence_percentage": confidence_percentage,
+            "confidence_score": confidence_score,
+            "expected_features": expected_features,
+            "model_accuracy": model_accuracy,
+            "execution_time_ms": execution_time_ms,
             "probabilities": probabilities,
             "task": task,
             "model_name": state.get("best_model", "Best Model"),
