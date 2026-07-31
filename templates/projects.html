@@ -11,8 +11,7 @@
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
         <div>
             <h2 class="text-2xl font-bold text-white tracking-tight flex items-center gap-2">
-                Welcome back, {{ current_user.first_name }} 👋
-
+                Welcome, {{ current_user.first_name }} 👋
             </h2>
             <p class="text-slate-400 text-sm mt-1 flex items-center gap-2">
                 <span>Active Project: <strong class="text-indigo-300 font-semibold">{{ current_project.name if current_project else 'No project active' }}</strong></span>
