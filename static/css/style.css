@@ -1,6 +1,10 @@
-/* === ModelFlow AI Platform Enterprise SaaS Design Tokens === */
+html, body {
+  margin: 0 !important;
+  padding: 0 !important;
+}
 
 :root {
+
   --bg-dark: #0B1220;
   --surface-dark: #0F172A;
   --surface-card: rgba(15, 23, 42, 0.85);

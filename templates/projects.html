@@ -11,7 +11,8 @@
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
         <div>
             <h2 class="text-2xl font-bold text-white tracking-tight flex items-center gap-2">
-                Welcome back, {{ current_user.name }} 👋
+                Welcome back, {{ current_user.first_name }} 👋
+
             </h2>
             <p class="text-slate-400 text-sm mt-1 flex items-center gap-2">
                 <span>Active Project: <strong class="text-indigo-300 font-semibold">{{ current_project.name if current_project else 'No project active' }}</strong></span>
@@ -557,7 +558,8 @@
         <form id="renameProjectForm" action="" method="POST" class="space-y-4">
             <div>
                 <label for="renameInput" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">New Project Name</label>
-                <input type="text" id="renameInput" name="project_name" required maxlength="60" class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 focus:border-indigo-500 focus:outline-none text-white text-sm font-medium transition-all" placeholder="Enter new project title...">
+                <input type="text" id="renameInput" name="project_name" required maxlength="15" class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 focus:border-indigo-500 focus:outline-none text-white text-sm font-medium transition-all" placeholder="Enter new project title (max 15 chars)...">
+
             </div>
 
             <!-- Modal Actions -->

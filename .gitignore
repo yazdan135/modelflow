@@ -1,4 +1,34 @@
+# Environment & Secrets
 .env
-session_data/
+.env.local
+.env.*.local
+*.env
+
+# Python / Bytecode
 __pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+
+# Virtual Environments
+venv/
+env/
+ENV/
+.venv/
+
+# User Data & Storage
+user_data/
+session_data/
 *.pkl
+*.joblib
+*.db
+*.sqlite
+*.sqlite3
+
+# IDE / OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log

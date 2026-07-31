@@ -27,6 +27,11 @@ from utils import ai_utils as au
 # Load environment variables
 load_dotenv()
 
+# Allow insecure transport for local development (OAuth over HTTP)
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = os.getenv("OAUTHLIB_INSECURE_TRANSPORT", "1")
+os.environ['AUTHLIB_INSECURE_TRANSPORT'] = os.getenv("AUTHLIB_INSECURE_TRANSPORT", "1")
+
+
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(APP_ROOT, "user_data")
 os.makedirs(DATA_DIR, exist_ok=True)
@@ -95,11 +100,18 @@ class User(UserMixin):
     def __init__(self, user_data):
         self.id = str(user_data["_id"])
         self.email = user_data["email"]
-        self.name = user_data["name"]
+        self.name = user_data.get("name", "")
         self.provider = user_data.get("provider", "local")
         self.picture = user_data.get("picture")
         self.is_admin = user_data.get("is_admin", False) or (self.email.lower() == ADMIN_EMAIL)
         self.has_submitted_feedback = user_data.get("has_submitted_feedback", False)
+
+    @property
+    def first_name(self):
+        if not self.name:
+            return "User"
+        return self.name.strip().split()[0]
+
 
 def admin_required(f):
     @wraps(f)
@@ -145,10 +157,12 @@ def set_current_project(project_id):
     session["project_id"] = project_id
 
 def create_new_project(user_id, project_name=None):
-    if not project_name:
+    if not project_name or not project_name.strip():
         count = db.projects.count_documents({"user_id": user_id}) + 1
-        project_name = f"AutoML Project #{count}"
+        project_name = f"Project #{count}"
+    project_name = project_name.strip()[:15]
     project_id = str(uuid.uuid4())
+
     project = {
         "_id": project_id,
         "user_id": user_id,
@@ -167,6 +181,13 @@ def update_project_state(project_id, state):
         {"_id": project_id},
         {"$set": {"state": state, "updated_at": datetime.utcnow()}}
     )
+
+def is_model_trained(project_dir, state):
+    if not state or "best_model" not in state or not state.get("best_model"):
+        return False
+    model_path = os.path.join(project_dir, "best_model.pkl")
+    return os.path.exists(model_path)
+
 
 def get_user_projects(user_id):
     return list(db.projects.find({"user_id": user_id}).sort("updated_at", -1))
@@ -453,39 +474,50 @@ def authorize_google():
     if not is_google_configured():
         flash("Google login is not configured.", "danger")
         return redirect(url_for("login"))
-    token = google.authorize_access_token()
-    user_info = token.get('userinfo')
-    if not user_info:
-        userinfo_endpoint = google.server_metadata.get('userinfo_endpoint', 'https://openidconnect.googleapis.com/v1/userinfo')
-        resp = google.get(userinfo_endpoint)
-        user_info = resp.json()
-    
-    email = user_info["email"]
-    name = user_info.get("name", email.split("@")[0])
-    picture = user_info.get("picture")
-    
-    user_data = db.users.find_one({"email": email.lower()})
-    if not user_data:
-        user_id = str(uuid.uuid4())
-        db.users.insert_one({
-            "_id": user_id,
-            "email": email.lower(),
-            "name": name,
-            "provider": "google",
-            "picture": picture
-        })
-        user_data = db.users.find_one({"_id": user_id})
-    else:
-        update_data = {"name": name}
-        if picture:
-            update_data["picture"] = picture
-        db.users.update_one({"_id": user_data["_id"]}, {"$set": update_data})
-        user_data = db.users.find_one({"_id": user_data["_id"]})
-    
-    user = User(user_data)
-    login_user(user)
-    flash("Logged in with Google successfully!", "success")
-    return redirect(url_for("index"))
+    try:
+        token = google.authorize_access_token()
+        user_info = token.get('userinfo')
+        if not user_info:
+            userinfo_endpoint = google.server_metadata.get('userinfo_endpoint', 'https://openidconnect.googleapis.com/v1/userinfo')
+            resp = google.get(userinfo_endpoint, token=token)
+            user_info = resp.json()
+        
+        if not user_info or "email" not in user_info:
+            flash("Failed to obtain user info from Google. Please try again.", "danger")
+            return redirect(url_for("login"))
+
+        email = user_info["email"]
+        name = user_info.get("name", email.split("@")[0])
+        picture = user_info.get("picture")
+        
+        user_data = db.users.find_one({"email": email.lower()})
+        if not user_data:
+            user_id = str(uuid.uuid4())
+            db.users.insert_one({
+                "_id": user_id,
+                "email": email.lower(),
+                "name": name,
+                "provider": "google",
+                "picture": picture,
+                "created_at": datetime.utcnow()
+            })
+            user_data = db.users.find_one({"_id": user_id})
+        else:
+            update_data = {"name": name}
+            if picture:
+                update_data["picture"] = picture
+            db.users.update_one({"_id": user_data["_id"]}, {"$set": update_data})
+            user_data = db.users.find_one({"_id": user_data["_id"]})
+        
+        user = User(user_data)
+        login_user(user)
+        flash("Logged in with Google successfully!", "success")
+        return redirect(url_for("index"))
+    except Exception as e:
+        print(f"Google OAuth Exception: {traceback.format_exc()}")
+        flash(f"Google login failed: {str(e)}", "danger")
+        return redirect(url_for("login"))
+
 
 @app.route("/logout")
 @login_required
@@ -651,10 +683,11 @@ def rename_project(project_id):
         flash("Project not found or access denied.", "danger")
         return redirect(url_for("index"))
 
-    new_name = request.form.get("project_name", "").strip()
+    new_name = request.form.get("project_name", "").strip()[:15]
     if not new_name:
         flash("Project name cannot be empty.", "warning")
         return redirect(url_for("index"))
+
 
     db.projects.update_one(
         {"_id": project_id, "user_id": current_user.id},
@@ -1167,9 +1200,10 @@ def results():
         return redirect(url_for("upload_page"))
     project_dir = get_project_dir(current_user.id, project["_id"])
     state = du.load_state(project_dir)
-    if "leaderboard" not in state:
-        flash("Train a model first.", "warning")
+    if not is_model_trained(project_dir, state):
+        flash("No trained model found for this project. Please train your AutoML models first!", "warning")
         return redirect(url_for("train"))
+
 
     leaderboard = state["leaderboard"]
     task = state["task"]
@@ -1251,9 +1285,10 @@ def predict():
         return redirect(url_for("upload_page"))
     project_dir = get_project_dir(current_user.id, project["_id"])
     state = du.load_state(project_dir)
-    if "best_model" not in state:
-        flash("Train a model first.", "warning")
+    if not is_model_trained(project_dir, state):
+        flash("No trained model found for this project! Please train a model first before using Inference Studio.", "warning")
         return redirect(url_for("train"))
+
 
     feature_cols = state.get("feature_columns", [])
     prediction = None
@@ -1333,28 +1368,61 @@ def download(what):
     return redirect(url_for("results"))
 
 @app.route("/api/v1/predict", methods=["POST"])
-@login_required
 def api_v1_predict():
     try:
-        project, df = require_project()
-        if not project:
-            return jsonify({"error": "No project active"}), 400
-        project_dir = get_project_dir(current_user.id, project["_id"])
+        # Extract API key from headers or request payload
+        api_key = (
+            request.headers.get("X-API-Key")
+            or request.headers.get("x-api-key")
+            or request.args.get("api_key")
+        )
+        auth_header = request.headers.get("Authorization", "")
+        if not api_key and auth_header.startswith("Bearer "):
+            api_key = auth_header.split("Bearer ", 1)[1].strip()
+
+        data = request.get_json(silent=True) or request.form.to_dict() or {}
+        if not api_key and isinstance(data, dict):
+            api_key = data.get("api_key")
+
+        project = None
+        user_id = None
+
+        if api_key:
+            project = db.projects.find_one({"api_key": api_key})
+            if not project:
+                # Search project states if not indexed directly in project doc
+                all_projects = list(db.projects.find({}))
+                for p in all_projects:
+                    pdir = os.path.join(DATA_DIR, p["user_id"], p["_id"])
+                    pstate = du.load_state(pdir)
+                    if pstate.get("api_key") == api_key:
+                        project = p
+                        break
+            if not project:
+                return jsonify({"error": "Invalid API Key provided."}), 401
+            user_id = project["user_id"]
+        elif current_user.is_authenticated:
+            project = get_current_project()
+            if not project:
+                return jsonify({"error": "No active project in session."}), 400
+            user_id = current_user.id
+        else:
+            return jsonify({
+                "error": "Authentication required. Please provide your 'X-API-Key' header or 'api_key' parameter."
+            }), 401
+
+        project_dir = get_project_dir(user_id, project["_id"])
         state = du.load_state(project_dir)
 
-        if "best_model" not in state:
-            return jsonify({"error": "No trained model found. Please train a model first."}), 400
+        if not is_model_trained(project_dir, state):
+            return jsonify({"error": "No trained model found for this project. Please train a model first."}), 400
 
         model_path = os.path.join(project_dir, "best_model.pkl")
-        if not os.path.exists(model_path):
-            return jsonify({"error": "Model bundle file missing."}), 404
-
         bundle = mu.load_model_bundle(model_path)
         model = bundle["model"]
         feature_cols = state.get("feature_columns", [])
         task = state.get("task", "classification")
 
-        data = request.get_json(silent=True) or request.form.to_dict()
         if data and "inputs" in data and isinstance(data["inputs"], dict):
             inputs = data["inputs"]
         elif data:
@@ -1396,11 +1464,13 @@ def api_v1_predict():
             "probabilities": probabilities,
             "task": task,
             "model_name": state.get("best_model", "Best Model"),
-            "target": state.get("target")
+            "target": state.get("target"),
+            "project_name": project.get("name", "Project")
         })
     except Exception as e:
         traceback.print_exc()
         return jsonify({"error": f"Prediction failed: {str(e)}"}), 500
+
 
 
 @app.route("/api/quick_train", methods=["POST"])
@@ -1542,14 +1612,84 @@ def deploy():
         return redirect(url_for("upload_page"))
     project_dir = get_project_dir(current_user.id, project["_id"])
     state = du.load_state(project_dir)
+
+    if not is_model_trained(project_dir, state):
+        flash("No trained model found for this project! Please train your AutoML models first before accessing API Deployment.", "warning")
+        return redirect(url_for("train"))
+
+    # Ensure project has a unique API Key
+    api_key = state.get("api_key") or project.get("api_key")
+    if not api_key:
+        api_key = f"mf_live_{uuid.uuid4().hex[:24]}"
+        state["api_key"] = api_key
+        du.save_state(project_dir, state)
+        db.projects.update_one({"_id": project["_id"]}, {"$set": {"api_key": api_key}})
+
     feature_cols = state.get("feature_columns", [])
     target = state.get("target", "target")
-    snippet = f'''import joblib
+
+    base_url = request.host_url.rstrip("/")
+    api_url = f"{base_url}/api/v1/predict"
+
+    sample_inputs = {col: 1.0 for col in feature_cols[:6]}
+    sample_json = json.dumps({"inputs": sample_inputs}, indent=2)
+
+    snippet_python = f'''import requests
+
+# ModelFlow Hosted REST API Prediction Call
+API_URL = "{api_url}"
+API_KEY = "{api_key}"
+
+payload = {{
+    "inputs": {{
+{chr(10).join([f'        "{col}": 1.0,' for col in feature_cols[:6]])}
+    }}
+}}
+
+headers = {{
+    "Content-Type": "application/json",
+    "X-API-Key": API_KEY
+}}
+
+response = requests.post(API_URL, json=payload, headers=headers)
+print("Prediction Result:", response.json())
+'''
+
+    snippet_curl = f'''curl -X POST {api_url} \\
+  -H "Content-Type: application/json" \\
+  -H "X-API-Key: {api_key}" \\
+  -d '{sample_json}' '''
+
+    snippet_javascript = f'''// ModelFlow Hosted API Call (Node.js / Browser)
+const apiUrl = "{api_url}";
+const apiKey = "{api_key}";
+
+const payload = {{
+  inputs: {{
+{chr(10).join([f'    "{col}": 1.0,' for col in feature_cols[:6]])}
+  }}
+}};
+
+fetch(apiUrl, {{
+  method: "POST",
+  headers: {{
+    "Content-Type": "application/json",
+    "X-API-Key": apiKey
+  }},
+  body: JSON.stringify(payload)
+}})
+  .then(res => res.json())
+  .then(data => console.log("Prediction Result:", data))
+  .catch(err => console.error("API Error:", err));
+'''
+
+    snippet_microservice = f'''import joblib
 import pandas as pd
 from flask import Flask, request, jsonify
 
 app = Flask(__name__)
-bundle = joblib.load("model.pkl")
+# Load downloaded best_model.pkl bundle
+bundle = joblib.load("best_model.pkl")
 model = bundle["model"]
 FEATURE_COLUMNS = {feature_cols}
 
@@ -1563,7 +1703,38 @@ def predict():
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
 '''
-    return render_template("deploy.html", snippet=snippet, feature_cols=feature_cols, target=target, state=state, current_project=project)
+
+    return render_template(
+        "deploy.html",
+        api_url=api_url,
+        api_key=api_key,
+        sample_json=sample_json,
+        snippet_python=snippet_python,
+        snippet_curl=snippet_curl,
+        snippet_javascript=snippet_javascript,
+        snippet_microservice=snippet_microservice,
+        feature_cols=feature_cols,
+        target=target,
+        state=state,
+        current_project=project
+    )
+
+@app.route("/regenerate-api-key", methods=["POST"])
+@login_required
+def regenerate_api_key():
+    project = get_current_project()
+    if not project:
+        flash("No active project found.", "warning")
+        return redirect(url_for("index"))
+    project_dir = get_project_dir(current_user.id, project["_id"])
+    state = du.load_state(project_dir)
+    new_key = f"mf_live_{uuid.uuid4().hex[:24]}"
+    state["api_key"] = new_key
+    du.save_state(project_dir, state)
+    db.projects.update_one({"_id": project["_id"]}, {"$set": {"api_key": new_key}})
+    flash("Project API Key regenerated successfully!", "success")
+    return redirect(url_for("deploy"))
+
 
 @app.route("/code")
 @login_required
