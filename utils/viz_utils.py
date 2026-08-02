@@ -47,36 +47,47 @@ def _empty_fig(msg="No visual data available"):
 
 
 def _apply_saas_theme(fig, title=None, dark_mode=True):
+    text_color = "#F3F4F6" if dark_mode else "#0F172A"
+    text_muted = "#9CA3AF" if dark_mode else "#475569"
+    grid_color = "rgba(255, 255, 255, 0.08)" if dark_mode else "#CBD5E1"
+    hover_bg = "#1E293B" if dark_mode else "#FFFFFF"
+    hover_border = "rgba(255,255,255,0.1)" if dark_mode else "#94A3B8"
+    hover_text = "#FFFFFF" if dark_mode else "#0F172A"
+
     fig.update_layout(
         title=dict(
             text=title or "",
-font=dict(family="Inter, sans-serif", size=14, color=COLORS["text"]),            x=0.02, y=0.96
+            font=dict(family="Inter, sans-serif", size=13, color=text_color),
+            x=0.02, y=0.96
         ),
         template="plotly_dark" if dark_mode else "plotly_white",
-        margin=dict(l=45, r=30, t=50, b=45),
-        height=440,
+        autosize=True,
+        margin=dict(l=35, r=20, t=35, b=35),
         paper_bgcolor=COLORS["bg_transparent"],
         plot_bgcolor=COLORS["bg_transparent"],
-        font=dict(family="Inter, system-ui, sans-serif", size=11, color=COLORS["text_muted"]),
+        font=dict(family="Inter, system-ui, sans-serif", size=11, color=text_muted),
         colorway=COLORS["sequence"],
         hoverlabel=dict(
-            bgcolor="#1E293B",
+            bgcolor=hover_bg,
             font_size=12,
             font_family="Inter, sans-serif",
-            bordercolor="rgba(255,255,255,0.1)"
+            font_color=hover_text,
+            bordercolor=hover_border
         )
     )
+
     fig.update_xaxes(
-        showgrid=True, gridcolor=COLORS["grid"],
-        linecolor=COLORS["grid"], zeroline=False,
-        tickfont=dict(color=COLORS["text_muted"])
+        showgrid=True, gridcolor=grid_color,
+        linecolor=grid_color, zeroline=False,
+        tickfont=dict(color=text_muted, size=11)
     )
     fig.update_yaxes(
-        showgrid=True, gridcolor=COLORS["grid"],
-        linecolor=COLORS["grid"], zeroline=False,
-        tickfont=dict(color=COLORS["text_muted"])
+        showgrid=True, gridcolor=grid_color,
+        linecolor=grid_color, zeroline=False,
+        tickfont=dict(color=text_muted, size=11)
     )
     return fig
+
 
 
 def histogram(df, column, dark_mode=True):
@@ -307,20 +318,21 @@ def actual_vs_predicted(y_true, y_pred, dark_mode=True):
     return _apply_saas_theme(fig, "Actual vs. Predicted Plot", dark_mode=dark_mode)
 
 
-def user_algorithm_pie(algo_counts, dark_mode=True):
+def user_algorithm_pie(algo_counts, dark_mode=False):
     if not algo_counts:
         return _empty_fig("No models trained yet")
     labels = list(algo_counts.keys())
     values = list(algo_counts.values())
     fig = go.Figure(data=[go.Pie(
-        labels=labels, values=values, hole=0.45,
+        labels=labels, values=values, hole=0.5,
         textinfo="label+percent",
-        marker=dict(colors=COLORS["sequence"])
+        textfont=dict(size=12, family="Inter, sans-serif", color="#0F172A" if not dark_mode else "#FFFFFF"),
+        marker=dict(colors=COLORS["sequence"], line=dict(color='#FFFFFF' if not dark_mode else '#1E293B', width=2))
     )])
     return _apply_saas_theme(fig, "Trained Models by Algorithm", dark_mode=dark_mode)
 
 
-def user_task_donut(task_counts, dark_mode=True):
+def user_task_donut(task_counts, dark_mode=False):
     if not task_counts:
         return _empty_fig("No task data available")
     labels = [k.title() for k in task_counts.keys()]
@@ -328,12 +340,13 @@ def user_task_donut(task_counts, dark_mode=True):
     fig = go.Figure(data=[go.Pie(
         labels=labels, values=values, hole=0.55,
         textinfo="label+value",
-        marker=dict(colors=[COLORS["primary"], COLORS["secondary"], COLORS["purple"]])
+        textfont=dict(size=12, family="Inter, sans-serif", color="#0F172A" if not dark_mode else "#FFFFFF"),
+        marker=dict(colors=[COLORS["primary"], COLORS["secondary"], COLORS["purple"]], line=dict(color='#FFFFFF' if not dark_mode else '#1E293B', width=2))
     )])
     return _apply_saas_theme(fig, "Project Task Types", dark_mode=dark_mode)
 
 
-def user_score_history_line(history_records, dark_mode=True):
+def user_score_history_line(history_records, dark_mode=False):
     if not history_records:
         return _empty_fig("No model score history logged yet")
     df_h = pd.DataFrame(history_records)
@@ -344,15 +357,15 @@ def user_score_history_line(history_records, dark_mode=True):
         name="Model Score",
         text=df_h["model_info"],
         hovertemplate="<b>%{text}</b><br>Score: %{y:.3f}<br>Date: %{x}<extra></extra>",
-        line=dict(color=COLORS["secondary"], width=3),
-        marker=dict(size=8, color=COLORS["primary"], line=dict(width=2, color="#ffffff"))
+        line=dict(color=COLORS["primary"], width=3, shape="spline"),
+        marker=dict(size=9, color=COLORS["secondary"], line=dict(width=2, color="#FFFFFF"))
     ))
-    fig.update_xaxes(title="Training Session Date/Time")
-    fig.update_yaxes(title="Score Metric")
+    fig.update_xaxes(title=dict(text="Training Session Date/Time", font=dict(color="#475569" if not dark_mode else "#9CA3AF")))
+    fig.update_yaxes(title=dict(text="Score Metric", font=dict(color="#475569" if not dark_mode else "#9CA3AF")))
     return _apply_saas_theme(fig, "Model Score Progression Timeline", dark_mode=dark_mode)
 
 
-def user_score_range_bar(min_val, avg_val, max_val, dark_mode=True):
+def user_score_range_bar(min_val, avg_val, max_val, dark_mode=False):
     categories = ["Min Score", "Avg Score", "Max Score"]
     values = [round(min_val, 3), round(avg_val, 3), round(max_val, 3)]
     colors_list = [COLORS["danger"], COLORS["warning"], COLORS["success"]]
@@ -360,8 +373,12 @@ def user_score_range_bar(min_val, avg_val, max_val, dark_mode=True):
         x=categories, y=values,
         marker_color=colors_list,
         text=[f"{v:.3f}" for v in values],
-        textposition="outside"
+        textposition="outside",
+        textfont=dict(size=12, family="Inter, sans-serif", color="#0F172A" if not dark_mode else "#FFFFFF", weight="bold"),
+        marker_line_width=1,
+        marker_line_color="#CBD5E1" if not dark_mode else "rgba(255,255,255,0.2)"
     )])
-    fig.update_yaxes(range=[0, max(1.0, max_val * 1.15)])
+    fig.update_yaxes(range=[0, max(1.0, max_val * 1.25)])
     return _apply_saas_theme(fig, "Model Performance Score Range Summary", dark_mode=dark_mode)
+
 

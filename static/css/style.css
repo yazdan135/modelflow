@@ -1,76 +1,100 @@
 html, body {
   margin: 0 !important;
   padding: 0 !important;
+  background-color: #F8FAFC !important;
+  color: #0F172A !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
 }
 
 :root {
-
-  --bg-dark: #0B1220;
-  --surface-dark: #0F172A;
-  --surface-card: rgba(15, 23, 42, 0.85);
-  --border-slate: rgba(51, 65, 85, 0.7);
-  --indigo-accent: #6366F1;
-  --cyan-accent: #06B6D4;
-  --emerald-accent: #10B981;
-  --rose-accent: #EF4444;
-  --amber-accent: #F59E0B;
+  --bg-canvas: #F8FAFC;
+  --bg-surface: #FFFFFF;
+  --border-subtle: #CBD5E1;
+  --border-strong: #94A3B8;
+  --text-main: #0F172A;
+  --text-body: #1E293B;
+  --text-muted: #475569;
+  --indigo-accent: #4F46E5;
+  --cyan-accent: #0284C7;
+  --emerald-accent: #059669;
+  --rose-accent: #E11D48;
+  --amber-accent: #D97706;
 }
 
-/* Custom Scrollbar */
+/* Custom Scrollbar - Clean Light Theme */
 .custom-scrollbar::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.6);
+  background: #F1F5F9;
   border-radius: 8px;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(99, 102, 241, 0.3);
+  background: #CBD5E1;
   border-radius: 8px;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(99, 102, 241, 0.6);
+  background: #94A3B8;
 }
 
-/* Table HTML Overrides for Pandas Dataframe head(50).to_html() */
+/* Jira & ClickUp Table HTML Overrides for Pandas Dataframes & Tables */
 table.table {
   width: 100% !important;
   border-collapse: separate !important;
   border-spacing: 0 !important;
-  font-size: 0.75rem !important;
-  background-color: transparent !important;
-  color: #E2E8F0 !important;
+  font-size: 0.8125rem !important;
+  background-color: #FFFFFF !important;
+  color: #0F172A !important;
+  border: 1px solid #CBD5E1 !important;
+  border-radius: 0.75rem !important;
+  overflow: hidden !important;
 }
 
 table.table th {
-  background-color: #0F172A !important;
-  color: #94A3B8 !important;
+  background-color: #F8FAFC !important;
+  color: #334155 !important;
   font-weight: 700 !important;
   text-transform: uppercase !important;
   letter-spacing: 0.05em !important;
   padding: 10px 14px !important;
-  border-bottom: 1px solid #1E293B !important;
+  border-bottom: 1px solid #CBD5E1 !important;
   white-space: nowrap !important;
 }
 
 table.table td {
   padding: 10px 14px !important;
-  border-bottom: 1px solid rgba(30, 41, 59, 0.6) !important;
+  border-bottom: 1px solid #E2E8F0 !important;
   white-space: nowrap !important;
   font-family: 'JetBrains Mono', monospace !important;
+  color: #0F172A !important;
 }
 
 table.table tr:hover td {
-  background-color: rgba(30, 41, 59, 0.5) !important;
+  background-color: #F1F5F9 !important;
 }
 
-/* Plotly Chart Container Glassmorphism Overrides */
+/* Plotly Chart Container Light Mode Overrides */
 .js-plotly-plot .plotly .main-svg {
   background: transparent !important;
 }
 .js-plotly-plot .plotly .bg {
-  fill: transparent !important;
+  fill: #FFFFFF !important;
+}
+.js-plotly-plot .plotly .xtick text, 
+.js-plotly-plot .plotly .ytick text,
+.js-plotly-plot .plotly .legendtext {
+  fill: #334155 !important;
+  font-size: 11px !important;
+}
+.js-plotly-plot .plotly .gtitle, 
+.js-plotly-plot .plotly .xtitle, 
+.js-plotly-plot .plotly .ytitle {
+  fill: #0F172A !important;
+  font-weight: 700 !important;
+}
+.js-plotly-plot .plotly .gridlayer path {
+  stroke: #E2E8F0 !important;
 }
 
 /* Line Clamp Utilities */
@@ -80,3 +104,195 @@ table.table tr:hover td {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+/* Premium Light Theme Card Elevation with Dark Crisp Outlines */
+.jira-card {
+  background-color: #FFFFFF !important;
+  border: 1px solid #CBD5E1 !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.06), 0 1px 2px 0 rgba(0, 0, 0, 0.04) !important;
+  border-radius: 1rem !important;
+}
+
+/* Inputs & Form Elements Focus & Dark Border */
+input, select, textarea {
+  background-color: #FFFFFF !important;
+  color: #0F172A !important;
+  border-color: #CBD5E1 !important;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none !important;
+  border-color: #4F46E5 !important;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15) !important;
+}
+
+/* Mini Icon-Only Sidebar Collapsed Mode (Desktop) */
+@media (min-width: 1024px) {
+  body.sidebar-collapsed #sidebar {
+    width: 5rem !important; /* 80px */
+  }
+
+  body.sidebar-collapsed #mainWrapper {
+    padding-left: 5rem !important; /* 80px */
+  }
+
+  body.sidebar-collapsed #sidebar .sidebar-hide-collapsed {
+    display: none !important;
+  }
+
+  body.sidebar-collapsed #sidebar nav a,
+  body.sidebar-collapsed #sidebar nav button {
+    justify-content: center !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  body.sidebar-collapsed #sidebar nav a i,
+  body.sidebar-collapsed #sidebar nav button i {
+    font-size: 1.25rem !important;
+    margin-right: 0 !important;
+  }
+
+  body.sidebar-collapsed #sidebar nav div.uppercase {
+    display: none !important;
+  }
+
+  body.sidebar-collapsed #sidebarProjectDropdownBtn {
+    justify-content: center !important;
+    padding: 0.5rem !important;
+  }
+
+  body.sidebar-collapsed #sidebarProjectDropdownMenu {
+    width: 15rem !important;
+    left: 4.5rem !important;
+  }
+}
+
+/* ==========================================================================
+   Global Interactive UI Enhancements: Hover Blue Borders & Icon Animations
+   ========================================================================== */
+
+/* 1. Global Box / Card Hover Blue Border & Shadow Glow */
+.jira-card,
+.border,
+div[class*="rounded-xl"],
+div[class*="rounded-2xl"],
+button[class*="rounded-xl"],
+button[class*="rounded-2xl"],
+a[class*="rounded-xl"],
+a[class*="rounded-2xl"] {
+  transition: border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Card & Box Blue Border on Hover */
+.jira-card:hover,
+.bg-white.border:hover,
+.border.shadow-xs:hover,
+.border.shadow-sm:hover,
+div.rounded-2xl.border:hover,
+div.rounded-xl.border:hover,
+button.border:hover,
+a.border:hover {
+  border-color: #6366F1 !important; /* Brand Indigo / Blue */
+  box-shadow: 0 4px 16px -2px rgba(99, 102, 241, 0.14), 0 2px 6px -1px rgba(99, 102, 241, 0.08) !important;
+}
+
+/* Input & Select Focus & Hover Blue Highlight */
+input:hover, select:hover, textarea:hover {
+  border-color: #818CF8 !important;
+}
+
+/* 2. Global Icon Micro-Animations on Hover */
+i.fas, i.far, i.fab, i.fa {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.2s ease !important;
+  display: inline-block;
+}
+
+/* General Icon Scale on Hover */
+a:hover i.fas, a:hover i.far, a:hover i.fab,
+button:hover i.fas, button:hover i.far, button:hover i.fab,
+.group:hover i.fas, .group:hover i.far, .group:hover i.fab,
+div:hover > i.fas, div:hover > i.far, div:hover > i.fab {
+  transform: scale(1.18) translateY(-1px);
+}
+
+/* Rotate / Flip Animation for Settings, Exchange, Sync & Refresh Icons */
+a:hover i.fa-cogs, button:hover i.fa-cogs,
+a:hover i.fa-cog, button:hover i.fa-cog,
+a:hover i.fa-sync, button:hover i.fa-sync,
+a:hover i.fa-sync-alt, button:hover i.fa-sync-alt,
+a:hover i.fa-exchange-alt, button:hover i.fa-exchange-alt,
+button:hover #sidebarProjectArrow, a:hover #sidebarProjectArrow {
+  transform: rotate(180deg) scale(1.15) !important;
+}
+
+/* Bounce Micro-Animation for Trophies, Rockets, Bolts & Downloads */
+a:hover i.fa-trophy, button:hover i.fa-trophy,
+a:hover i.fa-bolt, button:hover i.fa-bolt,
+a:hover i.fa-download, button:hover i.fa-download,
+a:hover i.fa-star, button:hover i.fa-star,
+a:hover i.fa-rocket, button:hover i.fa-rocket {
+  transform: translateY(-3px) scale(1.22) !important;
+}
+
+/* Tilt / Pulse Micro-Animation for Charts, Cloud, Robot & Magic Icons */
+a:hover i.fa-chart-pie, a:hover i.fa-chart-bar, a:hover i.fa-chart-line,
+a:hover i.fa-cloud-upload-alt, a:hover i.fa-magic, a:hover i.fa-robot,
+a:hover i.fa-headset, a:hover i.fa-server, a:hover i.fa-code {
+  transform: scale(1.22) rotate(-6deg) !important;
+}
+
+/* ==========================================================================
+   Cursor Hygiene & Context Specifications
+   ========================================================================== */
+
+/* 1. Static Non-Interactive Elements (Normal Arrow Cursor) */
+html, body, div, section, header, footer, main, aside, table, tr, ul, ol, li {
+  cursor: default;
+}
+
+/* 2. Text Content & Selection (I-Beam Text Cursor) */
+p, span, h1, h2, h3, h4, h5, h6, label:not([for]), td, th, code, pre {
+  cursor: text;
+}
+
+input[type="text"], 
+input[type="email"], 
+input[type="password"], 
+input[type="number"], 
+input[type="search"], 
+input[type="url"], 
+input[type="tel"], 
+textarea, 
+[contenteditable="true"] {
+  cursor: text !important;
+}
+
+/* 3. Truly Interactive Clickable Elements (Hand Pointer Cursor) */
+a, 
+button, 
+select, 
+option, 
+label[for], 
+[role="button"], 
+[onclick], 
+.cursor-pointer, 
+summary,
+input[type="submit"], 
+input[type="button"], 
+input[type="reset"], 
+input[type="checkbox"], 
+input[type="radio"], 
+input[type="file"]::-webkit-file-upload-button {
+  cursor: pointer !important;
+}
+
+/* 4. Disabled State (Not Allowed Cursor) */
+:disabled, 
+[disabled], 
+.disabled, 
+.cursor-not-allowed {
+  cursor: not-allowed !important;
+}
+
+

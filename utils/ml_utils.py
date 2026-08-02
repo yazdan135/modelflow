@@ -9,9 +9,16 @@ import joblib
 
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-from sklearn.linear_model import LogisticRegression, LinearRegression
+from sklearn.linear_model import LogisticRegression, LinearRegression, RidgeClassifier, Ridge
 from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
-from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
+from sklearn.ensemble import (
+    RandomForestClassifier, RandomForestRegressor,
+    ExtraTreesClassifier, ExtraTreesRegressor,
+    GradientBoostingClassifier, GradientBoostingRegressor,
+    HistGradientBoostingClassifier, HistGradientBoostingRegressor,
+    AdaBoostClassifier, AdaBoostRegressor,
+)
+from sklearn.neural_network import MLPClassifier, MLPRegressor
 from sklearn.svm import SVC, SVR
 from sklearn.neighbors import KNeighborsClassifier, KNeighborsRegressor
 from sklearn.naive_bayes import GaussianNB
@@ -44,26 +51,38 @@ def detect_task_type(y):
 def get_model_zoo(task):
     zoo = {}
     if task == "classification":
-        zoo["Logistic Regression"] = LogisticRegression(max_iter=2000)
-        zoo["Decision Tree"] = DecisionTreeClassifier(random_state=42)
-        zoo["Random Forest"] = RandomForestClassifier(n_estimators=200, random_state=42)
-        zoo["KNN"] = KNeighborsClassifier()
+        if HAS_LGBM:
+            zoo["LightGBM"] = LGBMClassifier(n_estimators=100, learning_rate=0.1, max_depth=6, n_jobs=-1, random_state=42, verbose=-1)
+        if HAS_XGB:
+            zoo["XGBoost"] = XGBClassifier(n_estimators=100, learning_rate=0.1, max_depth=6, n_jobs=-1, eval_metric="logloss", random_state=42)
+        zoo["Random Forest"] = RandomForestClassifier(n_estimators=100, max_depth=12, n_jobs=-1, random_state=42)
+        zoo["Extra Trees"] = ExtraTreesClassifier(n_estimators=100, max_depth=12, n_jobs=-1, random_state=42)
+        zoo["Hist Gradient Boosting"] = HistGradientBoostingClassifier(max_iter=100, random_state=42)
+        zoo["Gradient Boosting"] = GradientBoostingClassifier(n_estimators=100, random_state=42)
+        zoo["Logistic Regression"] = LogisticRegression(max_iter=1000, n_jobs=-1, random_state=42)
+        zoo["Ridge Classifier"] = RidgeClassifier(random_state=42)
+        zoo["Decision Tree"] = DecisionTreeClassifier(max_depth=10, random_state=42)
+        zoo["KNN"] = KNeighborsClassifier(n_neighbors=5, n_jobs=-1)
+        zoo["AdaBoost"] = AdaBoostClassifier(n_estimators=50, random_state=42)
         zoo["Naive Bayes"] = GaussianNB()
-        zoo["SVM"] = SVC(probability=True)
-        if HAS_XGB:
-            zoo["XGBoost"] = XGBClassifier(eval_metric="logloss", random_state=42)
-        if HAS_LGBM:
-            zoo["LightGBM"] = LGBMClassifier(random_state=42, verbose=-1)
+        zoo["Neural Network (MLP)"] = MLPClassifier(hidden_layer_sizes=(64, 32), max_iter=200, early_stopping=True, random_state=42)
+        zoo["SVM"] = SVC(probability=True, max_iter=2000, random_state=42)
     else:
-        zoo["Linear Regression"] = LinearRegression()
-        zoo["Decision Tree"] = DecisionTreeRegressor(random_state=42)
-        zoo["Random Forest"] = RandomForestRegressor(n_estimators=200, random_state=42)
-        zoo["KNN"] = KNeighborsRegressor()
-        zoo["SVR"] = SVR()
-        if HAS_XGB:
-            zoo["XGBoost"] = XGBRegressor(random_state=42)
         if HAS_LGBM:
-            zoo["LightGBM"] = LGBMRegressor(random_state=42, verbose=-1)
+            zoo["LightGBM"] = LGBMRegressor(n_estimators=100, learning_rate=0.1, max_depth=6, n_jobs=-1, random_state=42, verbose=-1)
+        if HAS_XGB:
+            zoo["XGBoost"] = XGBRegressor(n_estimators=100, learning_rate=0.1, max_depth=6, n_jobs=-1, random_state=42)
+        zoo["Random Forest"] = RandomForestRegressor(n_estimators=100, max_depth=12, n_jobs=-1, random_state=42)
+        zoo["Extra Trees"] = ExtraTreesRegressor(n_estimators=100, max_depth=12, n_jobs=-1, random_state=42)
+        zoo["Hist Gradient Boosting"] = HistGradientBoostingRegressor(max_iter=100, random_state=42)
+        zoo["Gradient Boosting"] = GradientBoostingRegressor(n_estimators=100, random_state=42)
+        zoo["Linear Regression"] = LinearRegression(n_jobs=-1)
+        zoo["Ridge"] = Ridge(random_state=42)
+        zoo["Decision Tree"] = DecisionTreeRegressor(max_depth=10, random_state=42)
+        zoo["KNN"] = KNeighborsRegressor(n_neighbors=5, n_jobs=-1)
+        zoo["AdaBoost"] = AdaBoostRegressor(n_estimators=50, random_state=42)
+        zoo["Neural Network (MLP)"] = MLPRegressor(hidden_layer_sizes=(64, 32), max_iter=200, early_stopping=True, random_state=42)
+        zoo["SVR"] = SVR(max_iter=2000)
     return zoo
 
 

@@ -2,24 +2,24 @@
 
 {% block title %}AI Profiler & Recommendations — ModelFlow AI{% endblock %}
 {% block header_title %}Dataset Profiler & AI Copilot{% endblock %}
-{% block header_sub %}Exploratory data analysis, column distributions, and AI modeling recommendations{% endblock %}
+{% block header_sub %}Explore dataset, column distributions, & AI modeling recommendations{% endblock %}
 
 {% block content %}
 <!-- AI Copilot Recommendations Banner -->
-<div class="p-6 rounded-2xl bg-gradient-to-r from-slate-900 via-indigo-950/50 to-slate-900 border border-indigo-500/30 shadow-xl space-y-6">
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-indigo-500/20 pb-4">
+<div class="p-6 rounded-2xl bg-white border border-slate-300 shadow-sm space-y-6 text-slate-900">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-4">
         <div>
-            <h2 class="text-xl font-bold text-white tracking-tight flex items-center gap-2">
-                <i class="fas fa-brain text-indigo-400"></i> AI Modeling & Preprocessing Copilot
+            <h2 class="text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+                <i class="fas fa-brain text-indigo-600"></i> AI Modeling & Preprocessing Copilot
             </h2>
-            <p class="text-xs text-slate-300 mt-1">
+            <p class="text-xs text-slate-600 mt-1">
                 Automated dataset analysis and multi-model architectural recommendations
             </p>
         </div>
         
         <!-- AI Provider Badge -->
-        <div class="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-500/20 border border-indigo-500/40 text-indigo-300 text-xs font-bold shrink-0">
-            <i class="fas fa-microchip text-indigo-400"></i>
+        <div class="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-bold shrink-0 shadow-xs">
+            <i class="fas fa-microchip text-indigo-600"></i>
             <span>Powered by {{ provider if provider else (ai.provider if ai else 'ModelFlow AI') }}</span>
         </div>
     </div>
@@ -27,40 +27,40 @@
     {% if ai %}
         <!-- Target & Problem Classification Suggestion -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="p-4 rounded-xl bg-slate-950/60 border border-slate-800">
-                <p class="text-xs font-semibold text-slate-400 uppercase">Suggested Target Column</p>
-                <p class="text-base font-bold text-indigo-300 mt-0.5 font-mono">{{ ai.suggested_target or 'None' }}</p>
-                <p class="text-xs text-slate-400 mt-1">{{ ai.problem_explanation or 'Selected based on column unique cardinality.' }}</p>
+            <div class="p-4 rounded-xl bg-slate-50 border border-slate-300 shadow-xs">
+                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Suggested Target Column</p>
+                <p class="text-base font-extrabold text-indigo-700 mt-0.5 font-mono">{{ ai.suggested_target or 'None' }}</p>
+                <p class="text-xs text-slate-600 mt-1 font-medium">{{ ai.problem_explanation or 'Selected based on column unique cardinality.' }}</p>
             </div>
-            <div class="p-4 rounded-xl bg-slate-950/60 border border-slate-800">
-                <p class="text-xs font-semibold text-slate-400 uppercase">Suggested Task Type</p>
-                <p class="text-base font-bold text-cyan-400 mt-0.5 capitalize">{{ ai.suggested_task or 'Classification' }}</p>
-                <p class="text-xs text-slate-400 mt-1">{{ ai.imbalance_note or 'Target balance verified.' }}</p>
+            <div class="p-4 rounded-xl bg-slate-50 border border-slate-300 shadow-xs">
+                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Suggested Task Type</p>
+                <p class="text-base font-extrabold text-sky-700 mt-0.5 capitalize">{{ ai.suggested_task or 'Classification' }}</p>
+                <p class="text-xs text-slate-600 mt-1 font-medium">{{ ai.imbalance_note or 'Target balance verified.' }}</p>
             </div>
         </div>
 
         <!-- Recommended Model Architecture Cards -->
         {% if ai.suggested_models %}
         <div>
-            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Top Recommended Model Architectures:</h3>
+            <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Top Recommended Model Architectures:</h3>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {% for model in ai.suggested_models %}
-                <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 hover:border-indigo-500/50 transition-all flex flex-col justify-between">
+                <div class="p-4 rounded-xl bg-white border border-slate-300 hover:border-indigo-400 transition-all flex flex-col justify-between shadow-xs">
                     <div>
                         <div class="flex items-center justify-between mb-2">
-                            <h4 class="text-sm font-bold text-white">{{ model.model }}</h4>
-                            <span class="px-2 py-0.5 rounded text-[11px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                            <h4 class="text-sm font-bold text-slate-900">{{ model.model }}</h4>
+                            <span class="px-2 py-0.5 rounded text-[11px] font-mono font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200">
                                 {{ model.confidence }}% Match
                             </span>
                         </div>
-                        <p class="text-xs text-slate-400 mb-3 font-mono">Est. Score: <span class="text-indigo-300 font-semibold">{{ model.expected_performance }}</span></p>
+                        <p class="text-xs text-slate-600 mb-3 font-mono">Est. Score: <span class="text-indigo-700 font-bold">{{ model.expected_performance }}</span></p>
                         
                         <!-- Advantages -->
                         <div class="space-y-1 mb-3">
-                            <p class="text-[11px] font-semibold text-slate-400 uppercase">Advantages:</p>
+                            <p class="text-[11px] font-bold text-slate-500 uppercase">Advantages:</p>
                             {% for adv in model.advantages %}
-                                <div class="text-xs text-slate-300 flex items-start gap-1.5">
-                                    <i class="fas fa-check text-emerald-400 text-[10px] mt-1 shrink-0"></i>
+                                <div class="text-xs text-slate-700 flex items-start gap-1.5 font-medium">
+                                    <i class="fas fa-check text-emerald-600 text-[10px] mt-1 shrink-0"></i>
                                     <span>{{ adv }}</span>
                                 </div>
                             {% endfor %}
@@ -69,7 +69,7 @@
 
                     <!-- Recommended Hyperparameters snippet -->
                     {% if model.hyperparameters %}
-                        <div class="pt-3 border-t border-slate-800 text-[11px] font-mono text-slate-400">
+                        <div class="pt-3 border-t border-slate-200 text-[11px] font-mono text-slate-600">
                             <strong>Params:</strong> {{ model.hyperparameters | string | truncate(50) }}
                         </div>
                     {% endif %}
@@ -82,11 +82,11 @@
         <!-- Preprocessing Recommendations List -->
         {% if ai.recommendations %}
         <div>
-            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Actionable Data Quality Suggestions:</h3>
+            <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Actionable Data Quality Suggestions:</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
                 {% for rec in ai.recommendations %}
-                <div class="p-3 rounded-xl bg-slate-950/60 border border-slate-800 text-xs text-slate-200 flex items-start gap-2">
-                    <i class="fas fa-lightbulb text-amber-400 mt-0.5 shrink-0"></i>
+                <div class="p-3 rounded-xl bg-slate-50 border border-slate-300 text-xs text-slate-800 flex items-start gap-2 font-medium shadow-xs">
+                    <i class="fas fa-lightbulb text-amber-500 mt-0.5 shrink-0"></i>
                     <span>{{ rec.text if rec is mapping else rec }}</span>
                 </div>
                 {% endfor %}
@@ -97,32 +97,32 @@
 </div>
 
 <!-- Column Profiling Cards Grid -->
-<div class="p-6 rounded-2xl bg-slate-900/80 border border-slate-800/80 shadow-lg space-y-4">
+<div class="p-6 rounded-2xl bg-white border border-slate-300 shadow-sm space-y-4 text-slate-900">
     <div class="flex items-center justify-between">
-        <h3 class="text-base font-bold text-white flex items-center gap-2">
-            <i class="fas fa-columns text-indigo-400"></i> Column Profiles ({{ columns|length }} Columns)
+        <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+            <i class="fas fa-columns text-indigo-600"></i> Column Profiles ({{ columns|length }} Columns)
         </h3>
-        <a href="{{ url_for('clean') }}" class="text-xs font-semibold text-indigo-400 hover:text-indigo-300">Clean Dataset →</a>
+        <a href="{{ url_for('clean') }}" class="text-xs font-bold text-indigo-700 hover:text-indigo-800">Clean Dataset →</a>
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {% for col in columns %}
-        <div class="p-4 rounded-xl bg-slate-800/40 border border-slate-800 space-y-2 hover:border-slate-700 transition-all">
+        <div class="p-4 rounded-xl bg-slate-50 border border-slate-300 space-y-2 hover:border-slate-400 transition-all shadow-xs">
             <div class="flex items-center justify-between">
-                <h4 class="text-sm font-bold text-white truncate" title="{{ col }}">{{ col }}</h4>
-                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-semibold bg-slate-700 text-slate-300">
+                <h4 class="text-sm font-bold text-slate-900 truncate" title="{{ col }}">{{ col }}</h4>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-white border border-slate-300 text-slate-700">
                     {{ profile.get('dtypes', {}).get(col, 'object') }}
                 </span>
             </div>
             
             <div class="grid grid-cols-2 gap-2 text-xs font-mono pt-1">
-                <div class="bg-slate-900/60 p-2 rounded-lg border border-slate-800">
-                    <span class="text-slate-500 block text-[10px]">Unique Values</span>
-                    <span class="text-slate-200 font-semibold">{{ profile.get('unique_counts', {}).get(col, 0) }}</span>
+                <div class="bg-white p-2 rounded-lg border border-slate-200">
+                    <span class="text-slate-500 block text-[10px] font-sans font-bold uppercase">Unique Values</span>
+                    <span class="text-slate-900 font-bold">{{ profile.get('unique_counts', {}).get(col, 0) }}</span>
                 </div>
-                <div class="bg-slate-900/60 p-2 rounded-lg border border-slate-800">
-                    <span class="text-slate-500 block text-[10px]">Missing</span>
-                    <span class="{% if profile.get('missing_counts', {}).get(col, 0) > 0 %}text-rose-400{% else %}text-emerald-400{% endif %} font-semibold">
+                <div class="bg-white p-2 rounded-lg border border-slate-200">
+                    <span class="text-slate-500 block text-[10px] font-sans font-bold uppercase">Missing</span>
+                    <span class="{% if profile.get('missing_counts', {}).get(col, 0) > 0 %}text-rose-700{% else %}text-emerald-700{% endif %} font-bold">
                         {{ profile.get('missing_counts', {}).get(col, 0) }} ({{ profile.get('missing_pct', {}).get(col, 0) }}%)
                     </span>
                 </div>
@@ -133,12 +133,13 @@
 </div>
 
 <!-- Dataset Raw Preview -->
-<div class="p-6 rounded-2xl bg-slate-900/80 border border-slate-800/80 shadow-lg space-y-4">
-    <h3 class="text-base font-bold text-white flex items-center gap-2">
-        <i class="fas fa-table text-indigo-400"></i> Dataset Sample Preview (Top 100 Rows)
+<div class="p-6 rounded-2xl bg-white border border-slate-300 shadow-sm space-y-4 text-slate-900">
+    <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+        <i class="fas fa-table text-indigo-600"></i> Dataset Sample Preview (Top 100 Rows)
     </h3>
-    <div class="overflow-x-auto max-h-96 custom-scrollbar rounded-xl border border-slate-800">
+    <div class="overflow-x-auto max-h-96 custom-scrollbar rounded-xl border border-slate-300">
         {{ preview | safe }}
     </div>
 </div>
 {% endblock %}
+

@@ -318,6 +318,66 @@ def get_user_analytics_data(user_id):
     avg_score = (sum(all_scores) / len(all_scores)) if all_scores else 0.0
     total_models_trained = len(trained_models)
 
+    # Calculate User Platform Mastery & Engagement Rating (0 - 100)
+    proj_pts = min(25.0, total_projects * 5.0)
+    model_pts = min(35.0, total_models_trained * 3.5)
+    
+    if max_score > 0:
+        norm_score = (max_score * 100.0) if max_score <= 1.0 else min(100.0, max_score * 10.0)
+        quality_pts = min(25.0, (norm_score / 100.0) * 25.0)
+    else:
+        quality_pts = 0.0
+
+    dataset_pts = min(15.0, (total_datasets_uploaded * 3.0) + (len(history_events) * 0.5))
+
+    total_engagement_score = round(min(100.0, proj_pts + model_pts + quality_pts + dataset_pts), 1)
+
+    if total_engagement_score >= 90:
+        tier_title = "Grandmaster AI Architect"
+        tier_badge = "bg-amber-100 text-amber-900 border-amber-300"
+        tier_icon = "fa-trophy text-amber-500"
+        star_rating = "5.0"
+        stars_html = "⭐⭐⭐⭐⭐"
+    elif total_engagement_score >= 70:
+        tier_title = "Senior ML Specialist"
+        tier_badge = "bg-indigo-100 text-indigo-900 border-indigo-300"
+        tier_icon = "fa-medal text-indigo-600"
+        star_rating = "4.5"
+        stars_html = "⭐⭐⭐⭐✨"
+    elif total_engagement_score >= 45:
+        tier_title = "Data Science Practitioner"
+        tier_badge = "bg-emerald-100 text-emerald-900 border-emerald-300"
+        tier_icon = "fa-award text-emerald-600"
+        star_rating = "3.8"
+        stars_html = "⭐⭐⭐⭐"
+    elif total_engagement_score >= 20:
+        tier_title = "ML Apprentice"
+        tier_badge = "bg-blue-100 text-blue-900 border-blue-300"
+        tier_icon = "fa-star text-blue-500"
+        star_rating = "2.8"
+        stars_html = "⭐⭐⭐"
+    else:
+        tier_title = "Novice Explorer"
+        tier_badge = "bg-slate-100 text-slate-900 border-slate-300"
+        tier_icon = "fa-seedling text-emerald-500"
+        star_rating = "1.5"
+        stars_html = "⭐⭐"
+
+    platform_rating = {
+        "score": total_engagement_score,
+        "tier_title": tier_title,
+        "tier_badge": tier_badge,
+        "tier_icon": tier_icon,
+        "star_rating": star_rating,
+        "stars_html": stars_html,
+        "breakdown": {
+            "workspaces": round(proj_pts, 1),
+            "models": round(model_pts, 1),
+            "quality": round(quality_pts, 1),
+            "activity": round(dataset_pts, 1)
+        }
+    }
+
     return {
         "user_info": {
             "name": user_doc.get("name", "User"),
@@ -335,6 +395,7 @@ def get_user_analytics_data(user_id):
             "avg_score": avg_score,
             "total_activities": len(history_events)
         },
+        "platform_rating": platform_rating,
         "algo_counts": algo_counts,
         "task_counts": task_counts,
         "trained_models": trained_models,
@@ -360,6 +421,19 @@ def handle_error(e):
     tb = traceback.format_exc()
     print(tb)
     return render_template("error.html", error=str(e), traceback=tb), 500
+
+@app.context_processor
+def inject_global_variables():
+    user_projects = []
+    current_proj = None
+    if current_user and current_user.is_authenticated:
+        try:
+            user_projects = get_user_projects(current_user.id)
+            current_proj = get_current_project()
+        except Exception:
+            user_projects = []
+            current_proj = None
+    return dict(user_projects=user_projects, global_current_project=current_proj)
 
 def is_google_configured():
     client_id = os.getenv("GOOGLE_CLIENT_ID")
@@ -713,6 +787,71 @@ def upload_page():
     state = project.get("state", {})
     return render_template("index.html", state=state, current_project=project)
 
+@app.route("/load_sample/<sample_id>", methods=["POST", "GET"])
+@login_required
+def load_sample(sample_id):
+    project = get_current_project()
+    if not project:
+        projects = get_user_projects(current_user.id)
+        if projects:
+            project = projects[0]
+            set_current_project(project["_id"])
+        else:
+            flash("Please create your first project workspace to start dataset upload.", "info")
+            return redirect(url_for("new_project"))
+
+    project_dir = get_project_dir(current_user.id, project["_id"])
+    
+    if sample_id == "iris":
+        from sklearn.datasets import load_iris
+        raw = load_iris(as_frame=True)
+        df = raw.frame
+        df.rename(columns={"target": "species_class"}, inplace=True)
+        filename = "iris_flowers_classification.csv"
+    elif sample_id == "housing":
+        from sklearn.datasets import fetch_california_housing
+        raw = fetch_california_housing(as_frame=True)
+        df = raw.frame.head(500)
+        df.rename(columns={"MedHouseVal": "house_price_value"}, inplace=True)
+        filename = "housing_prices_regression.csv"
+    elif sample_id == "churn":
+        np.random.seed(42)
+        n = 300
+        df = pd.DataFrame({
+            "account_age_months": np.random.randint(1, 72, n),
+            "monthly_charges_usd": np.round(np.random.uniform(20, 120, n), 2),
+            "total_support_calls": np.random.randint(0, 10, n),
+            "contract_type": np.random.choice(["Month-to-Month", "One Year", "Two Year"], n),
+            "payment_method": np.random.choice(["Credit Card", "Bank Transfer", "Electronic Check"], n),
+            "churn_status": np.random.choice(["No", "Yes"], n, p=[0.75, 0.25])
+        })
+        filename = "customer_churn_telecom.csv"
+    else:
+        flash("Unknown sample dataset requested.", "warning")
+        return redirect(url_for("upload_page"))
+
+    du.save_df(project_dir, df)
+    du.save_df(project_dir, df, name="original.pkl")
+
+    info = du.basic_file_info(df, filename)
+    profile = du.profile_dataset(df)
+
+    state = {
+        "file_info": info,
+        "profile": profile,
+        "cleaning_log": [],
+        "target": None,
+        "task": None
+    }
+    du.save_state(project_dir, state)
+    update_project_state(project["_id"], state)
+
+    du.create_cleaning_snapshot(project_dir, df, "Initial sample dataset load")
+    log_user_activity(current_user.id, project["_id"], "dataset", f"Loaded sample dataset '{filename}'", metadata=info)
+
+    flash(f"Loaded sample dataset '{filename}' successfully ({info['rows']} rows, {info['columns']} columns).", "success")
+    return redirect(url_for("explore"))
+
 @app.route("/upload", methods=["POST"])
 @login_required
 def upload():
@@ -865,37 +1004,53 @@ def clean():
                 return redirect(url_for("clean"))
 
             elif action == "undo":
-                df, msg = du.undo_last_cleaning(project_dir)
-                if df is None:
+                df_restored, msg = du.undo_last_cleaning(project_dir)
+                if df_restored is None:
                     flash(msg, "warning")
                 else:
+                    df = df_restored
                     log = state.get("cleaning_log", [])
                     if log:
                         log.pop()
-                    state["cleaning_log"] = log
                     flash(msg, "success")
 
-            du.save_df(project_dir, df)
-            profile_new = du.profile_dataset(df)
-            state["profile"] = profile_new
-            state["cleaning_log"] = log
-            state["file_info"]["rows"] = len(df)
-            state["file_info"]["columns"] = len(df.columns)
-            du.save_state(project_dir, state)
-            update_project_state(project["_id"], state)
+            if df is not None:
+                du.save_df(project_dir, df)
+                profile_new = du.profile_dataset(df)
+                
+                # Reload latest state from disk to preserve cleaning_history saved by snapshots
+                latest_state = du.load_state(project_dir)
+                latest_state["profile"] = profile_new
+                latest_state["cleaning_log"] = log
+                if "file_info" in latest_state and latest_state["file_info"]:
+                    latest_state["file_info"]["rows"] = len(df)
+                    latest_state["file_info"]["columns"] = len(df.columns)
+                if "cleaning_report" in state:
+                    latest_state["cleaning_report"] = state["cleaning_report"]
+
+                du.save_state(project_dir, latest_state)
+                update_project_state(project["_id"], latest_state)
 
         except Exception as e:
             flash(f"Could not apply cleaning step: {e}", "danger")
         return redirect(url_for("clean"))
 
     profile = du.profile_dataset(df)
+    state = du.load_state(project_dir)
     state["profile"] = profile
+
+    # Auto-initialize baseline snapshot if history is empty
+    history = state.get("cleaning_history", [])
+    if not history and df is not None:
+        du.create_cleaning_snapshot(project_dir, df, "Initial raw dataset")
+        state = du.load_state(project_dir)
+        history = state.get("cleaning_history", [])
+
     du.save_state(project_dir, state)
 
     types = du.column_types(df)
     preview = df.head(50).to_html(classes="table table-sm table-striped table-hover align-middle text-xs font-mono", index=False, na_rep="—")
     cleaning_report = state.get("cleaning_report")
-    history = state.get("cleaning_history", [])
 
     return render_template(
         "clean.html",
@@ -987,17 +1142,26 @@ def train():
         train_all = request.form.get("train_all") == "on"
 
         work_df = df.copy()
-        task = mu.detect_task_type(work_df[target])
+        if not target or target not in work_df.columns:
+            target = work_df.columns[-1]
+
+        work_df = work_df.dropna(subset=[target])
+        y_raw = work_df[target]
+        task = mu.detect_task_type(y_raw)
 
         feature_df = work_df.drop(columns=[target])
         cat_cols = du.column_types(feature_df)["categorical"] + du.column_types(feature_df)["datetime"]
         for c in cat_cols:
+            feature_df[c] = feature_df[c].astype(str).fillna("Missing")
             feature_df = du.encode_column(feature_df, c, "onehot" if feature_df[c].nunique() <= 15 else "label")
 
         feature_df = feature_df.select_dtypes(include=[np.number, "bool"])
-        feature_df = feature_df.fillna(feature_df.median(numeric_only=True))
+        feature_df = feature_df.replace([np.inf, -np.inf], np.nan)
+        for col in feature_df.columns:
+            med = feature_df[col].median()
+            feature_df[col] = feature_df[col].fillna(0 if pd.isna(med) else med)
 
-        y = work_df[target]
+        y = y_raw
         if task == "classification" and not pd.api.types.is_numeric_dtype(y):
             from sklearn.preprocessing import LabelEncoder
             le = LabelEncoder()
@@ -1009,6 +1173,11 @@ def train():
         combined = pd.concat([feature_df, y.rename("__target__")], axis=1).dropna()
         feature_df = combined.drop(columns="__target__")
         y = combined["__target__"]
+
+        if stratify_flag and task == "classification":
+            counts = y.value_counts()
+            if (counts < 2).any():
+                stratify_flag = False
 
         X_train, X_test, y_train, y_test = mu.train_test_split_data(
             feature_df, y, test_size=split, shuffle=shuffle,
@@ -1064,12 +1233,12 @@ def train_stream():
     project_dir = get_project_dir(current_user.id, project["_id"])
     state = du.load_state(project_dir)
 
-    target = request.form.get("target")
-    split = float(request.form.get("split", 0.2))
-    shuffle = request.form.get("shuffle", "on") == "on"
-    stratify_flag = request.form.get("stratify", "off") == "on"
-    model_choice = request.form.getlist("models")
-    train_all = request.form.get("train_all") == "on"
+    target_param = request.form.get("target")
+    split_param = float(request.form.get("split", 0.2))
+    shuffle_param = request.form.get("shuffle", "on") == "on"
+    stratify_param = request.form.get("stratify", "off") == "on"
+    model_choice_param = request.form.getlist("models")
+    train_all_param = request.form.get("train_all") == "on"
 
     def generate_events():
         def make_sse(pct, msg, model_name="", log_entry=""):
@@ -1081,111 +1250,134 @@ def train_stream():
             }
             return f"data: {json.dumps(payload)}\n\n"
 
-        yield make_sse(5, "Initializing AutoML dataset pipeline...", log_entry="[INIT] Dataset loaded and objective verified.")
+        try:
+            yield make_sse(5, "Initializing AutoML dataset pipeline...", log_entry="[INIT] Dataset loaded and objective verified.")
 
-        work_df = df.copy()
-        task = mu.detect_task_type(work_df[target])
+            work_df = df.copy()
+            target = target_param if (target_param and target_param in work_df.columns) else work_df.columns[-1]
 
-        yield make_sse(8, "Encoding categorical features & handling missing values...", log_entry=f"[PREPROCESS] Task auto-detected as '{task.upper()}'. Encoding columns...")
+            work_df = work_df.dropna(subset=[target])
+            y_raw = work_df[target]
+            task = mu.detect_task_type(y_raw)
 
-        feature_df = work_df.drop(columns=[target])
-        cat_cols = du.column_types(feature_df)["categorical"] + du.column_types(feature_df)["datetime"]
-        for c in cat_cols:
-            feature_df = du.encode_column(feature_df, c, "onehot" if feature_df[c].nunique() <= 15 else "label")
+            yield make_sse(8, "Encoding categorical features & handling missing values...", log_entry=f"[PREPROCESS] Task auto-detected as '{task.upper()}'. Encoding columns...")
 
-        feature_df = feature_df.select_dtypes(include=[np.number, "bool"])
-        feature_df = feature_df.fillna(feature_df.median(numeric_only=True))
+            feature_df = work_df.drop(columns=[target])
+            cat_cols = du.column_types(feature_df)["categorical"] + du.column_types(feature_df)["datetime"]
+            for c in cat_cols:
+                feature_df[c] = feature_df[c].astype(str).fillna("Missing")
+                feature_df = du.encode_column(feature_df, c, "onehot" if feature_df[c].nunique() <= 15 else "label")
 
-        y = work_df[target]
-        if task == "classification" and not pd.api.types.is_numeric_dtype(y):
-            from sklearn.preprocessing import LabelEncoder
-            le = LabelEncoder()
-            y = pd.Series(le.fit_transform(y.astype(str)), index=y.index)
-            class_labels = le.classes_.tolist()
-        else:
-            class_labels = sorted(y.dropna().unique().tolist()) if task == "classification" else None
+            feature_df = feature_df.select_dtypes(include=[np.number, "bool"])
+            feature_df = feature_df.replace([np.inf, -np.inf], np.nan)
+            for col in feature_df.columns:
+                med = feature_df[col].median()
+                feature_df[col] = feature_df[col].fillna(0 if pd.isna(med) else med)
 
-        combined = pd.concat([feature_df, y.rename("__target__")], axis=1).dropna()
-        feature_df = combined.drop(columns="__target__")
-        y = combined["__target__"]
-
-        yield make_sse(15, f"Splitting data into Training & Testing sets ({int((1-split)*100)}% Train / {int(split*100)}% Test)...", log_entry="[DATA] Data split completed.")
-
-        X_train, X_test, y_train, y_test = mu.train_test_split_data(
-            feature_df, y, test_size=split, shuffle=shuffle,
-            stratify_flag=stratify_flag, task=task
-        )
-
-        model_names = None if train_all else (model_choice or None)
-        lb_df = None
-        fitted = {}
-        extras = {}
-        best_name = None
-
-        for evt in mu.run_automl_stream(X_train, X_test, y_train, y_test, task, model_names):
-            if evt.get("stage") == "result":
-                lb_df = evt["lb_df"]
-                fitted = evt["fitted"]
-                extras = evt["extras"]
-                best_name = evt["best_model_name"]
+            y = y_raw
+            if task == "classification" and not pd.api.types.is_numeric_dtype(y):
+                from sklearn.preprocessing import LabelEncoder
+                le = LabelEncoder()
+                y = pd.Series(le.fit_transform(y.astype(str)), index=y.index)
+                class_labels = le.classes_.tolist()
             else:
-                m_name = evt.get("model", "")
-                idx = evt.get("index", 1)
-                tot = evt.get("total", 1)
-                stage = evt.get("stage")
+                class_labels = sorted(y.dropna().unique().tolist()) if task == "classification" else None
 
-                pct_start = 15 + int(((idx - 1) / tot) * 70)
-                pct_mid = 15 + int(((idx - 0.5) / tot) * 70)
-                pct_end = 15 + int((idx / tot) * 70)
+            combined = pd.concat([feature_df, y.rename("__target__")], axis=1).dropna()
+            feature_df = combined.drop(columns="__target__")
+            y = combined["__target__"]
 
-                if stage == "train_start":
-                    yield make_sse(pct_start, f"Training Model [{idx}/{tot}]: {m_name}...", model_name=m_name, log_entry=f"⚡ [{idx}/{tot}] Fitting model '{m_name}' on training split...")
-                elif stage == "evaluating":
-                    yield make_sse(pct_mid, f"Evaluating accuracy & cross-validation metrics for {m_name}...", model_name=m_name, log_entry=f"📊 Computing performance metrics for '{m_name}'...")
-                elif stage == "train_complete":
-                    summary = evt.get("summary", "")
-                    yield make_sse(pct_end, f"Completed {m_name}! {summary}", model_name=m_name, log_entry=f"✔ [{idx}/{tot}] '{m_name}' trained. Score: {summary}")
-                elif stage == "train_error":
-                    yield make_sse(pct_end, f"Error in {m_name}", model_name=m_name, log_entry=f"⚠️ [{idx}/{tot}] Error training '{m_name}': {evt.get('error')}")
+            yield make_sse(15, f"Splitting data into Training & Testing sets ({int((1-split_param)*100)}% Train / {int(split_param*100)}% Test)...", log_entry="[DATA] Data split completed.")
 
-        yield make_sse(90, "Evaluating AutoML leaderboard & selecting optimal model...", log_entry=f"🏆 Winner Model selected: '{best_name}'")
+            do_stratify = stratify_param
+            if do_stratify and task == "classification":
+                counts = y.value_counts()
+                if (counts < 2).any():
+                    do_stratify = False
 
-        du.save_df(project_dir, feature_df, name="feature_df.pkl")
-        du.save_df(project_dir, X_test, name="X_test.pkl")
-        du.save_df(project_dir, y_test, name="y_test.pkl")
+            X_train, X_test, y_train, y_test = mu.train_test_split_data(
+                feature_df, y, test_size=split_param, shuffle=shuffle_param,
+                stratify_flag=do_stratify, task=task
+            )
 
-        import pickle
-        with open(os.path.join(project_dir, "fitted_models.pkl"), "wb") as f:
-            pickle.dump(fitted, f)
-        with open(os.path.join(project_dir, "extras.pkl"), "wb") as f:
-            pickle.dump(extras, f)
+            model_names = None if train_all_param else (model_choice_param or None)
+            lb_df = None
+            fitted = {}
+            extras = {}
+            best_name = None
 
-        state["target"] = target
-        state["task"] = task
-        state["class_labels"] = class_labels
-        state["feature_columns"] = feature_df.columns.tolist()
-        state["leaderboard"] = lb_df.to_dict(orient="records") if lb_df is not None else []
-        state["best_model"] = best_name
-        du.save_state(project_dir, state)
-        update_project_state(project["_id"], state)
+            for evt in mu.run_automl_stream(X_train, X_test, y_train, y_test, task, model_names):
+                if evt.get("stage") == "result":
+                    lb_df = evt["lb_df"]
+                    fitted = evt["fitted"]
+                    extras = evt["extras"]
+                    best_name = evt["best_model_name"]
+                else:
+                    m_name = evt.get("model", "")
+                    idx = evt.get("index", 1)
+                    tot = evt.get("total", 1)
+                    stage = evt.get("stage")
 
-        if best_name and best_name in fitted:
-            best_model_obj = fitted[best_name]
-            model_path = os.path.join(project_dir, "best_model.pkl")
-            mu.save_model_bundle(model_path, best_model_obj, feature_df.columns.tolist(), target, task)
+                    pct_start = 15 + int(((idx - 1) / tot) * 70)
+                    pct_mid = 15 + int(((idx - 0.5) / tot) * 70)
+                    pct_end = 15 + int((idx / tot) * 70)
 
-        log_user_activity(current_user.id, project["_id"], "training", f"Trained AutoML pipeline. Top model: '{best_name}'", metadata={"best_model": best_name, "task": task})
+                    if stage == "train_start":
+                        yield make_sse(pct_start, f"Training Model [{idx}/{tot}]: {m_name}...", model_name=m_name, log_entry=f"⚡ [{idx}/{tot}] Fitting model '{m_name}' on training split...")
+                    elif stage == "evaluating":
+                        yield make_sse(pct_mid, f"Evaluating accuracy & cross-validation metrics for {m_name}...", model_name=m_name, log_entry=f"📊 Computing performance metrics for '{m_name}'...")
+                    elif stage == "train_complete":
+                        summary = evt.get("summary", "")
+                        yield make_sse(pct_end, f"Completed {m_name}! {summary}", model_name=m_name, log_entry=f"✔ [{idx}/{tot}] '{m_name}' trained. Score: {summary}")
+                    elif stage == "train_error":
+                        yield make_sse(pct_end, f"Error in {m_name}", model_name=m_name, log_entry=f"⚠️ [{idx}/{tot}] Error training '{m_name}': {evt.get('error')}")
 
-        yield make_sse(98, "Saving model pipeline & preparing results...", log_entry="💾 Saved fitted models & artifacts to workspace.")
+            yield make_sse(90, "Evaluating AutoML leaderboard & selecting optimal model...", log_entry=f"🏆 Winner Model selected: '{best_name}'")
 
-        final_payload = {
-            "percent": 100,
-            "message": f"Training Complete! Top Model: {best_name}",
-            "model": best_name,
-            "log": "🚀 Redirecting to results dashboard...",
-            "redirect": url_for("results")
-        }
-        yield f"data: {json.dumps(final_payload)}\n\n"
+            du.save_df(project_dir, feature_df, name="feature_df.pkl")
+            du.save_df(project_dir, X_test, name="X_test.pkl")
+            du.save_df(project_dir, y_test, name="y_test.pkl")
+
+            import pickle
+            with open(os.path.join(project_dir, "fitted_models.pkl"), "wb") as f:
+                pickle.dump(fitted, f)
+            with open(os.path.join(project_dir, "extras.pkl"), "wb") as f:
+                pickle.dump(extras, f)
+
+            state["target"] = target
+            state["task"] = task
+            state["class_labels"] = class_labels
+            state["feature_columns"] = feature_df.columns.tolist()
+            state["leaderboard"] = lb_df.to_dict(orient="records") if lb_df is not None else []
+            state["best_model"] = best_name
+            du.save_state(project_dir, state)
+            update_project_state(project["_id"], state)
+
+            if best_name and best_name in fitted:
+                best_model_obj = fitted[best_name]
+                model_path = os.path.join(project_dir, "best_model.pkl")
+                mu.save_model_bundle(model_path, best_model_obj, feature_df.columns.tolist(), target, task)
+
+            log_user_activity(current_user.id, project["_id"], "training", f"Trained AutoML pipeline. Top model: '{best_name}'", metadata={"best_model": best_name, "task": task})
+
+            yield make_sse(98, "Saving model pipeline & preparing results...", log_entry="💾 Saved fitted models & artifacts to workspace.")
+
+            final_payload = {
+                "percent": 100,
+                "message": f"Training Complete! Top Model: {best_name}",
+                "model": best_name,
+                "log": "🚀 Redirecting to results dashboard...",
+                "redirect": url_for("results")
+            }
+            yield f"data: {json.dumps(final_payload)}\n\n"
+
+        except Exception as err:
+            err_payload = {
+                "percent": 0,
+                "message": f"Pipeline Error: {str(err)}",
+                "log": f"❌ [ERROR] Training pipeline failed: {str(err)}"
+            }
+            yield f"data: {json.dumps(err_payload)}\n\n"
 
     return Response(stream_with_context(generate_events()), mimetype="text/event-stream")
 
@@ -1871,14 +2063,16 @@ def analytics():
     analytics_data = get_user_analytics_data(current_user.id)
     
     charts = {}
-    charts["algo_pie"] = vu.user_algorithm_pie(analytics_data["algo_counts"]).to_json()
-    charts["task_donut"] = vu.user_task_donut(analytics_data["task_counts"]).to_json()
-    charts["score_timeline"] = vu.user_score_history_line(analytics_data["score_timeline"]).to_json()
+    charts["algo_pie"] = vu.user_algorithm_pie(analytics_data["algo_counts"], dark_mode=False).to_json()
+    charts["task_donut"] = vu.user_task_donut(analytics_data["task_counts"], dark_mode=False).to_json()
+    charts["score_timeline"] = vu.user_score_history_line(analytics_data["score_timeline"], dark_mode=False).to_json()
     charts["score_range"] = vu.user_score_range_bar(
         analytics_data["stats"]["min_score"],
         analytics_data["stats"]["avg_score"],
-        analytics_data["stats"]["max_score"]
+        analytics_data["stats"]["max_score"],
+        dark_mode=False
     ).to_json()
+
 
     return render_template(
         "analytics.html",

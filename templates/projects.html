@@ -6,69 +6,69 @@
 
 {% block content %}
 <!-- Welcome & Project Banner -->
-<div class="p-6 rounded-2xl bg-gradient-to-r from-slate-900 via-indigo-950/40 to-slate-900 border border-slate-800 shadow-xl relative overflow-hidden">
-    <div class="absolute top-0 right-0 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+<div class="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-sm relative overflow-hidden text-slate-900">
+    <div class="absolute top-0 right-0 w-96 h-96 bg-indigo-500/5 rounded-full blur-3xl pointer-events-none"></div>
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
         <div>
-            <h2 class="text-2xl font-bold text-white tracking-tight flex items-center gap-2">
+            <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
                 Welcome, {{ current_user.first_name }} 👋
             </h2>
-            <p class="text-slate-400 text-sm mt-1 flex items-center gap-2">
-                <span>Active Project: <strong class="text-indigo-300 font-semibold">{{ current_project.name if current_project else 'No project active' }}</strong></span>
+            <p class="text-slate-600 text-sm mt-1 flex items-center gap-2">
+                <span>Active Project: <strong class="text-indigo-700 font-bold">{{ current_project.name if current_project else 'No project active' }}</strong></span>
                 {% if current_project %}
-                <button type="button" data-project-id="{{ current_project._id }}" data-project-name="{{ current_project.name }}" class="rename-project-btn px-2 py-0.5 rounded-lg bg-indigo-600/20 hover:bg-indigo-600/40 text-indigo-300 border border-indigo-500/30 text-[11px] font-medium transition-all flex items-center gap-1" title="Rename Active Project">
+                <button type="button" data-project-id="{{ current_project._id }}" data-project-name="{{ current_project.name }}" class="rename-project-btn px-2 py-0.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 text-[11px] font-semibold transition-all flex items-center gap-1" title="Rename Active Project">
                     <i class="fas fa-pen text-[10px]"></i> <span>Rename</span>
                 </button>
                 {% endif %}
             </p>
         </div>
-        <div class="flex items-center gap-3">
-            <a href="{{ url_for('upload_page') }}" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-lg shadow-indigo-600/30 transition-all flex items-center gap-2">
+        <div class="flex items-center gap-3 flex-wrap">
+            <a href="{{ url_for('upload_page') }}" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-sm transition-all flex items-center gap-2">
                 <i class="fas fa-cloud-upload-alt"></i> Upload New Dataset
             </a>
-            <a href="{{ url_for('new_project') }}" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-semibold transition-all flex items-center gap-2">
-                <i class="fas fa-folder-plus"></i> New Project
+            <a href="{{ url_for('new_project') }}" class="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 text-xs font-bold transition-all flex items-center gap-2 shadow-xs">
+                <i class="fas fa-folder-plus text-indigo-600"></i> New Project
             </a>
-            <button type="button" onclick="openSwitchModal()" class="px-4 py-2.5 rounded-xl bg-indigo-600/20 hover:bg-indigo-600/40 text-indigo-300 border border-indigo-500/40 text-xs font-semibold transition-all flex items-center gap-2 shadow-lg shadow-indigo-600/10" title="Switch Active Project">
-                <i class="fas fa-exchange-alt text-indigo-400"></i> Switch Project
+            <button type="button" onclick="openSwitchModal()" class="px-4 py-2.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 text-xs font-bold transition-all flex items-center gap-2 shadow-xs" title="Switch Active Project">
+                <i class="fas fa-exchange-alt text-indigo-600"></i> Switch Project
             </button>
             {% if current_project %}
-            <button type="button" data-project-id="{{ current_project._id }}" data-project-name="{{ current_project.name }}" class="delete-project-btn px-3.5 py-2.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 text-xs font-semibold transition-all flex items-center gap-2" title="Delete Active Project">
-                <i class="fas fa-trash-alt text-rose-400"></i> <span class="hidden sm:inline">Delete Active Project</span>
+            <button type="button" data-project-id="{{ current_project._id }}" data-project-name="{{ current_project.name }}" class="delete-project-btn px-3.5 py-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold transition-all flex items-center gap-2 shadow-xs" title="Delete Active Project">
+                <i class="fas fa-trash-alt text-rose-600"></i> <span class="hidden sm:inline">Delete Active Project</span>
             </button>
             {% endif %}
         </div>
     </div>
 
     <!-- Workflow Stepper Progress -->
-    <div class="mt-6 pt-6 border-t border-slate-800/80">
-        <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 flex items-center justify-between">
+    <div class="mt-6 pt-6 border-t border-slate-200">
+        <div class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 flex items-center justify-between">
             <span>Automated Pipeline Workflow</span>
-            <span class="text-indigo-400 font-bold">Step {{ kpis.workflow_step }} of 5 Completed</span>
+            <span class="text-indigo-700 font-bold">Step {{ kpis.workflow_step }} of 5 Completed</span>
         </div>
         <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
             <!-- Step 1: Upload -->
-            <a href="{{ url_for('upload_page') }}" class="p-3 rounded-xl border text-center transition-all flex flex-col items-center gap-1 {% if kpis.workflow_step >= 1 %}bg-indigo-600/20 border-indigo-500/40 text-indigo-200{% else %}bg-slate-900/60 border-slate-800 text-slate-500{% endif %}">
+            <a href="{{ url_for('upload_page') }}" class="p-3 rounded-xl border text-center transition-all flex flex-col items-center gap-1 {% if kpis.workflow_step >= 1 %}bg-indigo-50 border-indigo-300 text-indigo-800 font-bold shadow-xs{% else %}bg-slate-50 border-slate-200 text-slate-500{% endif %}">
                 <i class="fas fa-cloud-upload-alt text-base"></i>
                 <span class="text-xs font-semibold">1. Upload</span>
             </a>
             <!-- Step 2: Explore -->
-            <a href="{{ url_for('explore') }}" class="p-3 rounded-xl border text-center transition-all flex flex-col items-center gap-1 {% if kpis.workflow_step >= 2 %}bg-indigo-600/20 border-indigo-500/40 text-indigo-200{% else %}bg-slate-900/60 border-slate-800 text-slate-500{% endif %}">
+            <a href="{{ url_for('explore') }}" class="p-3 rounded-xl border text-center transition-all flex flex-col items-center gap-1 {% if kpis.workflow_step >= 2 %}bg-indigo-50 border-indigo-300 text-indigo-800 font-bold shadow-xs{% else %}bg-slate-50 border-slate-200 text-slate-500{% endif %}">
                 <i class="fas fa-compass text-base"></i>
                 <span class="text-xs font-semibold">2. Explore</span>
             </a>
             <!-- Step 3: Clean -->
-            <a href="{{ url_for('clean') }}" class="p-3 rounded-xl border text-center transition-all flex flex-col items-center gap-1 {% if kpis.workflow_step >= 3 %}bg-emerald-600/20 border-emerald-500/40 text-emerald-200{% else %}bg-slate-900/60 border-slate-800 text-slate-500{% endif %}">
+            <a href="{{ url_for('clean') }}" class="p-3 rounded-xl border text-center transition-all flex flex-col items-center gap-1 {% if kpis.workflow_step >= 3 %}bg-emerald-50 border-emerald-300 text-emerald-800 font-bold shadow-xs{% else %}bg-slate-50 border-slate-200 text-slate-500{% endif %}">
                 <i class="fas fa-broom text-base"></i>
                 <span class="text-xs font-semibold">3. Clean</span>
             </a>
             <!-- Step 4: Train -->
-            <a href="{{ url_for('train') }}" class="p-3 rounded-xl border text-center transition-all flex flex-col items-center gap-1 {% if kpis.workflow_step >= 4 %}bg-purple-600/20 border-purple-500/40 text-purple-200{% else %}bg-slate-900/60 border-slate-800 text-slate-500{% endif %}">
+            <a href="{{ url_for('train') }}" class="p-3 rounded-xl border text-center transition-all flex flex-col items-center gap-1 {% if kpis.workflow_step >= 4 %}bg-purple-50 border-purple-300 text-purple-800 font-bold shadow-xs{% else %}bg-slate-50 border-slate-200 text-slate-500{% endif %}">
                 <i class="fas fa-robot text-base"></i>
                 <span class="text-xs font-semibold">4. AutoML Train</span>
             </a>
             <!-- Step 5: Evaluate & Deploy -->
-            <a href="{{ url_for('results') }}" class="p-3 rounded-xl border text-center transition-all flex flex-col items-center gap-1 {% if kpis.workflow_step >= 5 %}bg-yellow-600/20 border-yellow-500/40 text-yellow-200{% else %}bg-slate-900/60 border-slate-800 text-slate-500{% endif %}">
+            <a href="{{ url_for('results') }}" class="p-3 rounded-xl border text-center transition-all flex flex-col items-center gap-1 {% if kpis.workflow_step >= 5 %}bg-amber-50 border-amber-300 text-amber-800 font-bold shadow-xs{% else %}bg-slate-50 border-slate-200 text-slate-500{% endif %}">
                 <i class="fas fa-trophy text-base"></i>
                 <span class="text-xs font-semibold">5. Evaluate</span>
             </a>
@@ -79,78 +79,78 @@
 <!-- Dynamic Real-Time KPI Cards Grid -->
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
     <!-- Card 1: Dataset Info -->
-    <div class="p-5 rounded-2xl bg-slate-900/80 border border-slate-800/80 shadow-lg flex items-center gap-4 hover:border-slate-700 transition-all">
-        <div class="w-12 h-12 rounded-xl bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400 shrink-0">
+    <div class="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-sm flex items-center gap-4 hover:border-slate-300 transition-all">
+        <div class="w-12 h-12 rounded-xl bg-indigo-50 border border-indigo-200 flex items-center justify-center text-indigo-600 shrink-0">
             <i class="fas fa-database text-xl"></i>
         </div>
         <div class="min-w-0 flex-1">
-            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Dataset Name</p>
-            <h4 class="text-base font-bold text-white truncate" title="{{ kpis.dataset_name }}">{{ kpis.dataset_name }}</h4>
-            <p class="text-xs text-indigo-400 font-mono mt-0.5">{{ kpis.rows }} rows • {{ kpis.columns }} cols</p>
+            <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Dataset Name</p>
+            <h4 class="text-base font-extrabold text-slate-900 truncate" title="{{ kpis.dataset_name }}">{{ kpis.dataset_name }}</h4>
+            <p class="text-xs text-indigo-700 font-mono font-bold mt-0.5">{{ kpis.rows }} rows • {{ kpis.columns }} cols</p>
         </div>
     </div>
 
     <!-- Card 2: Dataset Health Score Gauge -->
-    <div class="p-5 rounded-2xl bg-slate-900/80 border border-slate-800/80 shadow-lg flex items-center gap-4 hover:border-slate-700 transition-all">
-        <div class="w-12 h-12 rounded-xl {% if kpis.health_score >= 80 %}bg-emerald-500/20 border-emerald-500/30 text-emerald-400{% elif kpis.health_score >= 50 %}bg-amber-500/20 border-amber-500/30 text-amber-400{% else %}bg-rose-500/20 border-rose-500/30 text-rose-400{% endif %} border flex items-center justify-center shrink-0 font-bold">
+    <div class="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-sm flex items-center gap-4 hover:border-slate-300 transition-all">
+        <div class="w-12 h-12 rounded-xl {% if kpis.health_score >= 80 %}bg-emerald-50 border-emerald-200 text-emerald-700{% elif kpis.health_score >= 50 %}bg-amber-50 border-amber-200 text-amber-700{% else %}bg-rose-50 border-rose-200 text-rose-700{% endif %} border flex items-center justify-center shrink-0 font-extrabold text-base">
             {{ kpis.health_score|round(0)|int }}%
         </div>
         <div class="min-w-0 flex-1">
-            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Dataset Health</p>
-            <h4 class="text-lg font-bold text-white">
+            <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Dataset Health</p>
+            <h4 class="text-lg font-extrabold text-slate-900">
                 {% if kpis.health_score >= 80 %}Excellent{% elif kpis.health_score >= 50 %}Moderate{% else %}Action Required{% endif %}
             </h4>
-            <p class="text-xs text-slate-400 mt-0.5">{{ kpis.missing_cells }} missing cells ({{ kpis.missing_pct }}%)</p>
+            <p class="text-xs text-slate-600 font-medium mt-0.5">{{ kpis.missing_cells }} missing cells ({{ kpis.missing_pct }}%)</p>
         </div>
     </div>
 
     <!-- Card 3: Model Performance KPI -->
-    <div class="p-5 rounded-2xl bg-slate-900/80 border border-slate-800/80 shadow-lg flex items-center gap-4 hover:border-slate-700 transition-all">
-        <div class="w-12 h-12 rounded-xl bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-400 shrink-0">
+    <div class="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-sm flex items-center gap-4 hover:border-slate-300 transition-all">
+        <div class="w-12 h-12 rounded-xl bg-purple-50 border border-purple-200 flex items-center justify-center text-purple-600 shrink-0">
             <i class="fas fa-award text-xl"></i>
         </div>
         <div class="min-w-0 flex-1">
-            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Best Model Score</p>
-            <h4 class="text-lg font-bold text-white">{{ kpis.best_score }}</h4>
-            <p class="text-xs text-purple-400 truncate mt-0.5">{{ kpis.best_model }}</p>
+            <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Best Model Score</p>
+            <h4 class="text-lg font-extrabold text-slate-900">{{ kpis.best_score }}</h4>
+            <p class="text-xs text-purple-700 font-semibold truncate mt-0.5">{{ kpis.best_model }}</p>
         </div>
     </div>
 
     <!-- Card 4: Memory & Task Type -->
-    <div class="p-5 rounded-2xl bg-slate-900/80 border border-slate-800/80 shadow-lg flex items-center gap-4 hover:border-slate-700 transition-all">
-        <div class="w-12 h-12 rounded-xl bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shrink-0">
+    <div class="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-sm flex items-center gap-4 hover:border-slate-300 transition-all">
+        <div class="w-12 h-12 rounded-xl bg-sky-50 border border-sky-200 flex items-center justify-center text-sky-600 shrink-0">
             <i class="fas fa-server text-xl"></i>
         </div>
         <div class="min-w-0 flex-1">
-            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Problem Type</p>
-            <h4 class="text-base font-bold text-white">{{ kpis.problem_type }}</h4>
-            <p class="text-xs text-cyan-400 mt-0.5">RAM: {{ kpis.memory_usage }}</p>
+            <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Problem Type</p>
+            <h4 class="text-base font-extrabold text-slate-900 capitalize">{{ kpis.problem_type }}</h4>
+            <p class="text-xs text-sky-700 font-bold mt-0.5">RAM: {{ kpis.memory_usage }}</p>
         </div>
     </div>
 </div>
 
 <!-- Dashboard Navigation Tab Bar -->
-<div class="flex items-center justify-between gap-2 overflow-x-auto border-b border-slate-800 pb-3 mb-6 custom-scrollbar">
+<div class="flex items-center justify-between gap-2 overflow-x-auto border-b border-slate-200 pb-3 mb-6 custom-scrollbar">
     <div class="flex items-center gap-2 shrink-0">
-        <button type="button" onclick="switchDashboardTab('overviewTab')" id="tabBtn-overviewTab" class="dashboard-tab-btn px-4 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center gap-2 bg-indigo-600 text-white shadow-lg shadow-indigo-600/30 border border-indigo-500/50">
+        <button type="button" onclick="switchDashboardTab('overviewTab')" id="tabBtn-overviewTab" class="dashboard-tab-btn px-4 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center gap-2 bg-indigo-600 text-white shadow-sm border border-indigo-600">
             <i class="fas fa-chart-pie"></i> <span>Overview & Pipeline</span>
             <span class="px-2 py-0.5 rounded-full text-[10px] bg-white/20 text-white">Step {{ kpis.workflow_step }}/5</span>
         </button>
-        <button type="button" onclick="switchDashboardTab('trainerTab')" id="tabBtn-trainerTab" class="dashboard-tab-btn px-4 py-2.5 rounded-xl font-semibold text-xs text-slate-300 bg-slate-900/40 hover:bg-slate-800/70 border border-slate-700/60 hover:border-slate-500/80 backdrop-blur-md shadow-sm hover:shadow-indigo-500/10 hover:text-white transition-all flex items-center gap-2">
-            <i class="fas fa-microchip text-purple-400"></i> <span>AutoML Trainer</span>
+        <button type="button" onclick="switchDashboardTab('trainerTab')" id="tabBtn-trainerTab" class="dashboard-tab-btn px-4 py-2.5 rounded-xl font-semibold text-xs text-slate-700 bg-white hover:bg-slate-100 border border-slate-200 shadow-xs hover:text-slate-900 transition-all flex items-center gap-2">
+            <i class="fas fa-microchip text-purple-600"></i> <span>AutoML Trainer</span>
             {% if leaderboard %}
-            <span class="px-2 py-0.5 rounded-full text-[10px] bg-purple-500/20 text-purple-300 border border-purple-500/30">{{ leaderboard|length }} Models</span>
+            <span class="px-2 py-0.5 rounded-full text-[10px] bg-purple-50 text-purple-700 border border-purple-200 font-bold">{{ leaderboard|length }} Models</span>
             {% endif %}
         </button>
-        <button type="button" onclick="switchDashboardTab('apiTab')" id="tabBtn-apiTab" class="dashboard-tab-btn px-4 py-2.5 rounded-xl font-semibold text-xs text-slate-300 bg-slate-900/40 hover:bg-slate-800/70 border border-slate-700/60 hover:border-slate-500/80 backdrop-blur-md shadow-sm hover:shadow-indigo-500/10 hover:text-white transition-all flex items-center gap-2">
-            <i class="fas fa-server text-emerald-400"></i> <span>REST API & Test Studio</span>
+        <button type="button" onclick="switchDashboardTab('apiTab')" id="tabBtn-apiTab" class="dashboard-tab-btn px-4 py-2.5 rounded-xl font-semibold text-xs text-slate-700 bg-white hover:bg-slate-100 border border-slate-200 shadow-xs hover:text-slate-900 transition-all flex items-center gap-2">
+            <i class="fas fa-server text-emerald-600"></i> <span>REST API & Test Studio</span>
             {% if kpis.best_model and kpis.best_model != 'None' %}
-            <span class="px-2 py-0.5 rounded-full text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">🟢 Deployed</span>
+            <span class="px-2 py-0.5 rounded-full text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold">🟢 Deployed</span>
             {% endif %}
         </button>
-        <button type="button" onclick="switchDashboardTab('projectsTab')" id="tabBtn-projectsTab" class="dashboard-tab-btn px-4 py-2.5 rounded-xl font-semibold text-xs text-slate-300 bg-slate-900/40 hover:bg-slate-800/70 border border-slate-700/60 hover:border-slate-500/80 backdrop-blur-md shadow-sm hover:shadow-indigo-500/10 hover:text-white transition-all flex items-center gap-2">
-            <i class="fas fa-folder text-indigo-400"></i> <span>Workspaces & AI Copilot</span>
-            <span class="px-2 py-0.5 rounded-full text-[10px] bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">{{ projects|length }} Projects</span>
+        <button type="button" onclick="switchDashboardTab('projectsTab')" id="tabBtn-projectsTab" class="dashboard-tab-btn px-4 py-2.5 rounded-xl font-semibold text-xs text-slate-700 bg-white hover:bg-slate-100 border border-slate-200 shadow-xs hover:text-slate-900 transition-all flex items-center gap-2">
+            <i class="fas fa-folder text-indigo-600"></i> <span>Workspaces & AI Copilot</span>
+            <span class="px-2 py-0.5 rounded-full text-[10px] bg-indigo-50 text-indigo-700 border border-indigo-200 font-bold">{{ projects|length }} Projects</span>
         </button>
     </div>
 </div>
@@ -158,77 +158,77 @@
 <!-- Tab 1: Overview & Pipeline -->
 <div id="overviewTab" class="dashboard-tab-content space-y-6">
     <!-- Platform Quick Actions Panel -->
-    <div class="p-6 rounded-2xl bg-slate-900/80 border border-slate-800/80 shadow-lg">
-        <h3 class="text-base font-bold text-white flex items-center gap-2 mb-4">
-            <i class="fas fa-bolt text-amber-400"></i> Platform Quick Actions
+    <div class="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-sm">
+        <h3 class="text-base font-bold text-slate-900 flex items-center gap-2 mb-4">
+            <i class="fas fa-bolt text-amber-500"></i> Platform Quick Actions
         </h3>
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <a href="{{ url_for('upload_page') }}" class="p-4 rounded-xl bg-slate-800/60 border border-slate-700/60 hover:bg-slate-800 hover:border-indigo-500/50 transition-all flex flex-col items-center gap-2 group text-center">
-                <i class="fas fa-cloud-upload-alt text-2xl text-cyan-400 group-hover:scale-110 transition-transform"></i>
-                <span class="text-xs font-semibold text-white">Upload Dataset</span>
+            <a href="{{ url_for('upload_page') }}" class="p-4 rounded-xl bg-slate-50 border border-slate-200 hover:bg-indigo-50 hover:border-indigo-300 transition-all flex flex-col items-center gap-2 group text-center">
+                <i class="fas fa-cloud-upload-alt text-2xl text-indigo-600 group-hover:scale-110 transition-transform"></i>
+                <span class="text-xs font-bold text-slate-900">Upload Dataset</span>
             </a>
-            <a href="{{ url_for('clean') }}" class="p-4 rounded-xl bg-slate-800/60 border border-slate-700/60 hover:bg-slate-800 hover:border-indigo-500/50 transition-all flex flex-col items-center gap-2 group text-center">
-                <i class="fas fa-broom text-2xl text-emerald-400 group-hover:scale-110 transition-transform"></i>
-                <span class="text-xs font-semibold text-white">Auto Clean</span>
+            <a href="{{ url_for('clean') }}" class="p-4 rounded-xl bg-slate-50 border border-slate-200 hover:bg-emerald-50 hover:border-emerald-300 transition-all flex flex-col items-center gap-2 group text-center">
+                <i class="fas fa-broom text-2xl text-emerald-600 group-hover:scale-110 transition-transform"></i>
+                <span class="text-xs font-bold text-slate-900">Auto Clean</span>
             </a>
-            <button type="button" onclick="switchDashboardTab('trainerTab')" class="p-4 rounded-xl bg-purple-900/40 border border-purple-700/60 hover:bg-purple-800/60 hover:border-purple-500 transition-all flex flex-col items-center gap-2 group text-center">
-                <i class="fas fa-robot text-2xl text-purple-400 group-hover:scale-110 transition-transform"></i>
-                <span class="text-xs font-semibold text-white">Train & Deploy</span>
+            <button type="button" onclick="switchDashboardTab('trainerTab')" class="p-4 rounded-xl bg-slate-50 border border-slate-200 hover:bg-purple-50 hover:border-purple-300 transition-all flex flex-col items-center gap-2 group text-center">
+                <i class="fas fa-robot text-2xl text-purple-600 group-hover:scale-110 transition-transform"></i>
+                <span class="text-xs font-bold text-slate-900">Train & Deploy</span>
             </button>
-            <button type="button" onclick="switchDashboardTab('apiTab')" class="p-4 rounded-xl bg-slate-800/60 border border-slate-700/60 hover:bg-slate-800 hover:border-indigo-500/50 transition-all flex flex-col items-center gap-2 group text-center">
-                <i class="fas fa-vial text-2xl text-pink-400 group-hover:scale-110 transition-transform"></i>
-                <span class="text-xs font-semibold text-white">Test Live API</span>
+            <button type="button" onclick="switchDashboardTab('apiTab')" class="p-4 rounded-xl bg-slate-50 border border-slate-200 hover:bg-sky-50 hover:border-sky-300 transition-all flex flex-col items-center gap-2 group text-center">
+                <i class="fas fa-vial text-2xl text-sky-600 group-hover:scale-110 transition-transform"></i>
+                <span class="text-xs font-bold text-slate-900">Test Live API</span>
             </button>
         </div>
     </div>
 
     <!-- Overview Quick Leaderboard Preview -->
-    <div class="p-6 rounded-2xl bg-slate-900/80 border border-slate-800/80 shadow-lg">
+    <div class="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-sm">
         <div class="flex items-center justify-between mb-4">
-            <h3 class="text-base font-bold text-white flex items-center gap-2">
-                <i class="fas fa-trophy text-yellow-400"></i> Model Performance Summary
+            <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                <i class="fas fa-trophy text-amber-500"></i> Model Performance Summary
             </h3>
             {% if leaderboard %}
-                <button type="button" onclick="switchDashboardTab('trainerTab')" class="text-xs text-indigo-400 hover:text-indigo-300 font-semibold">View AutoML Telemetry →</button>
+                <button type="button" onclick="switchDashboardTab('trainerTab')" class="text-xs text-indigo-700 hover:text-indigo-800 font-bold">View AutoML Telemetry →</button>
             {% endif %}
         </div>
 
         {% if leaderboard %}
-            <div class="overflow-x-auto">
+            <div class="overflow-x-auto border border-slate-200 rounded-xl">
                 <table class="w-full text-left border-collapse">
                     <thead>
-                        <tr class="border-b border-slate-800 text-xs uppercase font-bold text-slate-400">
-                            <th class="py-3 px-3">Model</th>
-                            <th class="py-3 px-3">Primary Metric</th>
-                            <th class="py-3 px-3">Fit Time</th>
-                            <th class="py-3 px-3">Status</th>
-                            <th class="py-3 px-3 text-right">Action</th>
+                        <tr class="bg-slate-50 border-b border-slate-200 text-xs uppercase font-bold text-slate-600">
+                            <th class="py-3 px-4">Model</th>
+                            <th class="py-3 px-4">Primary Metric</th>
+                            <th class="py-3 px-4">Fit Time</th>
+                            <th class="py-3 px-4">Status</th>
+                            <th class="py-3 px-4 text-right">Action</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-800/60 text-sm">
+                    <tbody class="divide-y divide-slate-100 text-sm">
                         {% for row in leaderboard[:3] %}
-                        <tr class="hover:bg-slate-800/40 transition-colors">
-                            <td class="py-3 px-3 font-semibold text-white flex items-center gap-2">
+                        <tr class="hover:bg-slate-50/80 transition-colors">
+                            <td class="py-3 px-4 font-bold text-slate-900 flex items-center gap-2">
                                 {% if loop.first %}
-                                    <i class="fas fa-crown text-yellow-400 text-xs"></i>
+                                    <i class="fas fa-crown text-amber-500 text-xs"></i>
                                 {% endif %}
                                 {{ row.Model }}
                             </td>
-                            <td class="py-3 px-3 font-mono font-medium text-emerald-400">
+                            <td class="py-3 px-4 font-mono font-bold text-emerald-700">
                                 {{ (row.Accuracy if row.Accuracy is defined else row.R2) | round(4) }}
                             </td>
-                            <td class="py-3 px-3 text-xs text-slate-400 font-mono">
+                            <td class="py-3 px-4 text-xs text-slate-600 font-mono">
                                 {{ row.get('Time (s)', 0.1) | round(2) }}s
                             </td>
-                            <td class="py-3 px-3">
+                            <td class="py-3 px-4">
                                 {% if loop.first %}
-                                    <span class="px-2 py-0.5 text-[11px] font-bold rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Deployed</span>
+                                    <span class="px-2.5 py-0.5 text-[11px] font-extrabold rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">Deployed</span>
                                 {% else %}
-                                    <span class="px-2 py-0.5 text-[11px] font-medium rounded-full bg-slate-800 text-slate-400">Evaluated</span>
+                                    <span class="px-2.5 py-0.5 text-[11px] font-semibold rounded-full bg-slate-100 text-slate-600">Evaluated</span>
                                 {% endif %}
                             </td>
-                            <td class="py-3 px-3 text-right">
-                                <button type="button" onclick="switchDashboardTab('apiTab')" class="px-2.5 py-1 text-xs font-semibold rounded-lg bg-indigo-600/30 hover:bg-indigo-600 text-indigo-300 hover:text-white transition-all">Test Live</button>
+                            <td class="py-3 px-4 text-right">
+                                <button type="button" onclick="switchDashboardTab('apiTab')" class="px-3 py-1 text-xs font-bold rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 transition-all">Test Live</button>
                             </td>
                         </tr>
                         {% endfor %}
@@ -236,10 +236,10 @@
                 </table>
             </div>
         {% else %}
-            <div class="p-6 rounded-xl border border-dashed border-slate-800 text-center">
-                <i class="fas fa-robot text-3xl text-slate-600 mb-2"></i>
-                <p class="text-xs font-semibold text-slate-300">No models trained yet in active project</p>
-                <button type="button" onclick="switchDashboardTab('trainerTab')" class="mt-3 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold inline-flex items-center gap-2">
+            <div class="p-6 rounded-xl border border-dashed border-slate-300 bg-slate-50/50 text-center">
+                <i class="fas fa-robot text-3xl text-slate-400 mb-2"></i>
+                <p class="text-xs font-bold text-slate-700">No models trained yet in active project</p>
+                <button type="button" onclick="switchDashboardTab('trainerTab')" class="mt-3 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold inline-flex items-center gap-2 shadow-xs">
                     <i class="fas fa-bolt"></i> Launch 1-Click Trainer
                 </button>
             </div>
@@ -250,16 +250,16 @@
 <!-- Tab 2: AutoML Trainer & Telemetry -->
 <div id="trainerTab" class="dashboard-tab-content hidden space-y-6">
     <!-- Dashboard Quick Train & Auto-Deploy Panel -->
-    <div class="p-6 rounded-2xl bg-gradient-to-r from-purple-950/40 via-slate-900 to-slate-900 border border-purple-500/30 shadow-xl space-y-4">
+    <div class="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-sm space-y-4">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-                <h3 class="text-base font-bold text-white flex items-center gap-2">
-                    <i class="fas fa-microchip text-purple-400"></i> Instant AutoML Trainer & Auto-Deployer
+                <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                    <i class="fas fa-microchip text-purple-600"></i> Instant AutoML Trainer & Auto-Deployer
                 </h3>
-                <p class="text-xs text-slate-400 mt-0.5">Train models and automatically deploy active REST API endpoint right on this dashboard.</p>
+                <p class="text-xs text-slate-600 mt-0.5">Train models and automatically deploy active REST API endpoint right on this dashboard.</p>
             </div>
             {% if columns %}
-            <button id="dashboardTrainBtn" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-bold shadow-lg shadow-purple-600/30 transition-all flex items-center justify-center gap-2 shrink-0">
+            <button id="dashboardTrainBtn" class="px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold shadow-sm transition-all flex items-center justify-center gap-2 shrink-0">
                 <i class="fas fa-rocket text-sm"></i> Train & Auto-Deploy
             </button>
             {% endif %}
@@ -268,8 +268,8 @@
         {% if columns %}
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
             <div>
-                <label class="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider mb-1.5">Select Target Column</label>
-                <select id="quickTargetSelect" class="w-full px-3.5 py-2 rounded-xl bg-slate-950 border border-slate-700 text-white text-xs font-semibold focus:border-purple-500 outline-none">
+                <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1.5">Select Target Column</label>
+                <select id="quickTargetSelect" class="w-full px-3.5 py-2 rounded-xl bg-white border border-slate-300 text-slate-900 text-xs font-semibold focus:border-purple-600 outline-none">
                     {% for col in columns %}
                         <option value="{{ col }}" {% if (state.target == col) or (ai and ai.suggested_target == col) %}selected{% endif %}>
                             {{ col }} {% if ai and ai.suggested_target == col %}(AI Recommended){% endif %}
@@ -278,8 +278,8 @@
                 </select>
             </div>
             <div>
-                <label class="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider mb-1.5">Validation Split Ratio</label>
-                <select id="quickSplitSelect" class="w-full px-3.5 py-2 rounded-xl bg-slate-950 border border-slate-700 text-white text-xs font-semibold focus:border-purple-500 outline-none">
+                <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1.5">Validation Split Ratio</label>
+                <select id="quickSplitSelect" class="w-full px-3.5 py-2 rounded-xl bg-white border border-slate-300 text-slate-900 text-xs font-semibold focus:border-purple-600 outline-none">
                     <option value="0.2" selected>20% Test Split (Recommended)</option>
                     <option value="0.15">15% Test Split</option>
                     <option value="0.25">25% Test Split</option>
@@ -288,60 +288,60 @@
             </div>
         </div>
         {% else %}
-        <div class="p-4 rounded-xl bg-slate-950/60 border border-slate-800 text-xs text-slate-400 flex items-center justify-between">
+        <div class="p-4 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900 flex items-center justify-between font-semibold">
             <span>Please upload a dataset first to enable 1-click model training & auto-deployment.</span>
-            <a href="{{ url_for('upload_page') }}" class="px-3 py-1.5 rounded-lg bg-indigo-600 text-white font-semibold text-xs hover:bg-indigo-500 transition-all">Upload Now →</a>
+            <a href="{{ url_for('upload_page') }}" class="px-3 py-1.5 rounded-lg bg-indigo-600 text-white font-bold text-xs hover:bg-indigo-700 transition-all shadow-xs">Upload Now →</a>
         </div>
         {% endif %}
     </div>
 
     <!-- Dynamic Model History & Leaderboard -->
-    <div class="p-6 rounded-2xl bg-slate-900/80 border border-slate-800/80 shadow-lg">
+    <div class="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-sm">
         <div class="flex items-center justify-between mb-4">
-            <h3 class="text-base font-bold text-white flex items-center gap-2">
-                <i class="fas fa-trophy text-yellow-400"></i> Full Model Leaderboard Telemetry
+            <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                <i class="fas fa-trophy text-amber-500"></i> Full Model Leaderboard Telemetry
             </h3>
             {% if leaderboard %}
-                <a href="{{ url_for('results') }}" class="text-xs text-indigo-400 hover:text-indigo-300 font-semibold">View Visual Charts & Report →</a>
+                <a href="{{ url_for('results') }}" class="text-xs text-indigo-700 hover:text-indigo-800 font-bold">View Visual Charts & Report →</a>
             {% endif %}
         </div>
 
         {% if leaderboard %}
-            <div class="overflow-x-auto">
+            <div class="overflow-x-auto border border-slate-200 rounded-xl">
                 <table class="w-full text-left border-collapse">
                     <thead>
-                        <tr class="border-b border-slate-800 text-xs uppercase font-bold text-slate-400">
-                            <th class="py-3 px-3">Model</th>
-                            <th class="py-3 px-3">Primary Metric</th>
-                            <th class="py-3 px-3">Fit Time</th>
-                            <th class="py-3 px-3">Status</th>
-                            <th class="py-3 px-3 text-right">Action</th>
+                        <tr class="bg-slate-50 border-b border-slate-200 text-xs uppercase font-bold text-slate-600">
+                            <th class="py-3 px-4">Model</th>
+                            <th class="py-3 px-4">Primary Metric</th>
+                            <th class="py-3 px-4">Fit Time</th>
+                            <th class="py-3 px-4">Status</th>
+                            <th class="py-3 px-4 text-right">Action</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-800/60 text-sm">
+                    <tbody class="divide-y divide-slate-100 text-sm">
                         {% for row in leaderboard %}
-                        <tr class="hover:bg-slate-800/40 transition-colors">
-                            <td class="py-3 px-3 font-semibold text-white flex items-center gap-2">
+                        <tr class="hover:bg-slate-50/80 transition-colors">
+                            <td class="py-3 px-4 font-bold text-slate-900 flex items-center gap-2">
                                 {% if loop.first %}
-                                    <i class="fas fa-crown text-yellow-400 text-xs"></i>
+                                    <i class="fas fa-crown text-amber-500 text-xs"></i>
                                 {% endif %}
                                 {{ row.Model }}
                             </td>
-                            <td class="py-3 px-3 font-mono font-medium text-emerald-400">
+                            <td class="py-3 px-4 font-mono font-bold text-emerald-700">
                                 {{ (row.Accuracy if row.Accuracy is defined else row.R2) | round(4) }}
                             </td>
-                            <td class="py-3 px-3 text-xs text-slate-400 font-mono">
+                            <td class="py-3 px-4 text-xs text-slate-600 font-mono">
                                 {{ row.get('Time (s)', 0.1) | round(2) }}s
                             </td>
-                            <td class="py-3 px-3">
+                            <td class="py-3 px-4">
                                 {% if loop.first %}
-                                    <span class="px-2 py-0.5 text-[11px] font-bold rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Deployed</span>
+                                    <span class="px-2.5 py-0.5 text-[11px] font-extrabold rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">Deployed</span>
                                 {% else %}
-                                    <span class="px-2 py-0.5 text-[11px] font-medium rounded-full bg-slate-800 text-slate-400">Evaluated</span>
+                                    <span class="px-2.5 py-0.5 text-[11px] font-semibold rounded-full bg-slate-100 text-slate-600">Evaluated</span>
                                 {% endif %}
                             </td>
-                            <td class="py-3 px-3 text-right">
-                                <button type="button" onclick="switchDashboardTab('apiTab')" class="px-2.5 py-1 text-xs font-semibold rounded-lg bg-indigo-600/30 hover:bg-indigo-600 text-indigo-300 hover:text-white transition-all">Test Live</button>
+                            <td class="py-3 px-4 text-right">
+                                <button type="button" onclick="switchDashboardTab('apiTab')" class="px-3 py-1 text-xs font-bold rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 transition-all">Test Live</button>
                             </td>
                         </tr>
                         {% endfor %}
@@ -349,9 +349,9 @@
                 </table>
             </div>
         {% else %}
-            <div class="p-8 rounded-xl border border-dashed border-slate-800 text-center">
-                <i class="fas fa-robot text-4xl text-slate-600 mb-3"></i>
-                <p class="text-sm font-semibold text-slate-300">No models trained yet in this session</p>
+            <div class="p-8 rounded-xl border border-dashed border-slate-300 bg-slate-50/50 text-center">
+                <i class="fas fa-robot text-4xl text-slate-400 mb-3"></i>
+                <p class="text-sm font-bold text-slate-800">No models trained yet in this session</p>
                 <p class="text-xs text-slate-500 mt-1 mb-4">Upload a dataset and click 'Train & Auto-Deploy' to populate telemetry.</p>
             </div>
         {% endif %}
@@ -360,26 +360,26 @@
 
 <!-- Tab 3: Live REST API & Test Studio -->
 <div id="apiTab" class="dashboard-tab-content hidden space-y-6">
-    <div class="p-6 rounded-2xl bg-slate-900/80 border border-slate-800/80 shadow-lg space-y-6">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-800">
+    <div class="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-sm space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-200">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 flex items-center justify-center text-lg">
+                <div class="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 flex items-center justify-center text-lg font-bold">
                     <i class="fas fa-server"></i>
                 </div>
                 <div>
-                    <h3 class="text-base font-bold text-white flex items-center gap-2">
+                    <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
                         Live Microservice & Test Studio
                     </h3>
-                    <p class="text-xs text-slate-400">Endpoint: <strong class="text-emerald-400 font-mono">/api/v1/predict</strong></p>
+                    <p class="text-xs text-slate-600">Endpoint: <strong class="text-emerald-700 font-mono font-bold">/api/v1/predict</strong></p>
                 </div>
             </div>
             <div>
                 {% if kpis.best_model and kpis.best_model != 'None' %}
-                <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1.5">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> 🟢 Active Endpoint Deployed
+                <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span> 🟢 Active Endpoint Deployed
                 </span>
                 {% else %}
-                <span class="px-3 py-1 rounded-full text-xs font-medium bg-slate-800 text-slate-400 border border-slate-700">
+                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 border border-slate-200">
                     ⚪ Endpoint Idle (Train Model First)
                 </span>
                 {% endif %}
@@ -390,45 +390,45 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Test Input Form -->
             <div class="space-y-4">
-                <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
-                    <i class="fas fa-sliders-h text-indigo-400"></i> Interactive Feature Input Vector
+                <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
+                    <i class="fas fa-sliders-h text-indigo-600"></i> Interactive Feature Input Vector
                 </h4>
                 <form id="dashboardTestForm" class="space-y-3">
                     <div class="max-h-64 overflow-y-auto pr-2 custom-scrollbar space-y-2">
                         {% for col in feature_columns %}
                         <div>
-                            <label class="block text-[11px] font-mono text-slate-400 mb-1">{{ col }}</label>
-                            <input type="number" step="any" name="{{ col }}" value="0.0" class="test-input-field w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-xs font-mono text-white focus:border-indigo-500 outline-none">
+                            <label class="block text-[11px] font-mono text-slate-600 font-semibold mb-1">{{ col }}</label>
+                            <input type="number" step="any" name="{{ col }}" value="0.0" class="test-input-field w-full px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-xs font-mono text-slate-900 focus:border-indigo-600 outline-none">
                         </div>
                         {% endfor %}
                     </div>
-                    <button type="submit" id="runDashboardTestBtn" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold shadow-lg shadow-emerald-600/30 transition-all flex items-center justify-center gap-2">
+                    <button type="submit" id="runDashboardTestBtn" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm transition-all flex items-center justify-center gap-2">
                         <i class="fas fa-bolt"></i> ⚡ Execute Live Test Prediction
                     </button>
                 </form>
             </div>
 
-            <!-- Real-Time Output Console -->
-            <div class="rounded-2xl border border-slate-800 overflow-hidden bg-slate-950 flex flex-col">
+            <!-- Real-Time Output Console (Dark Slate Console for Crisp Log Aesthetics) -->
+            <div class="rounded-2xl border border-slate-800 overflow-hidden bg-slate-950 flex flex-col shadow-sm">
                 <div class="px-4 py-2.5 bg-slate-900 border-b border-slate-800 flex items-center justify-between">
-                    <span class="text-xs font-mono font-bold text-slate-400 flex items-center gap-2">
+                    <span class="text-xs font-mono font-bold text-slate-300 flex items-center gap-2">
                         <i class="fas fa-terminal text-emerald-400"></i> REST API Live Output
                     </span>
-                    <span id="dashboardTestStatus" class="text-[10px] font-mono text-slate-500">Status: Ready</span>
+                    <span id="dashboardTestStatus" class="text-[10px] font-mono text-slate-400">Status: Ready</span>
                 </div>
-                <div class="p-4 flex-1 bg-slate-950 font-mono text-xs text-slate-200 overflow-y-auto custom-scrollbar">
+                <div class="p-4 flex-1 bg-slate-950 font-mono text-xs text-slate-100 overflow-y-auto custom-scrollbar">
                     <div id="dashboardTestResult" class="space-y-3">
-                        <p class="text-slate-500 italic">Enter feature values and click 'Execute Live Test Prediction' to see real-time output.</p>
+                        <p class="text-slate-400 italic">Enter feature values and click 'Execute Live Test Prediction' to see real-time output.</p>
                     </div>
                 </div>
             </div>
         </div>
         {% else %}
-        <div class="p-6 text-center text-slate-500 text-xs rounded-xl border border-dashed border-slate-800">
-            <i class="fas fa-server text-3xl mb-2 text-slate-600"></i>
-            <p class="font-semibold text-slate-300 mb-1">Live Endpoint Testing Playground</p>
+        <div class="p-6 text-center text-slate-500 text-xs rounded-xl border border-dashed border-slate-300 bg-slate-50">
+            <i class="fas fa-server text-3xl mb-2 text-slate-400"></i>
+            <p class="font-bold text-slate-800 mb-1">Live Endpoint Testing Playground</p>
             <p>Train a model using the 1-click AutoML trainer to automatically deploy and test live predictions here.</p>
-            <button type="button" onclick="switchDashboardTab('trainerTab')" class="mt-3 px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold inline-flex items-center gap-2">
+            <button type="button" onclick="switchDashboardTab('trainerTab')" class="mt-3 px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold inline-flex items-center gap-2 shadow-xs">
                 <i class="fas fa-microchip"></i> Go to AutoML Trainer
             </button>
         </div>
@@ -440,56 +440,56 @@
 <div id="projectsTab" class="dashboard-tab-content hidden space-y-6">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- AI Copilot Insights Card -->
-        <div class="p-6 rounded-2xl bg-gradient-to-b from-indigo-950/40 via-slate-900 to-slate-900 border border-indigo-500/30 shadow-lg relative overflow-hidden">
+        <div class="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-sm relative overflow-hidden">
             <div class="flex items-center justify-between mb-4">
-                <h3 class="text-base font-bold text-white flex items-center gap-2">
-                    <i class="fas fa-brain text-indigo-400"></i> AI Copilot Recommendations
+                <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                    <i class="fas fa-brain text-indigo-600"></i> AI Copilot Recommendations
                 </h3>
-                <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
                     {{ ai.provider if ai and ai.provider else 'ModelFlow AI' }}
                 </span>
             </div>
 
             {% if ai and ai.recommendations %}
-                <p class="text-xs text-slate-300 mb-4 line-clamp-3">
+                <p class="text-xs text-slate-600 mb-4 line-clamp-3 leading-relaxed">
                     {{ ai.dataset_overview or 'Analysis complete for your dataset session.' }}
                 </p>
                 <div class="space-y-2 mb-4">
                     {% for rec in ai.recommendations[:3] %}
-                        <div class="p-2.5 rounded-xl bg-slate-800/80 border border-slate-700/60 text-xs text-slate-200 flex items-start gap-2">
-                            <i class="fas fa-check-circle text-emerald-400 mt-0.5 shrink-0"></i>
+                        <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-800 flex items-start gap-2">
+                            <i class="fas fa-check-circle text-emerald-600 mt-0.5 shrink-0"></i>
                             <span>{{ rec.text if rec is mapping else rec }}</span>
                         </div>
                     {% endfor %}
                 </div>
-                <a href="{{ url_for('explore') }}" class="block w-full py-2.5 rounded-xl bg-indigo-600/30 hover:bg-indigo-600 text-indigo-200 hover:text-white text-xs font-semibold text-center border border-indigo-500/40 transition-all">
+                <a href="{{ url_for('explore') }}" class="block w-full py-2.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold text-center border border-indigo-200 transition-all">
                     View Complete AI Recommendations →
                 </a>
             {% else %}
-                <div class="p-6 text-center text-slate-400 text-xs">
-                    <i class="fas fa-sparkles text-2xl text-indigo-400 mb-2"></i>
-                    <p>Upload a dataset to trigger AI recommendations.</p>
+                <div class="p-6 text-center text-slate-500 text-xs">
+                    <i class="fas fa-sparkles text-2xl text-indigo-500 mb-2"></i>
+                    <p class="font-semibold text-slate-700">Upload a dataset to trigger AI recommendations.</p>
                 </div>
             {% endif %}
         </div>
 
         <!-- Project Sessions List -->
-        <div class="p-6 rounded-2xl bg-slate-900/80 border border-slate-800/80 shadow-lg">
-            <h3 class="text-base font-bold text-white flex items-center gap-2 mb-4">
-                <i class="fas fa-folder text-indigo-400"></i> My Projects Workspace ({{ projects|length }})
+        <div class="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-sm">
+            <h3 class="text-base font-bold text-slate-900 flex items-center gap-2 mb-4">
+                <i class="fas fa-folder text-indigo-600"></i> My Projects Workspace ({{ projects|length }})
             </h3>
             <div class="space-y-2 max-h-64 overflow-y-auto custom-scrollbar">
                 {% for proj in projects %}
-                    <div class="p-3 rounded-xl border flex items-center justify-between transition-all {% if current_project and current_project._id == proj._id %}bg-indigo-600/20 border-indigo-500/40 text-white{% else %}bg-slate-800/40 border-slate-800 text-slate-300 hover:bg-slate-800/80{% endif %}">
+                    <div class="p-3 rounded-xl border flex items-center justify-between transition-all {% if current_project and current_project._id == proj._id %}bg-indigo-50 border-indigo-300 text-slate-900 font-bold shadow-xs{% else %}bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100{% endif %}">
                         <a href="{{ url_for('switch_project', project_id=proj._id) }}" class="min-w-0 flex-1 hover:underline">
-                            <p class="text-xs font-semibold truncate">{{ proj.name }}</p>
+                            <p class="text-xs font-bold text-slate-900 truncate">{{ proj.name }}</p>
                             <p class="text-[10px] text-slate-500">{{ proj.updated_at.strftime('%Y-%m-%d %H:%M') if proj.updated_at else 'Recent' }}</p>
                         </a>
                         <div class="flex items-center gap-2 shrink-0 ml-2">
                             {% if current_project and current_project._id == proj._id %}
-                                <span class="text-[10px] font-bold text-emerald-400 px-2 py-0.5 rounded-full bg-emerald-500/20">Active</span>
+                                <span class="text-[10px] font-bold text-emerald-700 px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200">Active</span>
                             {% endif %}
-                            <button type="button" data-project-id="{{ proj._id }}" data-project-name="{{ proj.name }}" class="delete-project-btn p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-500/20 transition-all text-xs" title="Delete Project">
+                            <button type="button" data-project-id="{{ proj._id }}" data-project-name="{{ proj.name }}" class="delete-project-btn p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-all text-xs" title="Delete Project">
                                 <i class="fas fa-trash-alt"></i>
                             </button>
                         </div>
@@ -501,34 +501,31 @@
 </div>
 
 <!-- Animated Delete Project Modal -->
-<div id="deleteModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center hidden p-4 opacity-0 transition-opacity duration-300 pointer-events-none">
-    <div id="deleteModalCard" class="bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl p-6 max-w-md w-full space-y-5 transform scale-90 opacity-0 transition-all duration-300 ease-out relative overflow-hidden">
-        <!-- Background Glowing Accent -->
-        <div class="absolute -top-10 -right-10 w-40 h-40 bg-rose-500/10 rounded-full blur-2xl pointer-events-none"></div>
-        
+<div id="deleteModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4 opacity-0 transition-opacity duration-300 pointer-events-none">
+    <div id="deleteModalCard" class="bg-white border border-slate-200 rounded-3xl shadow-2xl p-6 max-w-md w-full space-y-5 transform scale-90 opacity-0 transition-all duration-300 ease-out relative overflow-hidden text-slate-900">
         <div class="flex items-start gap-4">
-            <div class="w-12 h-12 rounded-2xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400 shrink-0 text-xl shadow-lg shadow-rose-500/10">
+            <div class="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-200 flex items-center justify-center text-rose-600 shrink-0 text-xl shadow-xs">
                 <i class="fas fa-exclamation-triangle"></i>
             </div>
             <div class="space-y-1.5 min-w-0 flex-1">
-                <h3 class="text-lg font-bold text-white tracking-tight">Delete Project Workspace?</h3>
-                <p class="text-xs text-slate-400 leading-relaxed">
-                    Are you sure you want to delete <strong id="deleteProjectName" class="text-rose-300 font-semibold font-mono"></strong>?
+                <h3 class="text-lg font-bold text-slate-900 tracking-tight">Delete Project Workspace?</h3>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                    Are you sure you want to delete <strong id="deleteProjectName" class="text-rose-700 font-bold font-mono"></strong>?
                 </p>
-                <div class="text-[11px] text-slate-400 bg-rose-950/30 border border-rose-900/40 p-2.5 rounded-xl mt-2 text-rose-300/80 flex items-center gap-2">
-                    <i class="fas fa-info-circle text-rose-400 shrink-0 text-xs"></i>
+                <div class="text-[11px] text-rose-800 bg-rose-50 border border-rose-200 p-2.5 rounded-xl mt-2 flex items-center gap-2 font-medium">
+                    <i class="fas fa-info-circle text-rose-600 shrink-0 text-xs"></i>
                     <span>This action is permanent and will remove all datasets, cleaning logs, and trained AutoML models.</span>
                 </div>
             </div>
         </div>
 
         <!-- Modal Actions -->
-        <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
-            <button type="button" onclick="closeDeleteModal()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold border border-slate-700 transition-all">
+        <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-200">
+            <button type="button" onclick="closeDeleteModal()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold border border-slate-200 transition-all">
                 Cancel
             </button>
             <form id="deleteProjectForm" action="" method="POST" class="inline">
-                <button type="submit" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-500 hover:to-rose-600 text-white text-xs font-semibold shadow-lg shadow-rose-600/30 transition-all flex items-center gap-2">
+                <button type="submit" class="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold shadow-sm transition-all flex items-center gap-2">
                     <i class="fas fa-trash-alt text-xs"></i> Yes, Delete Project
                 </button>
             </form>
@@ -537,18 +534,15 @@
 </div>
 
 <!-- Animated Rename Project Modal -->
-<div id="renameModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center hidden p-4 opacity-0 transition-opacity duration-300 pointer-events-none">
-    <div id="renameModalCard" class="bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl p-6 max-w-md w-full space-y-5 transform scale-90 opacity-0 transition-all duration-300 ease-out relative overflow-hidden">
-        <!-- Background Glowing Accent -->
-        <div class="absolute -top-10 -right-10 w-40 h-40 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none"></div>
-        
+<div id="renameModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4 opacity-0 transition-opacity duration-300 pointer-events-none">
+    <div id="renameModalCard" class="bg-white border border-slate-200 rounded-3xl shadow-2xl p-6 max-w-md w-full space-y-5 transform scale-90 opacity-0 transition-all duration-300 ease-out relative overflow-hidden text-slate-900">
         <div class="flex items-start gap-4">
-            <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400 shrink-0 text-xl shadow-lg shadow-indigo-500/10">
+            <div class="w-12 h-12 rounded-2xl bg-indigo-50 border border-indigo-200 flex items-center justify-center text-indigo-600 shrink-0 text-xl shadow-xs">
                 <i class="fas fa-edit"></i>
             </div>
             <div class="space-y-1.5 min-w-0 flex-1">
-                <h3 class="text-lg font-bold text-white tracking-tight">Rename Active Project</h3>
-                <p class="text-xs text-slate-400 leading-relaxed">
+                <h3 class="text-lg font-bold text-slate-900 tracking-tight">Rename Active Project</h3>
+                <p class="text-xs text-slate-600 leading-relaxed">
                     Update the title for your active project workspace.
                 </p>
             </div>
@@ -556,17 +550,16 @@
 
         <form id="renameProjectForm" action="" method="POST" class="space-y-4">
             <div>
-                <label for="renameInput" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">New Project Name</label>
-                <input type="text" id="renameInput" name="project_name" required maxlength="15" class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 focus:border-indigo-500 focus:outline-none text-white text-sm font-medium transition-all" placeholder="Enter new project title (max 15 chars)...">
-
+                <label for="renameInput" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">New Project Name</label>
+                <input type="text" id="renameInput" name="project_name" required maxlength="15" class="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-300 focus:border-indigo-600 focus:outline-none text-slate-900 text-sm font-semibold transition-all" placeholder="Enter new project title (max 15 chars)...">
             </div>
 
             <!-- Modal Actions -->
-            <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
-                <button type="button" onclick="closeRenameModal()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold border border-slate-700 transition-all">
+            <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-200">
+                <button type="button" onclick="closeRenameModal()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold border border-slate-200 transition-all">
                     Cancel
                 </button>
-                <button type="submit" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white text-xs font-semibold shadow-lg shadow-indigo-600/30 transition-all flex items-center gap-2">
+                <button type="submit" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-sm transition-all flex items-center gap-2">
                     <i class="fas fa-save text-xs"></i> Save Changes
                 </button>
             </div>
@@ -575,39 +568,36 @@
 </div>
 
 <!-- Animated Switch Project Modal -->
-<div id="switchModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center hidden p-4 opacity-0 transition-opacity duration-300 pointer-events-none">
-    <div id="switchModalCard" class="bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl p-6 max-w-lg w-full space-y-5 transform scale-90 opacity-0 transition-all duration-300 ease-out relative overflow-hidden">
-        <!-- Background Glowing Accent -->
-        <div class="absolute -top-10 -right-10 w-40 h-40 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none"></div>
-        
-        <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+<div id="switchModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4 opacity-0 transition-opacity duration-300 pointer-events-none">
+    <div id="switchModalCard" class="bg-white border border-slate-200 rounded-3xl shadow-2xl p-6 max-w-lg w-full space-y-5 transform scale-90 opacity-0 transition-all duration-300 ease-out relative overflow-hidden text-slate-900">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-200">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400 text-lg shadow-lg shadow-indigo-500/10">
+                <div class="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-200 flex items-center justify-center text-indigo-600 text-lg shadow-xs">
                     <i class="fas fa-exchange-alt"></i>
                 </div>
                 <div>
-                    <h3 class="text-base font-bold text-white tracking-tight">Switch Active Workspace</h3>
-                    <p class="text-xs text-slate-400">Select a project workspace to switch active session.</p>
+                    <h3 class="text-base font-bold text-slate-900 tracking-tight">Switch Active Workspace</h3>
+                    <p class="text-xs text-slate-500">Select a project workspace to switch active session.</p>
                 </div>
             </div>
-            <button type="button" onclick="closeSwitchModal()" class="text-slate-400 hover:text-white text-base">
+            <button type="button" onclick="closeSwitchModal()" class="text-slate-400 hover:text-slate-700 text-base">
                 <i class="fas fa-times"></i>
             </button>
         </div>
 
         <div class="space-y-2 max-h-72 overflow-y-auto custom-scrollbar pr-1">
             {% for proj in projects %}
-                <a href="{{ url_for('switch_project', project_id=proj._id) }}" class="p-3.5 rounded-xl border flex items-center justify-between transition-all {% if current_project and current_project._id == proj._id %}bg-indigo-600/20 border-indigo-500/50 text-white shadow-md shadow-indigo-600/10{% else %}bg-slate-800/40 border-slate-800 text-slate-300 hover:bg-slate-800/90 hover:border-slate-700{% endif %}">
+                <a href="{{ url_for('switch_project', project_id=proj._id) }}" class="p-3.5 rounded-xl border flex items-center justify-between transition-all {% if current_project and current_project._id == proj._id %}bg-indigo-50 border-indigo-300 text-slate-900 font-bold shadow-xs{% else %}bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100{% endif %}">
                     <div class="min-w-0 flex-1">
                         <div class="flex items-center gap-2">
-                            <span class="text-xs font-bold text-white truncate">{{ proj.name }}</span>
+                            <span class="text-xs font-bold text-slate-900 truncate">{{ proj.name }}</span>
                             {% if current_project and current_project._id == proj._id %}
-                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Active</span>
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">Active</span>
                             {% endif %}
                         </div>
-                        <p class="text-[10px] text-slate-400 mt-0.5">Updated: {{ proj.updated_at.strftime('%Y-%m-%d %H:%M') if proj.updated_at else 'Recent' }}</p>
+                        <p class="text-[10px] text-slate-500 mt-0.5">Updated: {{ proj.updated_at.strftime('%Y-%m-%d %H:%M') if proj.updated_at else 'Recent' }}</p>
                     </div>
-                    <div class="shrink-0 text-xs font-semibold text-indigo-400 flex items-center gap-1">
+                    <div class="shrink-0 text-xs font-bold text-indigo-700 flex items-center gap-1">
                         <span>Switch</span> <i class="fas fa-arrow-right text-[10px]"></i>
                     </div>
                 </a>
@@ -615,16 +605,31 @@
         </div>
 
         <!-- Modal Footer Actions -->
-        <div class="flex items-center justify-between pt-3 border-t border-slate-800">
-            <a href="{{ url_for('new_project') }}" class="text-xs text-indigo-400 hover:text-indigo-300 font-semibold flex items-center gap-1.5">
+        <div class="flex items-center justify-between pt-3 border-t border-slate-200">
+            <a href="{{ url_for('new_project') }}" class="text-xs text-indigo-700 hover:text-indigo-800 font-bold flex items-center gap-1.5">
                 <i class="fas fa-plus-circle"></i> Create New Project
             </a>
-            <button type="button" onclick="closeSwitchModal()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold border border-slate-700 transition-all">
+            <button type="button" onclick="closeSwitchModal()" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold border border-slate-200 transition-all">
                 Close
             </button>
         </div>
     </div>
 </div>
+
+<script>
+window.switchDashboardTab = function(tabId) {
+    document.querySelectorAll('.dashboard-tab-content').forEach(el => el.classList.add('hidden'));
+    document.querySelectorAll('.dashboard-tab-btn').forEach(btn => {
+        btn.className = 'dashboard-tab-btn px-4 py-2.5 rounded-xl font-semibold text-xs text-slate-700 bg-white hover:bg-slate-100 border border-slate-200 shadow-xs hover:text-slate-900 transition-all flex items-center gap-2';
+    });
+
+    const activeTab = document.getElementById(tabId);
+    const activeBtn = document.getElementById('tabBtn-' + tabId);
+
+    if (activeTab) activeTab.classList.remove('hidden');
+    if (activeBtn) activeBtn.className = 'dashboard-tab-btn px-4 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center gap-2 bg-indigo-600 text-white shadow-sm border border-indigo-600';
+};
+</script>
 
 <script>
 window.openSwitchModal = function() {
@@ -799,14 +804,16 @@ document.addEventListener('keydown', function(e) {
 </script>
 
 <!-- Training Progress Modal Overlay -->
-<div id="quickTrainOverlay" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden flex-col items-center justify-center text-center p-6">
-    <div class="w-16 h-16 rounded-2xl bg-purple-600/30 border border-purple-500/50 flex items-center justify-center text-purple-400 text-3xl mb-4 animate-pulse">
-        <i class="fas fa-brain"></i>
-    </div>
-    <h3 class="text-xl font-bold text-white mb-2">AutoML Training & Auto-Deploy in Progress...</h3>
-    <p class="text-xs text-slate-400 max-w-sm mb-6">Fitting models across hyperparameter spaces, cross-validating metrics, and launching active REST API endpoint.</p>
-    <div class="w-64 h-2 bg-slate-800 rounded-full overflow-hidden">
-        <div class="w-full h-full bg-gradient-to-r from-purple-500 via-indigo-500 to-emerald-400 animate-pulse"></div>
+<div id="quickTrainOverlay" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex-col items-center justify-center text-center p-6">
+    <div class="bg-white border border-slate-200 rounded-3xl p-8 max-w-sm shadow-2xl space-y-4 flex flex-col items-center">
+        <div class="w-16 h-16 rounded-2xl bg-purple-50 border border-purple-200 flex items-center justify-center text-purple-600 text-3xl animate-pulse shadow-sm">
+            <i class="fas fa-brain"></i>
+        </div>
+        <h3 class="text-lg font-extrabold text-slate-900">AutoML Training in Progress...</h3>
+        <p class="text-xs text-slate-600 leading-relaxed">Fitting models across hyperparameter spaces, cross-validating metrics, and launching active REST API endpoint.</p>
+        <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
+            <div class="w-full h-full bg-gradient-to-r from-purple-600 via-indigo-600 to-emerald-500 animate-pulse"></div>
+        </div>
     </div>
 </div>
 
@@ -818,7 +825,7 @@ document.getElementById('dashboardTrainBtn')?.addEventListener('click', async fu
     const overlay = document.getElementById('quickTrainOverlay');
 
     if (!targetSelect || !targetSelect.value) {
-        alert("Please select a target column first.");
+        ModelFlow.showToast("Please select a target column first.", "warning");
         return;
     }
 
@@ -841,7 +848,7 @@ document.getElementById('dashboardTrainBtn')?.addEventListener('click', async fu
         if (!contentType.includes('application/json')) {
             const htmlText = await res.text();
             if (overlay) overlay.classList.add('hidden');
-            alert("Server returned non-JSON response. Session may have expired or server encountered an error. Please refresh the page.");
+            ModelFlow.showToast("Server returned non-JSON response. Session may have expired or server encountered an error. Please refresh the page.", "danger");
             return;
         }
 
@@ -850,11 +857,11 @@ document.getElementById('dashboardTrainBtn')?.addEventListener('click', async fu
             window.location.reload();
         } else {
             if (overlay) overlay.classList.add('hidden');
-            alert('Training error: ' + (data.error || 'Failed to train model'));
+            ModelFlow.showToast('Training error: ' + (data.error || 'Failed to train model'), 'danger');
         }
     } catch (err) {
         if (overlay) overlay.classList.add('hidden');
-        alert('Request error: ' + err.message);
+        ModelFlow.showToast('Request error: ' + err.message, 'danger');
     }
 });
 

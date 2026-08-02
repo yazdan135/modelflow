@@ -105,8 +105,116 @@ window.ModelFlow = {
             toast.classList.add('opacity-0', 'translate-y-2');
             setTimeout(() => toast.remove(), 300);
         }, 4000);
+    },
+
+    /**
+     * Display a modern SaaS confirmation popup modal.
+     */
+    confirm: function(options) {
+        const title = options.title || 'Are you sure?';
+        const message = options.message || 'This action cannot be undone.';
+        const confirmText = options.confirmText || 'Confirm';
+        const confirmClass = options.confirmClass || 'bg-rose-600 hover:bg-rose-700 text-white';
+        const icon = options.icon || 'fa-exclamation-triangle text-amber-500';
+        const onConfirm = options.onConfirm || function() {};
+
+        let modal = document.getElementById('global-confirm-modal');
+        if (!modal) {
+            modal = document.createElement('div');
+            modal.id = 'global-confirm-modal';
+            modal.className = 'fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 transition-all duration-200 opacity-0 pointer-events-none';
+            modal.innerHTML = `
+                <div class="bg-white border border-slate-200 rounded-3xl shadow-2xl p-6 max-w-sm w-full space-y-4 text-slate-900 transform scale-95 transition-all duration-200">
+                    <div class="flex items-center gap-3">
+                        <div id="confirm-icon-bg" class="w-10 h-10 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center shrink-0">
+                            <i id="confirm-icon" class="fas fa-exclamation-triangle text-amber-600 text-lg"></i>
+                        </div>
+                        <div>
+                            <h3 id="confirm-title" class="text-base font-extrabold text-slate-900"></h3>
+                        </div>
+                    </div>
+                    <p id="confirm-message" class="text-xs text-slate-600 font-medium leading-relaxed"></p>
+                    <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+                        <button id="confirm-cancel-btn" type="button" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-all">Cancel</button>
+                        <button id="confirm-ok-btn" type="button" class="px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-2xs"></button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        const titleEl = modal.querySelector('#confirm-title');
+        const msgEl = modal.querySelector('#confirm-message');
+        const iconEl = modal.querySelector('#confirm-icon');
+        const okBtn = modal.querySelector('#confirm-ok-btn');
+        const cancelBtn = modal.querySelector('#confirm-cancel-btn');
+
+        titleEl.textContent = title;
+        msgEl.textContent = message;
+        iconEl.className = 'fas ' + icon;
+        okBtn.textContent = confirmText;
+        okBtn.className = 'px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-2xs ' + confirmClass;
+
+        function closeModal() {
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            modal.querySelector('div').classList.add('scale-95');
+        }
+
+        cancelBtn.onclick = function() {
+            closeModal();
+        };
+
+        okBtn.onclick = function() {
+            closeModal();
+            onConfirm();
+        };
+
+        modal.onclick = function(e) {
+            if (e.target === modal) closeModal();
+        };
+
+        // Open modal
+        requestAnimationFrame(() => {
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            modal.querySelector('div').classList.remove('scale-95');
+        });
     }
 };
+
+// Global listener for data-confirm forms and links
+document.addEventListener('submit', (e) => {
+    const form = e.target;
+    if (form.hasAttribute('data-confirm') && !form.dataset.confirmed) {
+        e.preventDefault();
+        ModelFlow.confirm({
+            title: form.dataset.confirmTitle || 'Confirmation Required',
+            message: form.getAttribute('data-confirm'),
+            confirmText: form.dataset.confirmBtn || 'Proceed',
+            confirmClass: form.dataset.confirmClass || 'bg-rose-600 hover:bg-rose-700 text-white',
+            onConfirm: () => {
+                form.dataset.confirmed = 'true';
+                form.submit();
+            }
+        });
+    }
+});
+
+document.addEventListener('click', (e) => {
+    const link = e.target.closest('a[data-confirm]');
+    if (link && !link.dataset.confirmed) {
+        e.preventDefault();
+        ModelFlow.confirm({
+            title: link.dataset.confirmTitle || 'Confirmation Required',
+            message: link.getAttribute('data-confirm'),
+            confirmText: link.dataset.confirmBtn || 'Delete',
+            confirmClass: link.dataset.confirmClass || 'bg-rose-600 hover:bg-rose-700 text-white',
+            onConfirm: () => {
+                link.dataset.confirmed = 'true';
+                window.location.href = link.href;
+            }
+        });
+    }
+});
 
 // Global resize listener for all registered Plotly charts
 window.addEventListener('resize', () => {
@@ -119,20 +227,99 @@ window.addEventListener('resize', () => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Mobile Sidebar Drawer Toggle
+    // Sidebar Drawer & Responsive Hamburger Controller
     const sidebar = document.getElementById('sidebar');
     const openSidebarBtn = document.getElementById('openSidebar');
     const closeSidebarBtn = document.getElementById('closeSidebar');
+    const sidebarBackdrop = document.getElementById('sidebarBackdrop');
 
-    if (openSidebarBtn && sidebar) {
-        openSidebarBtn.addEventListener('click', () => {
-            sidebar.classList.remove('-translate-x-full');
+    // Restore saved sidebar collapsed preference on desktop
+    if (window.innerWidth >= 1024 && localStorage.getItem('sidebarCollapsed') === 'true') {
+        document.body.classList.add('sidebar-collapsed');
+    }
+
+    function toggleSidebar() {
+        if (!sidebar) return;
+        
+        const isMobile = window.innerWidth < 1024;
+        
+        if (isMobile) {
+            const isHidden = sidebar.classList.contains('-translate-x-full');
+            if (isHidden) {
+                sidebar.classList.remove('-translate-x-full');
+                if (sidebarBackdrop) sidebarBackdrop.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                if (sidebarBackdrop) sidebarBackdrop.classList.add('hidden');
+            }
+        } else {
+            // Desktop Mini Sidebar Toggle (Icon-Only Mode)
+            document.body.classList.toggle('sidebar-collapsed');
+            const isCollapsed = document.body.classList.contains('sidebar-collapsed');
+            localStorage.setItem('sidebarCollapsed', isCollapsed ? 'true' : 'false');
+            
+            // Trigger Plotly chart resize after transition
+            setTimeout(() => window.dispatchEvent(new Event('resize')), 300);
+        }
+    }
+
+    if (openSidebarBtn) {
+        openSidebarBtn.addEventListener('click', toggleSidebar);
+    }
+    if (closeSidebarBtn) {
+        closeSidebarBtn.addEventListener('click', toggleSidebar);
+    }
+    if (sidebarBackdrop) {
+        sidebarBackdrop.addEventListener('click', () => {
+            if (sidebar) sidebar.classList.add('-translate-x-full');
+            sidebarBackdrop.classList.add('hidden');
         });
     }
 
-    if (closeSidebarBtn && sidebar) {
-        closeSidebarBtn.addEventListener('click', () => {
-            sidebar.classList.add('-translate-x-full');
+    // Sidebar Project Switcher Dropdown Toggle
+    const projectDropdownBtn = document.getElementById('sidebarProjectDropdownBtn');
+    const projectDropdownMenu = document.getElementById('sidebarProjectDropdownMenu');
+    const projectDropdownArrow = document.getElementById('sidebarProjectArrow');
+
+    if (projectDropdownBtn && projectDropdownMenu) {
+        projectDropdownBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isHidden = projectDropdownMenu.classList.contains('hidden');
+            if (isHidden) {
+                projectDropdownMenu.classList.remove('hidden');
+                if (projectDropdownArrow) projectDropdownArrow.classList.add('rotate-180');
+            } else {
+                projectDropdownMenu.classList.add('hidden');
+                if (projectDropdownArrow) projectDropdownArrow.classList.remove('rotate-180');
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!projectDropdownMenu.contains(e.target) && !projectDropdownBtn.contains(e.target)) {
+                projectDropdownMenu.classList.add('hidden');
+                if (projectDropdownArrow) projectDropdownArrow.classList.remove('rotate-180');
+            }
+        });
+    }
+
+    // Project Switcher Modal Handlers
+    const openProjectModalBtn = document.getElementById('openProjectModalBtn');
+    const projectModal = document.getElementById('projectModal');
+    const closeProjectModal = document.getElementById('closeProjectModal');
+
+    if (openProjectModalBtn && projectModal) {
+        openProjectModalBtn.addEventListener('click', () => {
+            projectModal.classList.remove('hidden');
+        });
+    }
+    if (closeProjectModal && projectModal) {
+        closeProjectModal.addEventListener('click', () => {
+            projectModal.classList.add('hidden');
+        });
+    }
+    if (projectModal) {
+        projectModal.addEventListener('click', (e) => {
+            if (e.target === projectModal) projectModal.classList.add('hidden');
         });
     }
 

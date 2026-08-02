@@ -8,46 +8,43 @@
 <div class="space-y-6">
 
     <!-- Top User Profile Banner -->
-    <div class="relative overflow-hidden rounded-3xl bg-slate-900/90 border border-slate-800/80 p-6 md:p-8 backdrop-blur-xl shadow-2xl">
-        <div class="absolute -right-16 -top-16 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
-        <div class="absolute -left-16 -bottom-16 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
-
+    <div class="relative overflow-hidden rounded-3xl bg-white border border-slate-300 p-6 md:p-8 shadow-sm text-slate-900">
         <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div class="flex items-center gap-5">
                 {% if data.user_info.picture %}
                 <img src="{{ data.user_info.picture }}" alt="{{ data.user_info.name }}"
-                    class="w-20 h-20 rounded-2xl object-cover border-2 border-indigo-500/50 shadow-xl shadow-indigo-500/20">
+                    class="w-20 h-20 rounded-2xl object-cover border-2 border-indigo-300 shadow-xs">
                 {% else %}
-                <div class="w-20 h-20 rounded-2xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-cyan-400 flex items-center justify-center font-bold text-white text-3xl shadow-xl shadow-indigo-600/25 border border-indigo-400/30">
+                <div class="w-20 h-20 rounded-2xl bg-indigo-600 flex items-center justify-center font-extrabold text-white text-3xl shadow-xs border border-indigo-700">
                     {{ data.user_info.name[0]|upper if data.user_info.name else 'U' }}
                 </div>
                 {% endif %}
 
                 <div class="space-y-1">
                     <div class="flex items-center gap-3 flex-wrap">
-                        <h2 class="text-2xl font-extrabold text-white tracking-tight">{{ data.user_info.name }}</h2>
+                        <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight">{{ data.user_info.name }}</h2>
                         {% if data.user_info.provider == 'google' %}
-                        <span class="px-2.5 py-1 rounded-full bg-slate-800 text-indigo-300 text-xs font-semibold border border-indigo-500/30 flex items-center gap-1.5 shadow">
-                            <i class="fab fa-google text-indigo-400"></i> Google Verified Account
+                        <span class="px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-700 text-xs font-bold border border-indigo-200 flex items-center gap-1.5 shadow-xs">
+                            <i class="fab fa-google text-indigo-600"></i> Google Verified Account
                         </span>
                         {% else %}
-                        <span class="px-2.5 py-1 rounded-full bg-slate-800 text-slate-300 text-xs font-semibold border border-slate-700 flex items-center gap-1.5 shadow">
-                            <i class="fas fa-user-shield text-indigo-400"></i> Local Developer Account
+                        <span class="px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-bold border border-slate-300 flex items-center gap-1.5 shadow-xs">
+                            <i class="fas fa-user-shield text-indigo-600"></i> Local Developer Account
                         </span>
                         {% endif %}
-                        <span class="px-2.5 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-xs font-semibold border border-indigo-500/30">
+                        <span class="px-2.5 py-1 rounded-full bg-purple-50 text-purple-700 text-xs font-extrabold border border-purple-200">
                             Pro AI Architect
                         </span>
                     </div>
 
-                    <p class="text-sm text-slate-400 flex items-center gap-2">
-                        <i class="fas fa-envelope text-slate-500"></i> {{ data.user_info.email }}
+                    <p class="text-sm text-slate-600 font-medium flex items-center gap-2">
+                        <i class="fas fa-envelope text-slate-400"></i> {{ data.user_info.email }}
                     </p>
 
-                    <div class="flex items-center gap-4 pt-1 text-xs text-slate-400">
+                    <div class="flex items-center gap-4 pt-1 text-xs text-slate-600 font-medium">
                         <span class="flex items-center gap-1.5">
-                            <i class="fas fa-calendar-alt text-indigo-400"></i> Joined: 
-                            <strong class="text-slate-200">
+                            <i class="fas fa-calendar-alt text-indigo-600"></i> Joined: 
+                            <strong class="text-slate-900 font-bold">
                                 {% if data.user_info.created_at and data.user_info.created_at.strftime %}
                                     {{ data.user_info.created_at.strftime('%b %d, %Y') }}
                                 {% else %}
@@ -57,7 +54,7 @@
                         </span>
                         <span>•</span>
                         <span class="flex items-center gap-1.5">
-                            <i class="fas fa-cube text-cyan-400"></i> Active Workspaces: <strong class="text-slate-200">{{ data.stats.total_projects }}</strong>
+                            <i class="fas fa-cube text-sky-600"></i> Active Workspaces: <strong class="text-slate-900 font-bold">{{ data.stats.total_projects }}</strong>
                         </span>
                     </div>
                 </div>
@@ -65,9 +62,105 @@
 
             <!-- Quick Action Controls -->
             <div class="flex items-center gap-3 w-full md:w-auto justify-end">
-                <a href="{{ url_for('new_project') }}" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white text-xs font-semibold shadow-lg shadow-indigo-600/25 transition-all flex items-center gap-2">
+                <a href="{{ url_for('new_project') }}" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-extrabold shadow-xs transition-all flex items-center gap-2">
                     <i class="fas fa-plus text-xs"></i> New Project Workspace
                 </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Platform Mastery & Engagement Scoring System Card -->
+    <div class="rounded-3xl bg-gradient-to-br from-indigo-900 via-slate-900 to-indigo-950 p-6 md:p-8 shadow-xl text-white border border-indigo-700/50 space-y-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-indigo-800/60 pb-6">
+            <div class="space-y-2">
+                <div class="flex items-center gap-3 flex-wrap">
+                    <span class="px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/40 text-xs font-black uppercase tracking-wider flex items-center gap-1.5 shadow-xs">
+                        <i class="fas {{ data.platform_rating.tier_icon }}"></i> {{ data.platform_rating.tier_title }}
+                    </span>
+                    <span class="text-xs font-bold text-indigo-200">
+                        Rating: <strong class="text-white font-extrabold text-sm">{{ data.platform_rating.star_rating }} / 5.0</strong> {{ data.platform_rating.stars_html }}
+                    </span>
+                </div>
+                <h3 class="text-2xl font-black tracking-tight text-white flex items-center gap-2">
+                    Developer Platform Mastery Score
+                </h3>
+                <p class="text-xs text-indigo-200 font-medium max-w-xl">
+                    Dynamic engagement rating computed from active project workspaces, AutoML model builds, dataset quality, and API activity.
+                </p>
+            </div>
+
+            <!-- Big Overall Rating Score Badge -->
+            <div class="flex items-center gap-4 shrink-0 bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/15 shadow-inner">
+                <div class="text-right">
+                    <span class="text-[11px] font-extrabold text-indigo-200 uppercase tracking-widest block">Platform Score</span>
+                    <span class="text-4xl font-black text-white font-mono tracking-tight">{{ data.platform_rating.score }}</span>
+                    <span class="text-xs font-bold text-indigo-300"> / 100 PTS</span>
+                </div>
+                <div class="w-14 h-14 rounded-2xl bg-indigo-600/80 border border-indigo-400/50 flex items-center justify-center text-amber-300 text-2xl shadow-lg">
+                    <i class="fas {{ data.platform_rating.tier_icon }}"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Overall Score Progress Gauge Bar -->
+        <div class="space-y-2">
+            <div class="flex justify-between items-center text-xs font-bold text-indigo-200">
+                <span>Overall Mastery Progress</span>
+                <span class="font-mono text-amber-300 font-extrabold">{{ data.platform_rating.score }}% Achieved</span>
+            </div>
+            <div class="w-full h-4 bg-indigo-950/80 rounded-full border border-indigo-700/60 p-0.5 overflow-hidden shadow-inner">
+                <div class="h-full rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-amber-400 transition-all duration-1000 shadow-md" style="width: {{ data.platform_rating.score }}%;"></div>
+            </div>
+        </div>
+
+        <!-- Metric Breakdown & Recommendations Sub-Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-2">
+            <!-- Workspaces Score -->
+            <div class="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm space-y-1">
+                <div class="flex items-center justify-between text-indigo-300 text-xs font-bold uppercase">
+                    <span>Workspaces</span>
+                    <span class="font-mono text-white font-black">{{ data.platform_rating.breakdown.workspaces }} / 25</span>
+                </div>
+                <p class="text-xs text-indigo-200 font-medium">{{ data.stats.total_projects }} Active Projects</p>
+                <div class="w-full h-1.5 bg-indigo-950 rounded-full overflow-hidden mt-2">
+                    <div class="h-full bg-indigo-400 rounded-full" style="width: {{ (data.platform_rating.breakdown.workspaces / 25 * 100)|round }}%;"></div>
+                </div>
+            </div>
+
+            <!-- Model Builds Score -->
+            <div class="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm space-y-1">
+                <div class="flex items-center justify-between text-indigo-300 text-xs font-bold uppercase">
+                    <span>Model Builds</span>
+                    <span class="font-mono text-white font-black">{{ data.platform_rating.breakdown.models }} / 35</span>
+                </div>
+                <p class="text-xs text-indigo-200 font-medium">{{ data.stats.total_models_trained }} Trained Models</p>
+                <div class="w-full h-1.5 bg-indigo-950 rounded-full overflow-hidden mt-2">
+                    <div class="h-full bg-sky-400 rounded-full" style="width: {{ (data.platform_rating.breakdown.models / 35 * 100)|round }}%;"></div>
+                </div>
+            </div>
+
+            <!-- Peak Quality Score -->
+            <div class="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm space-y-1">
+                <div class="flex items-center justify-between text-indigo-300 text-xs font-bold uppercase">
+                    <span>Peak Accuracy</span>
+                    <span class="font-mono text-white font-black">{{ data.platform_rating.breakdown.quality }} / 25</span>
+                </div>
+                <p class="text-xs text-indigo-200 font-medium">Top Accuracy Performance</p>
+                <div class="w-full h-1.5 bg-indigo-950 rounded-full overflow-hidden mt-2">
+                    <div class="h-full bg-emerald-400 rounded-full" style="width: {{ (data.platform_rating.breakdown.quality / 25 * 100)|round }}%;"></div>
+                </div>
+            </div>
+
+            <!-- Platform Activity Score -->
+            <div class="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm space-y-1">
+                <div class="flex items-center justify-between text-indigo-300 text-xs font-bold uppercase">
+                    <span>Activity & Logs</span>
+                    <span class="font-mono text-white font-black">{{ data.platform_rating.breakdown.activity }} / 15</span>
+                </div>
+                <p class="text-xs text-indigo-200 font-medium">{{ data.stats.total_activities }} Total Actions Logged</p>
+                <div class="w-full h-1.5 bg-indigo-950 rounded-full overflow-hidden mt-2">
+                    <div class="h-full bg-amber-400 rounded-full" style="width: {{ (data.platform_rating.breakdown.activity / 15 * 100)|round }}%;"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -75,38 +168,38 @@
     <!-- User KPI Metrics Row -->
     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
         <!-- Total Projects -->
-        <div class="bg-slate-900/80 border border-slate-800/80 rounded-2xl p-4 space-y-2 backdrop-blur-xl relative overflow-hidden group hover:border-indigo-500/50 transition-all">
-            <div class="flex items-center justify-between text-slate-400">
-                <span class="text-xs font-semibold uppercase tracking-wider">Total Projects</span>
-                <div class="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-400">
+        <div class="bg-white border border-slate-300 rounded-2xl p-4 space-y-2 shadow-xs relative overflow-hidden group hover:border-indigo-400 transition-all text-slate-900">
+            <div class="flex items-center justify-between text-slate-500">
+                <span class="text-xs font-bold uppercase tracking-wider">Total Projects</span>
+                <div class="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600 font-bold">
                     <i class="fas fa-folder-open"></i>
                 </div>
             </div>
-            <p class="text-2xl font-black text-white">{{ data.stats.total_projects }}</p>
-            <p class="text-[11px] text-slate-400">Created Workspaces</p>
+            <p class="text-2xl font-black text-slate-900">{{ data.stats.total_projects }}</p>
+            <p class="text-[11px] text-slate-500 font-medium">Created Workspaces</p>
         </div>
 
         <!-- Models Trained -->
-        <div class="bg-slate-900/80 border border-slate-800/80 rounded-2xl p-4 space-y-2 backdrop-blur-xl relative overflow-hidden group hover:border-cyan-500/50 transition-all">
-            <div class="flex items-center justify-between text-slate-400">
-                <span class="text-xs font-semibold uppercase tracking-wider">Models Trained</span>
-                <div class="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center text-cyan-400">
+        <div class="bg-white border border-slate-300 rounded-2xl p-4 space-y-2 shadow-xs relative overflow-hidden group hover:border-sky-400 transition-all text-slate-900">
+            <div class="flex items-center justify-between text-slate-500">
+                <span class="text-xs font-bold uppercase tracking-wider">Models Trained</span>
+                <div class="w-8 h-8 rounded-lg bg-sky-50 flex items-center justify-center text-sky-600 font-bold">
                     <i class="fas fa-robot"></i>
                 </div>
             </div>
-            <p class="text-2xl font-black text-white">{{ data.stats.total_models_trained }}</p>
-            <p class="text-[11px] text-slate-400">AutoML Model Builds</p>
+            <p class="text-2xl font-black text-slate-900">{{ data.stats.total_models_trained }}</p>
+            <p class="text-[11px] text-slate-500 font-medium">AutoML Model Builds</p>
         </div>
 
         <!-- Max Model Score -->
-        <div class="bg-slate-900/80 border border-slate-800/80 rounded-2xl p-4 space-y-2 backdrop-blur-xl relative overflow-hidden group hover:border-emerald-500/50 transition-all">
-            <div class="flex items-center justify-between text-slate-400">
-                <span class="text-xs font-semibold uppercase tracking-wider">Max Score</span>
-                <div class="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400">
+        <div class="bg-white border border-slate-300 rounded-2xl p-4 space-y-2 shadow-xs relative overflow-hidden group hover:border-emerald-400 transition-all text-slate-900">
+            <div class="flex items-center justify-between text-slate-500">
+                <span class="text-xs font-bold uppercase tracking-wider">Max Score</span>
+                <div class="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600 font-bold">
                     <i class="fas fa-trophy"></i>
                 </div>
             </div>
-            <p class="text-2xl font-black text-emerald-400">
+            <p class="text-2xl font-black text-emerald-700">
                 {% if data.stats.max_score > 0 %}
                     {% if data.stats.max_score <= 1.0 %}
                         {{ (data.stats.max_score * 100)|round(1) }}%
@@ -117,18 +210,18 @@
                     —
                 {% endif %}
             </p>
-            <p class="text-[11px] text-slate-400">Peak Model Performance</p>
+            <p class="text-[11px] text-slate-500 font-medium">Peak Model Performance</p>
         </div>
 
         <!-- Avg Model Score -->
-        <div class="bg-slate-900/80 border border-slate-800/80 rounded-2xl p-4 space-y-2 backdrop-blur-xl relative overflow-hidden group hover:border-amber-500/50 transition-all">
-            <div class="flex items-center justify-between text-slate-400">
-                <span class="text-xs font-semibold uppercase tracking-wider">Avg Score</span>
-                <div class="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-400">
+        <div class="bg-white border border-slate-300 rounded-2xl p-4 space-y-2 shadow-xs relative overflow-hidden group hover:border-amber-400 transition-all text-slate-900">
+            <div class="flex items-center justify-between text-slate-500">
+                <span class="text-xs font-bold uppercase tracking-wider">Avg Score</span>
+                <div class="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center text-amber-600 font-bold">
                     <i class="fas fa-chart-line"></i>
                 </div>
             </div>
-            <p class="text-2xl font-black text-amber-300">
+            <p class="text-2xl font-black text-amber-700">
                 {% if data.stats.avg_score > 0 %}
                     {% if data.stats.avg_score <= 1.0 %}
                         {{ (data.stats.avg_score * 100)|round(1) }}%
@@ -139,18 +232,18 @@
                     —
                 {% endif %}
             </p>
-            <p class="text-[11px] text-slate-400">Mean Accuracy / Metric</p>
+            <p class="text-[11px] text-slate-500 font-medium">Mean Accuracy / Metric</p>
         </div>
 
         <!-- Min Model Score -->
-        <div class="bg-slate-900/80 border border-slate-800/80 rounded-2xl p-4 space-y-2 backdrop-blur-xl relative overflow-hidden group hover:border-rose-500/50 transition-all">
-            <div class="flex items-center justify-between text-slate-400">
-                <span class="text-xs font-semibold uppercase tracking-wider">Min Score</span>
-                <div class="w-8 h-8 rounded-lg bg-rose-500/10 flex items-center justify-center text-rose-400">
+        <div class="bg-white border border-slate-300 rounded-2xl p-4 space-y-2 shadow-xs relative overflow-hidden group hover:border-slate-400 transition-all text-slate-900">
+            <div class="flex items-center justify-between text-slate-500">
+                <span class="text-xs font-bold uppercase tracking-wider">Min Score</span>
+                <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600 font-bold">
                     <i class="fas fa-chart-area"></i>
                 </div>
             </div>
-            <p class="text-2xl font-black text-slate-300">
+            <p class="text-2xl font-black text-slate-900">
                 {% if data.stats.min_score > 0 %}
                     {% if data.stats.min_score <= 1.0 %}
                         {{ (data.stats.min_score * 100)|round(1) }}%
@@ -161,87 +254,88 @@
                     —
                 {% endif %}
             </p>
-            <p class="text-[11px] text-slate-400">Lowest Baseline Score</p>
+            <p class="text-[11px] text-slate-500 font-medium">Lowest Baseline Score</p>
         </div>
 
         <!-- Total Operations -->
-        <div class="bg-slate-900/80 border border-slate-800/80 rounded-2xl p-4 space-y-2 backdrop-blur-xl relative overflow-hidden group hover:border-purple-500/50 transition-all">
-            <div class="flex items-center justify-between text-slate-400">
-                <span class="text-xs font-semibold uppercase tracking-wider">Activity Logs</span>
-                <div class="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-400">
+        <div class="bg-white border border-slate-300 rounded-2xl p-4 space-y-2 shadow-xs relative overflow-hidden group hover:border-purple-400 transition-all text-slate-900">
+            <div class="flex items-center justify-between text-slate-500">
+                <span class="text-xs font-bold uppercase tracking-wider">Activity Logs</span>
+                <div class="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center text-purple-600 font-bold">
                     <i class="fas fa-list-check"></i>
                 </div>
             </div>
-            <p class="text-2xl font-black text-purple-300">{{ data.stats.total_activities }}</p>
-            <p class="text-[11px] text-slate-400">Total User Operations</p>
+            <p class="text-2xl font-black text-purple-700">{{ data.stats.total_activities }}</p>
+            <p class="text-[11px] text-slate-500 font-medium">Total User Operations</p>
         </div>
     </div>
 
     <!-- Visual Charts Grid (2x2 Layout) -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Chart 1: Model Score Range Summary -->
-        <div class="bg-slate-900/90 border border-slate-800/80 rounded-3xl p-6 backdrop-blur-xl shadow-xl space-y-3">
-            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-                <h3 class="text-sm font-bold text-white flex items-center gap-2">
-                    <i class="fas fa-chart-bar text-indigo-400"></i> Model Score Performance Range
+        <div class="bg-white border border-slate-300 rounded-3xl p-6 shadow-sm space-y-3 text-slate-900 overflow-hidden">
+            <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+                <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                    <i class="fas fa-chart-bar text-indigo-600"></i> Model Score Performance Range
                 </h3>
-                <span class="text-xs text-slate-400 font-mono">Min • Avg • Max</span>
+                <span class="text-xs text-slate-500 font-mono">Min • Avg • Max</span>
             </div>
-            <div id="chartScoreRange" class="w-full h-80"></div>
+            <div id="chartScoreRange" class="w-full min-h-[320px] max-h-[360px] overflow-hidden"></div>
         </div>
 
         <!-- Chart 2: Trained Models by Algorithm -->
-        <div class="bg-slate-900/90 border border-slate-800/80 rounded-3xl p-6 backdrop-blur-xl shadow-xl space-y-3">
-            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-                <h3 class="text-sm font-bold text-white flex items-center gap-2">
-                    <i class="fas fa-pie-chart text-cyan-400"></i> Algorithm Usage Distribution
+        <div class="bg-white border border-slate-300 rounded-3xl p-6 shadow-sm space-y-3 text-slate-900 overflow-hidden">
+            <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+                <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                    <i class="fas fa-pie-chart text-sky-600"></i> Algorithm Usage Distribution
                 </h3>
-                <span class="text-xs text-slate-400 font-mono">Trained Architectures</span>
+                <span class="text-xs text-slate-500 font-mono">Trained Architectures</span>
             </div>
-            <div id="chartAlgoPie" class="w-full h-80"></div>
+            <div id="chartAlgoPie" class="w-full min-h-[320px] max-h-[360px] overflow-hidden"></div>
         </div>
 
         <!-- Chart 3: Score Progression Timeline -->
-        <div class="bg-slate-900/90 border border-slate-800/80 rounded-3xl p-6 backdrop-blur-xl shadow-xl space-y-3">
-            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-                <h3 class="text-sm font-bold text-white flex items-center gap-2">
-                    <i class="fas fa-chart-line text-emerald-400"></i> Model Accuracy Timeline
+        <div class="bg-white border border-slate-300 rounded-3xl p-6 shadow-sm space-y-3 text-slate-900 overflow-hidden">
+            <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+                <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                    <i class="fas fa-chart-line text-emerald-600"></i> Model Accuracy Timeline
                 </h3>
-                <span class="text-xs text-slate-400 font-mono">Sequential Builds</span>
+                <span class="text-xs text-slate-500 font-mono">Sequential Builds</span>
             </div>
-            <div id="chartScoreTimeline" class="w-full h-80"></div>
+            <div id="chartScoreTimeline" class="w-full min-h-[320px] max-h-[360px] overflow-hidden"></div>
         </div>
 
         <!-- Chart 4: Project Task Distribution -->
-        <div class="bg-slate-900/90 border border-slate-800/80 rounded-3xl p-6 backdrop-blur-xl shadow-xl space-y-3">
-            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-                <h3 class="text-sm font-bold text-white flex items-center gap-2">
-                    <i class="fas fa-tasks text-purple-400"></i> Project Task Types Ratio
+        <div class="bg-white border border-slate-300 rounded-3xl p-6 shadow-sm space-y-3 text-slate-900 overflow-hidden">
+            <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+                <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                    <i class="fas fa-tasks text-purple-600"></i> Project Task Types Ratio
                 </h3>
-                <span class="text-xs text-slate-400 font-mono">Classification vs Regression</span>
+                <span class="text-xs text-slate-500 font-mono">Classification vs Regression</span>
             </div>
-            <div id="chartTaskDonut" class="w-full h-80"></div>
+            <div id="chartTaskDonut" class="w-full min-h-[320px] max-h-[360px] overflow-hidden"></div>
         </div>
     </div>
 
+
     <!-- User Trained Models Portfolio Table -->
-    <div class="bg-slate-900/90 border border-slate-800/80 rounded-3xl p-6 backdrop-blur-xl shadow-xl space-y-4">
-        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
+    <div class="bg-white border border-slate-300 rounded-3xl p-6 shadow-sm space-y-4 text-slate-900">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-200 pb-4">
             <div>
-                <h3 class="text-base font-bold text-white flex items-center gap-2">
-                    <i class="fas fa-cubes text-amber-400"></i> User Trained Model Portfolio
+                <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                    <i class="fas fa-cubes text-amber-600"></i> User Trained Model Portfolio
                 </h3>
-                <p class="text-xs text-slate-400">Detailed list of all models built across your project workspaces</p>
+                <p class="text-xs text-slate-600 font-medium">Detailed list of all models built across your project workspaces</p>
             </div>
-            <span class="px-3 py-1 rounded-full bg-slate-800 text-xs font-medium text-slate-300 border border-slate-700">
+            <span class="px-3 py-1 rounded-full bg-slate-100 text-xs font-bold text-slate-700 border border-slate-300 shadow-xs">
                 {{ data.trained_models|length }} Trained Models
             </span>
         </div>
 
         {% if data.trained_models %}
-        <div class="overflow-x-auto custom-scrollbar">
-            <table class="w-full text-left text-xs text-slate-300">
-                <thead class="bg-slate-800/60 text-slate-400 font-semibold uppercase tracking-wider border-b border-slate-800">
+        <div class="overflow-x-auto custom-scrollbar rounded-xl border border-slate-300">
+            <table class="w-full text-left text-xs text-slate-900">
+                <thead class="bg-slate-50 text-slate-700 font-extrabold uppercase tracking-wider border-b border-slate-300">
                     <tr>
                         <th class="px-4 py-3">Project Workspace</th>
                         <th class="px-4 py-3">Model Algorithm</th>
@@ -251,23 +345,23 @@
                         <th class="px-4 py-3 text-right">Action</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-800/60">
+                <tbody class="divide-y divide-slate-200 font-medium">
                     {% for m in data.trained_models %}
-                    <tr class="hover:bg-slate-800/40 transition-colors">
-                        <td class="px-4 py-3.5 font-semibold text-white">
-                            <i class="fas fa-folder text-indigo-400 mr-2"></i> {{ m.project_name }}
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <td class="px-4 py-3.5 font-bold text-slate-900">
+                            <i class="fas fa-folder text-indigo-600 mr-2"></i> {{ m.project_name }}
                         </td>
-                        <td class="px-4 py-3.5 font-mono text-cyan-300">
+                        <td class="px-4 py-3.5 font-mono text-indigo-700 font-bold">
                             {{ m.model_name }}
                         </td>
                         <td class="px-4 py-3.5 capitalize">
-                            <span class="px-2.5 py-1 rounded-full text-[11px] font-medium border {% if m.task == 'classification' %}bg-indigo-500/10 border-indigo-500/30 text-indigo-300{% elif m.task == 'regression' %}bg-cyan-500/10 border-cyan-500/30 text-cyan-300{% else %}bg-slate-800 border-slate-700 text-slate-400{% endif %}">
+                            <span class="px-2.5 py-1 rounded-full text-[11px] font-bold border {% if m.task == 'classification' %}bg-indigo-50 border-indigo-200 text-indigo-700{% elif m.task == 'regression' %}bg-sky-50 border-sky-200 text-sky-700{% else %}bg-slate-100 border-slate-300 text-slate-700{% endif %}">
                                 {{ m.task }}
                             </span>
                         </td>
                         <td class="px-4 py-3.5 font-bold font-mono">
                             {% if m.score is not none %}
-                                <span class="{% if m.score >= 0.85 %}text-emerald-400{% elif m.score >= 0.70 %}text-amber-400{% else %}text-indigo-300{% endif %}">
+                                <span class="{% if m.score >= 0.85 %}text-emerald-700{% elif m.score >= 0.70 %}text-amber-700{% else %}text-indigo-700{% endif %}">
                                     {% if m.score <= 1.0 %}
                                         {{ (m.score * 100)|round(2) }}%
                                     {% else %}
@@ -275,20 +369,20 @@
                                     {% endif %}
                                 </span>
                             {% else %}
-                                <span class="text-slate-500">—</span>
+                                <span class="text-slate-400">—</span>
                             {% endif %}
                         </td>
                         <td class="px-4 py-3.5">
                             {% if m.is_best %}
-                            <span class="px-2.5 py-1 rounded-full bg-amber-500/20 text-amber-300 text-[11px] font-semibold border border-amber-500/40 flex items-center gap-1.5 w-fit shadow-sm">
-                                <i class="fas fa-star text-amber-400 text-xs"></i> Best Model
+                            <span class="px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 text-[11px] font-extrabold border border-amber-200 flex items-center gap-1.5 w-fit shadow-xs">
+                                <i class="fas fa-star text-amber-600 text-xs"></i> Best Model
                             </span>
                             {% else %}
-                            <span class="text-slate-500 text-[11px]">Evaluated</span>
+                            <span class="text-slate-500 text-[11px] font-semibold">Evaluated</span>
                             {% endif %}
                         </td>
                         <td class="px-4 py-3.5 text-right">
-                            <a href="{{ url_for('switch_project', project_id=m.project_id) }}" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-indigo-300 text-[11px] font-semibold transition-all">
+                            <a href="{{ url_for('switch_project', project_id=m.project_id) }}" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-indigo-700 text-[11px] font-bold transition-all border border-slate-300 shadow-xs">
                                 Open Project <i class="fas fa-arrow-right text-[10px] ml-1"></i>
                             </a>
                         </td>
@@ -298,33 +392,33 @@
             </table>
         </div>
         {% else %}
-        <div class="text-center py-10 text-slate-500 space-y-2">
-            <i class="fas fa-robot text-3xl"></i>
+        <div class="text-center py-10 text-slate-500 space-y-2 font-medium">
+            <i class="fas fa-robot text-3xl text-indigo-600"></i>
             <p class="text-sm">No models trained yet. Go to AutoML Trainer to build your first machine learning pipeline!</p>
-            <a href="{{ url_for('train') }}" class="inline-block mt-2 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold">Start AutoML Training</a>
+            <a href="{{ url_for('train') }}" class="inline-block mt-2 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-xs">Start AutoML Training</a>
         </div>
         {% endif %}
     </div>
 
     <!-- Complete User Activity & Operation Audit History Log -->
-    <div class="bg-slate-900/90 border border-slate-800/80 rounded-3xl p-6 backdrop-blur-xl shadow-xl space-y-5">
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+    <div class="bg-white border border-slate-300 rounded-3xl p-6 shadow-sm space-y-5 text-slate-900">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-4">
             <div>
-                <h3 class="text-base font-bold text-white flex items-center gap-2">
-                    <i class="fas fa-history text-cyan-400"></i> Activity & Operation Audit History
+                <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                    <i class="fas fa-history text-sky-600"></i> Activity & Operation Audit History
                 </h3>
-                <p class="text-xs text-slate-400">Complete record of every project creation, dataset ingestion, cleaning step, and model training</p>
+                <p class="text-xs text-slate-600 font-medium">Complete record of every project creation, dataset ingestion, cleaning step, and model training</p>
             </div>
 
             <!-- Search & Filter Controls -->
             <div class="flex items-center gap-3 flex-wrap">
                 <div class="relative">
-                    <i class="fas fa-search absolute left-3 top-2.5 text-slate-500 text-xs"></i>
+                    <i class="fas fa-search absolute left-3 top-2.5 text-slate-400 text-xs"></i>
                     <input type="text" id="historySearch" placeholder="Search activity logs..."
-                        class="bg-slate-950/80 border border-slate-800 rounded-xl pl-9 pr-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500 w-48 sm:w-64 transition-all">
+                        class="bg-white border border-slate-300 rounded-xl pl-9 pr-3 py-1.5 text-xs text-slate-900 focus:outline-none focus:border-indigo-600 w-48 sm:w-64 transition-all font-medium">
                 </div>
 
-                <select id="historyFilter" class="bg-slate-950/80 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-slate-300 focus:outline-none focus:border-indigo-500">
+                <select id="historyFilter" class="bg-white border border-slate-300 rounded-xl px-3 py-1.5 text-xs text-slate-900 focus:outline-none focus:border-indigo-600 font-semibold">
                     <option value="all">All Action Types</option>
                     <option value="project">Project Workspaces</option>
                     <option value="dataset">Dataset Operations</option>
@@ -336,9 +430,9 @@
         </div>
 
         {% if data.history_events %}
-        <div class="overflow-x-auto custom-scrollbar">
-            <table class="w-full text-left text-xs text-slate-300" id="historyTable">
-                <thead class="bg-slate-800/60 text-slate-400 font-semibold uppercase tracking-wider border-b border-slate-800">
+        <div class="overflow-x-auto custom-scrollbar rounded-xl border border-slate-300">
+            <table class="w-full text-left text-xs text-slate-900" id="historyTable">
+                <thead class="bg-slate-50 text-slate-700 font-extrabold uppercase tracking-wider border-b border-slate-300">
                     <tr>
                         <th class="px-4 py-3">Timestamp</th>
                         <th class="px-4 py-3">Action Type</th>
@@ -346,10 +440,10 @@
                         <th class="px-4 py-3">Status</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-800/60" id="historyTableBody">
+                <tbody class="divide-y divide-slate-200 font-medium" id="historyTableBody">
                     {% for h in data.history_events %}
-                    <tr class="history-row hover:bg-slate-800/40 transition-colors" data-type="{{ h.action_type }}">
-                        <td class="px-4 py-3.5 text-slate-400 font-mono whitespace-nowrap">
+                    <tr class="history-row hover:bg-slate-50 transition-colors" data-type="{{ h.action_type }}">
+                        <td class="px-4 py-3.5 text-slate-500 font-mono whitespace-nowrap">
                             {% if h.timestamp and h.timestamp.strftime %}
                                 {{ h.timestamp.strftime('%Y-%m-%d %H:%M') }}
                             {% else %}
@@ -358,36 +452,36 @@
                         </td>
                         <td class="px-4 py-3.5">
                             {% if h.action_type == 'project' %}
-                            <span class="px-2.5 py-1 rounded-full bg-purple-500/15 text-purple-300 text-[11px] font-semibold border border-purple-500/30 flex items-center gap-1.5 w-fit">
-                                <i class="fas fa-folder text-purple-400"></i> Project
+                            <span class="px-2.5 py-1 rounded-full bg-purple-50 text-purple-700 text-[11px] font-bold border border-purple-200 flex items-center gap-1.5 w-fit">
+                                <i class="fas fa-folder text-purple-600"></i> Project
                             </span>
                             {% elif h.action_type == 'dataset' %}
-                            <span class="px-2.5 py-1 rounded-full bg-cyan-500/15 text-cyan-300 text-[11px] font-semibold border border-cyan-500/30 flex items-center gap-1.5 w-fit">
-                                <i class="fas fa-cloud-upload-alt text-cyan-400"></i> Dataset
+                            <span class="px-2.5 py-1 rounded-full bg-sky-50 text-sky-700 text-[11px] font-bold border border-sky-200 flex items-center gap-1.5 w-fit">
+                                <i class="fas fa-cloud-upload-alt text-sky-600"></i> Dataset
                             </span>
                             {% elif h.action_type == 'cleaning' %}
-                            <span class="px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-300 text-[11px] font-semibold border border-emerald-500/30 flex items-center gap-1.5 w-fit">
-                                <i class="fas fa-magic text-emerald-400"></i> Cleaning
+                            <span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 text-[11px] font-bold border border-emerald-200 flex items-center gap-1.5 w-fit">
+                                <i class="fas fa-magic text-emerald-600"></i> Cleaning
                             </span>
                             {% elif h.action_type == 'training' %}
-                            <span class="px-2.5 py-1 rounded-full bg-amber-500/15 text-amber-300 text-[11px] font-semibold border border-amber-500/30 flex items-center gap-1.5 w-fit">
-                                <i class="fas fa-cogs text-amber-400"></i> AutoML
+                            <span class="px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 text-[11px] font-bold border border-amber-200 flex items-center gap-1.5 w-fit">
+                                <i class="fas fa-cogs text-amber-600"></i> AutoML
                             </span>
                             {% elif h.action_type == 'prediction' %}
-                            <span class="px-2.5 py-1 rounded-full bg-indigo-500/15 text-indigo-300 text-[11px] font-semibold border border-indigo-500/30 flex items-center gap-1.5 w-fit">
-                                <i class="fas fa-bolt text-indigo-400"></i> Inference
+                            <span class="px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-700 text-[11px] font-bold border border-indigo-200 flex items-center gap-1.5 w-fit">
+                                <i class="fas fa-bolt text-indigo-600"></i> Inference
                             </span>
                             {% else %}
-                            <span class="px-2.5 py-1 rounded-full bg-slate-800 text-slate-300 text-[11px] font-semibold border border-slate-700 flex items-center gap-1.5 w-fit">
-                                <i class="fas fa-cog text-slate-400"></i> System
+                            <span class="px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 text-[11px] font-bold border border-slate-300 flex items-center gap-1.5 w-fit">
+                                <i class="fas fa-cog text-slate-500"></i> System
                             </span>
                             {% endif %}
                         </td>
-                        <td class="px-4 py-3.5 font-medium text-slate-200">
+                        <td class="px-4 py-3.5 font-semibold text-slate-900">
                             {{ h.description }}
                         </td>
                         <td class="px-4 py-3.5">
-                            <span class="text-emerald-400 font-semibold text-[11px] flex items-center gap-1">
+                            <span class="text-emerald-700 font-bold text-[11px] flex items-center gap-1">
                                 <i class="fas fa-check-circle text-xs"></i> Completed
                             </span>
                         </td>
@@ -397,7 +491,7 @@
             </table>
         </div>
         {% else %}
-        <div class="text-center py-8 text-slate-500">
+        <div class="text-center py-8 text-slate-500 font-medium">
             <p class="text-xs">No activity logs recorded yet.</p>
         </div>
         {% endif %}
@@ -405,27 +499,59 @@
 
 </div>
 
-<!-- Plotly Rendering Script -->
+<!-- Plotly Rendering Script Data -->
+<script id="analytics-charts-data" type="application/json">
+{
+    "score_range": {{ (charts.score_range if charts and charts.score_range else '{}')|safe }},
+    "algo_pie": {{ (charts.algo_pie if charts and charts.algo_pie else '{}')|safe }},
+    "score_timeline": {{ (charts.score_timeline if charts and charts.score_timeline else '{}')|safe }},
+    "task_donut": {{ (charts.task_donut if charts and charts.task_donut else '{}')|safe }}
+}
+</script>
+
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        const scoreRangeSpec = {{ charts.score_range|safe }};
-        const algoPieSpec = {{ charts.algo_pie|safe }};
-        const scoreTimelineSpec = {{ charts.score_timeline|safe }};
-        const taskDonutSpec = {{ charts.task_donut|safe }};
+        const dataElem = document.getElementById("analytics-charts-data");
+        const chartsData = dataElem ? JSON.parse(dataElem.textContent || "{}") : {};
 
-        const config = { responsive: true, displayModeBar: false };
+        const scoreRangeSpec = chartsData.score_range || {};
+        const algoPieSpec = chartsData.algo_pie || {};
+        const scoreTimelineSpec = chartsData.score_timeline || {};
+        const taskDonutSpec = chartsData.task_donut || {};
 
-        if (scoreRangeSpec && scoreRangeSpec.data) {
-            Plotly.newPlot("chartScoreRange", scoreRangeSpec.data, scoreRangeSpec.layout, config);
-        }
-        if (algoPieSpec && algoPieSpec.data) {
-            Plotly.newPlot("chartAlgoPie", algoPieSpec.data, algoPieSpec.layout, config);
-        }
-        if (scoreTimelineSpec && scoreTimelineSpec.data) {
-            Plotly.newPlot("chartScoreTimeline", scoreTimelineSpec.data, scoreTimelineSpec.layout, config);
-        }
-        if (taskDonutSpec && taskDonutSpec.data) {
-            Plotly.newPlot("chartTaskDonut", taskDonutSpec.data, taskDonutSpec.layout, config);
+        const config = { responsive: true, displayModeBar: false, autosizable: true };
+
+        const chartIds = ["chartScoreRange", "chartAlgoPie", "chartScoreTimeline", "chartTaskDonut"];
+
+        if (typeof Plotly !== "undefined") {
+            if (scoreRangeSpec && scoreRangeSpec.data && scoreRangeSpec.data.length > 0) {
+                Plotly.newPlot("chartScoreRange", scoreRangeSpec.data, scoreRangeSpec.layout, config);
+            }
+            if (algoPieSpec && algoPieSpec.data && algoPieSpec.data.length > 0) {
+                Plotly.newPlot("chartAlgoPie", algoPieSpec.data, algoPieSpec.layout, config);
+            }
+            if (scoreTimelineSpec && scoreTimelineSpec.data && scoreTimelineSpec.data.length > 0) {
+                Plotly.newPlot("chartScoreTimeline", scoreTimelineSpec.data, scoreTimelineSpec.layout, config);
+            }
+            if (taskDonutSpec && taskDonutSpec.data && taskDonutSpec.data.length > 0) {
+                Plotly.newPlot("chartTaskDonut", taskDonutSpec.data, taskDonutSpec.layout, config);
+            }
+
+            function resizeCharts() {
+                chartIds.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el && (el.classList.contains('js-plotly-plot') || el.querySelector('.js-plotly-plot'))) {
+                        try {
+                            Plotly.Plots.resize(el);
+                        } catch (err) {
+                            console.warn("Plotly resize skipped for " + id, err);
+                        }
+                    }
+                });
+            }
+
+            setTimeout(resizeCharts, 150);
+            window.addEventListener('resize', resizeCharts);
         }
 
         // Table search and filter logic
@@ -434,14 +560,14 @@
         const rows = document.querySelectorAll(".history-row");
 
         function filterTable() {
-            const query = searchInput.value.toLowerCase();
-            const selectedType = filterSelect.value;
+            const query = searchInput ? searchInput.value.toLowerCase().trim() : "";
+            const selectedType = filterSelect ? filterSelect.value : "all";
 
             rows.forEach(row => {
                 const text = row.innerText.toLowerCase();
-                const type = row.getAttribute("data-type");
+                const type = row.getAttribute("data-type") || "";
 
-                const matchesQuery = text.includes(query);
+                const matchesQuery = !query || text.includes(query);
                 const matchesType = (selectedType === "all" || type === selectedType);
 
                 if (matchesQuery && matchesType) {
@@ -452,8 +578,14 @@
             });
         }
 
-        if (searchInput) searchInput.addEventListener("keyup", filterTable);
-        if (filterSelect) filterSelect.addEventListener("change", filterTable);
+        if (searchInput) {
+            searchInput.addEventListener("input", filterTable);
+            searchInput.addEventListener("keyup", filterTable);
+        }
+        if (filterSelect) {
+            filterSelect.addEventListener("change", filterTable);
+        }
     });
 </script>
 {% endblock %}
+
