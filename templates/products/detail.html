@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ tool.meta_title }}</title>
+    <meta name="description" content="{{ tool.meta_description }}">
+    <link rel="canonical" href="https://modelflow.ai/products/{{ tool.slug }}">
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="{{ tool.name }} — Free AI SaaS Tool | ModelFlow">
+    <meta property="og:description" content="{{ tool.short_description }}">
+    <meta property="og:url" content="https://modelflow.ai/products/{{ tool.slug }}">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ tool.name }} — ModelFlow AI Tools">
+    <meta name="twitter:description" content="{{ tool.short_description }}">
+
+    <!-- JSON-LD Structured Data Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "{{ tool.name }}",
+      "url": "https://modelflow.ai/products/{{ tool.slug }}",
+      "description": "{{ tool.short_description }}",
+      "applicationCategory": "{{ tool.category }}",
+      "operatingSystem": "All",
+      "offers": {
+        "@type": "Offer",
+        "price": "0.00",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- ModelFlow Global CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+        html, body {
+            background-color: #FAFBFF;
+            color: #0F172A;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .glass-panel {
+            background: #FFFFFF;
+            border: 1px solid rgba(226, 232, 240, 0.9);
+            box-shadow: 0 10px 30px -10px rgba(99, 102, 241, 0.08), 0 4px 12px -2px rgba(15, 23, 42, 0.03);
+        }
+
+        .gradient-accent {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #db2777 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .grid-pattern {
+            background-size: 48px 48px;
+            background-image: 
+                linear-gradient(to right, rgba(99, 102, 241, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(99, 102, 241, 0.05) 1px, transparent 1px);
+        }
+    </style>
+</head>
+<body class="bg-[#FAFBFF] text-slate-900 antialiased font-sans selection:bg-indigo-600 selection:text-white">
+
+    <!-- Ambient Light Halo -->
+    <div class="fixed top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-gradient-to-tr from-indigo-300/25 via-purple-300/20 to-pink-200/15 rounded-full blur-[140px] pointer-events-none -z-10 animate-pulse"></div>
+    <div class="fixed inset-0 grid-pattern opacity-70 pointer-events-none -z-10"></div>
+
+    <!-- ========================================== -->
+    <!-- HEADER NAVBAR -->
+    <!-- ========================================== -->
+    <header class="sticky top-0 z-50 backdrop-blur-xl bg-[#FAFBFF]/85 border-b border-slate-200/80 shadow-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <a href="/" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 p-0.5 shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform">
+                    <div class="w-full h-full bg-white rounded-[14px] flex items-center justify-center">
+                        <i class="fas fa-brain text-indigo-600 text-lg"></i>
+                    </div>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-xl font-extrabold tracking-tight text-slate-900 flex items-center gap-2">
+                        ModelFlow
+                        <span class="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 font-bold">v0.1</span>
+                    </span>
+                    <span class="text-[10px] font-mono text-slate-500 tracking-wider">AI PRODUCTS</span>
+                </div>
+            </a>
+
+            <nav class="hidden lg:flex items-center gap-8 text-sm font-semibold text-slate-600">
+                <a href="/" class="hover:text-indigo-600">Home</a>
+                <a href="/products" class="text-indigo-600 font-extrabold flex items-center gap-1">
+                    <i class="fas fa-arrow-left text-xs"></i> All AI Tools
+                </a>
+                <a href="#features" class="hover:text-indigo-600">Features</a>
+                <a href="#how-it-works" class="hover:text-indigo-600">How it Works</a>
+                <a href="#faq" class="hover:text-indigo-600">FAQ</a>
+            </nav>
+
+            <a href="/" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-xs font-extrabold shadow-md hover:scale-105 transition-all">
+                ModelFlow Workspace
+            </a>
+        </div>
+    </header>
+
+
+    <!-- ========================================== -->
+    <!-- BREADCRUMB NAV -->
+    <!-- ========================================== -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+        <nav class="flex items-center gap-2 text-xs font-mono text-slate-500 font-bold">
+            <a href="/" class="hover:text-indigo-600">Home</a>
+            <i class="fas fa-chevron-right text-[10px] text-slate-400"></i>
+            <a href="/products" class="hover:text-indigo-600">Products</a>
+            <i class="fas fa-chevron-right text-[10px] text-slate-400"></i>
+            <span class="text-indigo-600">{{ tool.name }}</span>
+        </nav>
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- HERO & INTERACTIVE TOOL EXECUTION STUDIO -->
+    <!-- ========================================== -->
+    <section class="py-10 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-12 gap-10 items-start">
+                
+                <!-- Left Details -->
+                <div class="lg:col-span-5 space-y-6">
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs font-mono px-3 py-1 rounded-lg bg-slate-100 text-slate-700 font-bold border border-slate-200 uppercase">
+                            {{ tool.category }}
+                        </span>
+                        <span class="px-3 py-1 rounded-full bg-emerald-100 border border-emerald-300 text-emerald-800 text-xs font-mono font-black shadow-xs flex items-center gap-1.5">
+                            <i class="fas fa-gift text-emerald-600 text-[10px]"></i> FREE TOOL
+                        </span>
+                    </div>
+
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-2xl bg-indigo-50 border border-indigo-200 flex items-center justify-center text-3xl text-indigo-600 shadow-sm shrink-0">
+                            <i class="{{ tool.icon }}"></i>
+                        </div>
+                        <h1 class="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight leading-tight">
+                            {{ tool.name }}
+                        </h1>
+                    </div>
+
+                    <p class="text-slate-600 text-base leading-relaxed font-medium">
+                        {{ tool.full_description }}
+                    </p>
+
+                    <!-- Trust Checklist -->
+                    <div class="space-y-2.5 pt-2 text-xs font-bold text-slate-700">
+                        <div class="flex items-center gap-2.5">
+                            <i class="fas fa-check-circle text-emerald-600 text-sm"></i>
+                            <span>100% Free with Unlimited Generations</span>
+                        </div>
+                        <div class="flex items-center gap-2.5">
+                            <i class="fas fa-check-circle text-emerald-600 text-sm"></i>
+                            <span>No Registration or Credit Card Required</span>
+                        </div>
+                        <div class="flex items-center gap-2.5">
+                            <i class="fas fa-check-circle text-emerald-600 text-sm"></i>
+                            <span>Instant Real-Time NLP Processing</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Interactive Tool Runner Container -->
+                <div class="lg:col-span-7">
+                    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-2xl space-y-6">
+                        
+                        <div class="flex items-center justify-between pb-4 border-b border-slate-200">
+                            <span class="text-xs font-mono text-slate-500 font-bold flex items-center gap-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span> Live Execution Studio
+                            </span>
+                            <span class="px-2.5 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-200 font-mono text-[10px] font-black">
+                                Fast NLP Engine
+                            </span>
+                        </div>
+
+                        <!-- Tool Dynamic Form & File Upload Dropzone -->
+                        <form id="toolForm" class="space-y-5" enctype="multipart/form-data">
+                            
+                            <!-- Drag & Drop Upload Zone -->
+                            <div class="space-y-2">
+                                <label class="block text-xs font-extrabold text-slate-900 uppercase font-mono tracking-wider flex items-center justify-between">
+                                    <span>Upload Source File(s)</span>
+                                    <span class="text-[10px] text-indigo-700 font-bold bg-indigo-50 border border-indigo-200 px-2 py-0.5 rounded">Max 50MB • All Formats</span>
+                                </label>
+                                
+                                <div id="dropzone" class="border-2 border-dashed border-slate-300 hover:border-indigo-500 rounded-3xl p-6 text-center bg-slate-50/70 hover:bg-indigo-50/40 transition-all cursor-pointer relative group">
+                                    <input type="file" id="fileUploadInput" name="file" multiple class="absolute inset-0 opacity-0 cursor-pointer z-10">
+                                    
+                                    <div class="space-y-2 pointer-events-none">
+                                        <div class="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-xl mx-auto group-hover:scale-110 transition-transform">
+                                            <i class="fas fa-cloud-arrow-up"></i>
+                                        </div>
+                                        <div class="text-sm font-extrabold text-slate-900">
+                                            Drag & drop files here, or <span class="text-indigo-600 underline">browse computer</span>
+                                        </div>
+                                        <p class="text-xs text-slate-500 font-medium">
+                                            Supports PDF, Word (DOCX), Markdown (.md), Images (JPG, PNG, WebP, SVG, BMP), JSON, YAML, CSV
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <!-- File Preview List Container -->
+                                <div id="filePreviewList" class="hidden space-y-2 pt-2"></div>
+                            </div>
+
+                            {% for field in tool.inputs_schema %}
+                            <div class="space-y-2">
+                                <label class="block text-xs font-extrabold text-slate-900 uppercase font-mono tracking-wider">
+                                    {{ field.label }} {% if field.required %}<span class="text-rose-500">*</span>{% endif %}
+                                </label>
+
+                                {% if field.type == 'textarea' %}
+                                <textarea name="{{ field.name }}" rows="4" placeholder="{{ field.placeholder }}"
+                                    class="w-full p-4 rounded-2xl bg-slate-50 border border-slate-300 text-slate-900 text-sm font-medium focus:outline-none focus:border-indigo-500 focus:bg-white transition-all shadow-inner"></textarea>
+                                {% elif field.type == 'select' %}
+                                <select name="{{ field.name }}" class="w-full p-3.5 rounded-2xl bg-slate-50 border border-slate-300 text-slate-900 text-sm font-bold focus:outline-none focus:border-indigo-500 focus:bg-white transition-all">
+                                    {% for opt in field.options %}
+                                    <option value="{{ opt }}">{{ opt }}</option>
+                                    {% endfor %}
+                                </select>
+                                {% else %}
+                                <input type="{{ field.type }}" name="{{ field.name }}" placeholder="{{ field.placeholder }}"
+                                    class="w-full p-3.5 rounded-2xl bg-slate-50 border border-slate-300 text-slate-900 text-sm font-medium focus:outline-none focus:border-indigo-500 focus:bg-white transition-all">
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+
+                            <!-- Conversion Progress Indicator Bar -->
+                            <div id="progressIndicator" class="hidden space-y-1.5 pt-2">
+                                <div class="flex justify-between text-xs font-mono font-bold text-indigo-900">
+                                    <span>Converting File(s)...</span>
+                                    <span id="progressPercent">100%</span>
+                                </div>
+                                <div class="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
+                                    <div id="progressBar" class="bg-indigo-600 h-2 rounded-full transition-all duration-300" style="width: 100%"></div>
+                                </div>
+                            </div>
+
+                            <button type="submit" id="runToolBtn" class="w-full py-4 rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 hover:from-indigo-500 hover:to-purple-500 text-white font-extrabold text-sm shadow-xl shadow-indigo-500/25 transition-all flex items-center justify-center gap-2">
+                                <i class="fas fa-play text-xs"></i>
+                                <span>Convert & Process File</span>
+                            </button>
+                        </form>
+
+                        <!-- Output Box -->
+                        <div id="outputContainer" class="hidden space-y-4 pt-4 border-t border-slate-200">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-mono font-extrabold text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                                    <i class="fas fa-check-circle text-emerald-600"></i> Conversion Complete!
+                                </span>
+                                <span id="outputBadge" class="px-2.5 py-0.5 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-300 font-mono text-[11px] font-black">
+                                    File Ready
+                                </span>
+                            </div>
+
+                            <!-- Direct File Download Banner Button -->
+                            <div id="downloadBanner" class="p-4 rounded-2xl bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-lg font-bold shrink-0 shadow-md">
+                                        <i class="fas fa-file-download"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-xs font-extrabold text-slate-900">Your Converted File is Ready</div>
+                                        <div class="text-[11px] text-slate-500 font-bold" id="downloadSubtext">Click button to save to your computer</div>
+                                    </div>
+                                </div>
+                                <a id="directDownloadBtn" href="#" download class="w-full sm:w-auto px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow-lg shadow-emerald-600/30 transition-all flex items-center justify-center gap-2 shrink-0">
+                                    <i class="fas fa-download"></i> Download Converted File
+                                </a>
+                            </div>
+
+                            <!-- Diagnostic Feedback Box (if mistakes or suggestions exist) -->
+                            <div id="diagnosticsBox" class="hidden p-4 rounded-2xl bg-indigo-50 border border-indigo-200 text-xs text-indigo-950 font-medium space-y-2">
+                                <div class="font-extrabold font-mono text-[11px] uppercase text-indigo-800">Diagnostics & Analysis</div>
+                                <ul id="diagnosticsList" class="space-y-1 list-disc list-inside"></ul>
+                            </div>
+
+                            <!-- Main Result Text Output Box -->
+                            <div class="relative bg-slate-900 rounded-2xl p-5 border border-slate-800 text-slate-100 font-mono text-xs shadow-inner">
+                                <pre id="resultText" class="whitespace-pre-wrap leading-relaxed overflow-x-auto text-indigo-200 font-sans text-sm"></pre>
+                            </div>
+
+                            <!-- Copy & Regenerate Bar -->
+                            <div class="flex items-center justify-between gap-3 pt-2">
+                                <button id="copyResultBtn" class="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs transition-colors flex items-center gap-2 shadow-md">
+                                    <i class="fas fa-copy text-indigo-400"></i> Copy Result
+                                </button>
+                                <button id="regenerateBtn" class="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-extrabold text-xs transition-colors flex items-center gap-2">
+                                    <i class="fas fa-rotate text-slate-600"></i> Run Again
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ========================================== -->
+    <!-- FEATURES SECTION -->
+    <!-- ========================================== -->
+    <section id="features" class="py-20 bg-white/80 border-y border-slate-200/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+            <div class="text-center max-w-3xl mx-auto space-y-4">
+                <span class="px-3.5 py-1 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-mono font-bold uppercase tracking-wider">
+                    Key Features
+                </span>
+                <h2 class="text-3xl font-black text-slate-900 tracking-tight">
+                    Why Use {{ tool.name }}?
+                </h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for feat in tool.features %}
+                <div class="glass-panel p-6 rounded-3xl space-y-3">
+                    <div class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-200 flex items-center justify-center font-bold text-sm">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <h3 class="text-base font-extrabold text-slate-900">{{ feat }}</h3>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ========================================== -->
+    <!-- HOW IT WORKS -->
+    <!-- ========================================== -->
+    <section id="how-it-works" class="py-20 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+            <div class="text-center max-w-3xl mx-auto space-y-4">
+                <span class="px-3.5 py-1 rounded-full bg-purple-50 border border-purple-200 text-purple-700 text-xs font-mono font-bold uppercase tracking-wider">
+                    Simple Workflow
+                </span>
+                <h2 class="text-3xl font-black text-slate-900 tracking-tight">
+                    How {{ tool.name }} Works in 3 Steps
+                </h2>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                {% for step in tool.how_it_works %}
+                <div class="glass-panel p-8 rounded-3xl text-center space-y-4">
+                    <div class="w-12 h-12 rounded-2xl bg-indigo-600 text-white font-mono font-black text-sm flex items-center justify-center mx-auto shadow-md">
+                        {{ step.step }}
+                    </div>
+                    <h3 class="text-xl font-extrabold text-slate-900">{{ step.title }}</h3>
+                    <p class="text-xs text-slate-600 font-medium leading-relaxed">{{ step.desc }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ========================================== -->
+    <!-- EXAMPLE & FAQ SECTION -->
+    <!-- ========================================== -->
+    <section id="faq" class="py-20 bg-white/80 border-y border-slate-200/80">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+            
+            <!-- Live Example Box -->
+            <div class="space-y-4">
+                <div class="text-center space-y-2">
+                    <span class="px-3.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-mono font-bold uppercase tracking-wider">
+                        Real Example
+                    </span>
+                    <h3 class="text-2xl font-black text-slate-900">Output Sample</h3>
+                </div>
+                <div class="p-6 rounded-3xl bg-slate-50 border border-slate-200 space-y-3">
+                    <div class="text-xs font-mono font-bold text-slate-500 uppercase">Input Payload:</div>
+                    <div class="p-3.5 rounded-xl bg-white border border-slate-200 text-xs font-mono text-slate-800">{{ tool.example.input }}</div>
+                    <div class="text-xs font-mono font-bold text-slate-500 uppercase pt-2">Generated Output:</div>
+                    <div class="p-3.5 rounded-xl bg-slate-900 border border-slate-800 text-xs font-mono text-emerald-300 leading-relaxed">{{ tool.example.output }}</div>
+                </div>
+            </div>
+
+            <!-- FAQ Accordion -->
+            <div class="space-y-4 pt-6">
+                <h3 class="text-2xl font-black text-slate-900 text-center">Frequently Asked Questions</h3>
+                {% for item in tool.faq %}
+                <div class="glass-panel rounded-2xl overflow-hidden">
+                    <div class="p-5 text-sm font-extrabold text-slate-900 border-b border-slate-100 flex items-center justify-between">
+                        <span>{{ item.q }}</span>
+                        <i class="fas fa-question-circle text-indigo-600"></i>
+                    </div>
+                    <div class="p-5 text-xs text-slate-600 font-medium leading-relaxed">
+                        {{ item.a }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- ========================================== -->
+    <!-- RELATED TOOLS -->
+    <!-- ========================================== -->
+    <section class="py-20 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+            <div class="text-center space-y-2">
+                <span class="px-3.5 py-1 rounded-full bg-cyan-50 border border-cyan-200 text-cyan-700 text-xs font-mono font-bold uppercase tracking-wider">
+                    Discover More
+                </span>
+                <h3 class="text-2xl font-black text-slate-900">Related Free AI Tools</h3>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                {% for r_slug, r_tool in catalog.items() %}
+                {% if r_slug != tool.slug and loop.index <= 4 %}
+                <div class="glass-panel p-6 rounded-3xl space-y-4 flex flex-col justify-between">
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-3">
+                            <i class="{{ r_tool.icon }} text-indigo-600 text-lg"></i>
+                            <h4 class="font-extrabold text-slate-900 text-base">{{ r_tool.name }}</h4>
+                        </div>
+                        <p class="text-xs text-slate-600 font-medium leading-relaxed">{{ r_tool.short_description }}</p>
+                    </div>
+                    <a href="/products/{{ r_slug }}" class="w-full py-2 rounded-xl bg-slate-100 hover:bg-indigo-600 hover:text-white text-slate-900 font-extrabold text-xs text-center transition-colors block">
+                        Try {{ r_tool.name }}
+                    </a>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ========================================== -->
+    <!-- FOOTER -->
+    <!-- ========================================== -->
+    <footer class="bg-white border-t border-slate-200/90 pt-12 pb-10 text-xs text-slate-600">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 font-bold">
+            <div>© 2026 ModelFlow Inc. Free AI SaaS Products Directory.</div>
+            <div class="flex items-center gap-6">
+                <a href="/" class="hover:text-indigo-600">ModelFlow Flagship</a>
+                <a href="/products" class="hover:text-indigo-600">All AI Tools</a>
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- AJAX & REAL FILE CONVERSION ENGINE LOGIC -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('toolForm');
+            const runBtn = document.getElementById('runToolBtn');
+            const fileInput = document.getElementById('fileUploadInput');
+            const previewList = document.getElementById('filePreviewList');
+            const outputContainer = document.getElementById('outputContainer');
+            const resultText = document.getElementById('resultText');
+            const outputBadge = document.getElementById('outputBadge');
+            const diagnosticsBox = document.getElementById('diagnosticsBox');
+            const diagnosticsList = document.getElementById('diagnosticsList');
+            const directDownloadBtn = document.getElementById('directDownloadBtn');
+            const downloadSubtext = document.getElementById('downloadSubtext');
+            const progressIndicator = document.getElementById('progressIndicator');
+            const progressBar = document.getElementById('progressBar');
+            const copyBtn = document.getElementById('copyResultBtn');
+            const regenBtn = document.getElementById('regenerateBtn');
+
+            // Handle file selection preview
+            fileInput?.addEventListener('change', () => {
+                const files = fileInput.files;
+                if (!files || files.length === 0) {
+                    previewList.classList.add('hidden');
+                    return;
+                }
+
+                previewList.innerHTML = '';
+                previewList.classList.remove('hidden');
+
+                Array.from(files).forEach((file, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'p-3 rounded-2xl bg-white border border-slate-200 flex items-center justify-between shadow-xs';
+                    
+                    const isImg = file.type.startsWith('image/');
+                    const sizeMb = (file.size / (1024 * 1024)).toFixed(2);
+
+                    item.innerHTML = `
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-200 flex items-center justify-center font-bold text-sm shrink-0">
+                                <i class="${isImg ? 'fas fa-image' : 'fas fa-file'}"></i>
+                            </div>
+                            <div class="min-w-0">
+                                <div class="text-xs font-extrabold text-slate-900 truncate">${file.name}</div>
+                                <div class="text-[10px] text-slate-500 font-bold">${sizeMb} MB</div>
+                            </div>
+                        </div>
+                        <span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 text-[10px] font-mono font-bold">Ready</span>
+                    `;
+                    previewList.appendChild(item);
+                });
+            });
+
+            // Form Submit (Handles both AI Text Tools & Real File Conversion Tools)
+            form?.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                runBtn.disabled = true;
+                runBtn.innerHTML = '<i class="fas fa-spinner fa-spin text-xs"></i> Converting & Processing...';
+                progressIndicator.classList.remove('hidden');
+
+                const formData = new FormData(form);
+                const slug = '{{ tool.slug }}';
+                const hasFiles = fileInput && fileInput.files && fileInput.files.length > 0;
+
+                try {
+                    // Decide whether to call /convert (for binary files) or /process (for AI NLP tools)
+                    const isConvertTool = hasFiles || slug.includes('pdf') || slug.includes('jpg') || slug.includes('png') || slug.includes('webp') || slug.includes('docx') || slug.includes('to-');
+
+                    if (isConvertTool) {
+                        const res = await fetch(`/api/tools/${slug}/convert`, {
+                            method: 'POST',
+                            body: formData
+                        });
+
+                        const contentType = res.headers.get('content-type') || '';
+
+                        if (contentType.includes('application/json')) {
+                            const json = await res.json();
+                            if (json.success) {
+                                showOutput(json.message || 'File conversion complete.', 'Completed', json);
+                            } else {
+                                alert(json.error || 'File conversion failed.');
+                            }
+                        } else {
+                            // Binary File Download Response
+                            const blob = await res.blob();
+                            const downloadUrl = URL.createObjectURL(blob);
+                            
+                            // Determine download extension
+                            const disp = res.headers.get('content-disposition') || '';
+                            let filename = `converted_${slug}.file`;
+                            if (disp.includes('filename=')) {
+                                filename = disp.split('filename=')[1].replace(/"/g, '');
+                            }
+
+                            directDownloadBtn.href = downloadUrl;
+                            directDownloadBtn.download = filename;
+                            downloadSubtext.textContent = `File "${filename}" ready for instant download (${(blob.size / 1024).toFixed(1)} KB)`;
+
+                            showOutput(`Successfully converted document!\nClick the green "Download Converted File" button above to save ${filename} to your computer.`, 'File Download Ready', {});
+                        }
+                    } else {
+                        // AI Prompt / Writing / NLP Processing
+                        const data = {};
+                        formData.forEach((val, key) => data[key] = val);
+
+                        const res = await fetch(`/api/tools/${slug}/process`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(data)
+                        });
+
+                        const json = await res.json();
+                        if (json.success) {
+                            showOutput(json.result_text, json.badge || 'Success', json);
+                        } else {
+                            alert(json.error || 'Processing error.');
+                        }
+                    }
+                } catch (err) {
+                    alert('Conversion connection failed. Please try again.');
+                } finally {
+                    runBtn.disabled = false;
+                    runBtn.innerHTML = '<i class="fas fa-play text-xs"></i> Convert & Process File';
+                    progressIndicator.classList.add('hidden');
+                }
+            });
+
+            function showOutput(text, badge, json) {
+                outputContainer.classList.remove('hidden');
+                resultText.textContent = text;
+                outputBadge.textContent = badge;
+
+                if (json.mistakes_list && json.mistakes_list.length > 0) {
+                    diagnosticsBox.classList.remove('hidden');
+                    diagnosticsList.innerHTML = json.mistakes_list.map(m => `<li>${m}</li>`).join('');
+                } else if (json.suggestions && json.suggestions.length > 0) {
+                    diagnosticsBox.classList.remove('hidden');
+                    diagnosticsList.innerHTML = json.suggestions.map(s => `<li>${s}</li>`).join('');
+                } else {
+                    diagnosticsBox.classList.add('hidden');
+                }
+
+                outputContainer.scrollIntoView({ behavior: 'smooth' });
+            }
+
+            copyBtn?.addEventListener('click', () => {
+                navigator.clipboard.writeText(resultText.textContent);
+                copyBtn.innerHTML = '<i class="fas fa-check text-emerald-400"></i> Copied!';
+                setTimeout(() => {
+                    copyBtn.innerHTML = '<i class="fas fa-copy text-indigo-400"></i> Copy Result';
+                }, 2000);
+            });
+
+            regenBtn?.addEventListener('click', () => {
+                form.dispatchEvent(new Event('submit'));
+            });
+        });
+    </script>
+</body>
+</html>

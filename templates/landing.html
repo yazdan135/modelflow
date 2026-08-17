@@ -1,22 +1,28 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ModelFlow — Build Smarter AI. Train Faster. Deploy Instant APIs.</title>
-    <meta name="description" content="ModelFlow is the world's most intuitive AI-powered AutoML platform. Clean datasets automatically, train 30+ ML models in parallel, compare metrics, export .pkl, and deploy REST APIs in seconds.">
-    <meta name="keywords" content="AutoML, Machine Learning, AI Platform, Model Training, Model Deployment, Data Cleaning, Python ML, XGBoost, Scikit-Learn">
-    
+    <meta name="description"
+        content="ModelFlow is the world's most intuitive AI-powered AutoML platform. Clean datasets automatically, train 30+ ML models in parallel, compare metrics, export .pkl, and deploy REST APIs in seconds.">
+    <meta name="keywords"
+        content="AutoML, Machine Learning, AI Platform, Model Training, Model Deployment, Data Cleaning, Python ML, XGBoost, Scikit-Learn">
+
     <!-- Open Graph / Social Media -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="ModelFlow — AutoML Platform for Developers & Data Scientists">
-    <meta property="og:description" content="Build, compare, export, and deploy production-ready AI models in minutes without complex setup.">
-    
+    <meta property="og:description"
+        content="Build, compare, export, and deploy production-ready AI models in minutes without complex setup.">
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -61,7 +67,7 @@
             }
         }
     </script>
-    
+
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- ModelFlow Global Dashboard Theme CSS -->
@@ -69,7 +75,8 @@
 
     <style>
         /* ClickUp-Inspired Soft-White SaaS Theme Engine */
-        html, body {
+        html,
+        body {
             max-width: 100%;
             overflow-x: clip;
             background-color: #FAFBFF;
@@ -78,20 +85,28 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        p, span, div, li, td, th {
+        p,
+        span,
+        div,
+        li,
+        td,
+        th {
             letter-spacing: -0.01em;
         }
 
         ::-webkit-scrollbar {
             width: 8px;
         }
+
         ::-webkit-scrollbar-track {
             background: #FAFBFF;
         }
+
         ::-webkit-scrollbar-thumb {
             background: #cbd5e1;
             border-radius: 4px;
         }
+
         ::-webkit-scrollbar-thumb:hover {
             background: #94a3b8;
         }
@@ -106,6 +121,7 @@
         .glass-panel-hover {
             transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
         }
+
         .glass-panel-hover:hover {
             transform: translateY(-4px);
             border-color: rgba(99, 102, 241, 0.4);
@@ -126,7 +142,7 @@
 
         .grid-pattern {
             background-size: 48px 48px;
-            background-image: 
+            background-image:
                 linear-gradient(to right, rgba(99, 102, 241, 0.05) 1px, transparent 1px),
                 linear-gradient(to bottom, rgba(99, 102, 241, 0.05) 1px, transparent 1px);
         }
@@ -137,12 +153,19 @@
         }
     </style>
 </head>
+
 <body class="bg-[#FAFBFF] text-slate-900 antialiased font-sans selection:bg-indigo-600 selection:text-white">
 
     <!-- Ambient Glowing Light Orbs -->
-    <div class="fixed top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-gradient-to-tr from-indigo-300/30 via-purple-300/25 to-pink-200/20 rounded-full blur-[140px] pointer-events-none -z-10 animate-pulse-slow"></div>
-    <div class="fixed top-[40%] right-[-10%] w-[600px] h-[600px] bg-cyan-200/25 rounded-full blur-[160px] pointer-events-none -z-10"></div>
-    <div class="fixed bottom-[10%] left-[-10%] w-[700px] h-[700px] bg-indigo-200/30 rounded-full blur-[160px] pointer-events-none -z-10"></div>
+    <div
+        class="fixed top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-gradient-to-tr from-indigo-300/30 via-purple-300/25 to-pink-200/20 rounded-full blur-[140px] pointer-events-none -z-10 animate-pulse-slow">
+    </div>
+    <div
+        class="fixed top-[40%] right-[-10%] w-[600px] h-[600px] bg-cyan-200/25 rounded-full blur-[160px] pointer-events-none -z-10">
+    </div>
+    <div
+        class="fixed bottom-[10%] left-[-10%] w-[700px] h-[700px] bg-indigo-200/30 rounded-full blur-[160px] pointer-events-none -z-10">
+    </div>
 
     <!-- Background Grid Pattern -->
     <div class="fixed inset-0 grid-pattern opacity-70 pointer-events-none -z-10"></div>
@@ -150,11 +173,13 @@
     <!-- ========================================== -->
     <!-- 1. STICKY HEADER & NAVIGATION -->
     <!-- ========================================== -->
-    <header class="sticky top-0 z-50 backdrop-blur-xl bg-[#FAFBFF]/85 border-b border-slate-200/80 shadow-xs transition-all duration-300">
+    <header
+        class="sticky top-0 z-50 backdrop-blur-xl bg-[#FAFBFF]/85 border-b border-slate-200/80 shadow-xs transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
             <!-- Brand Logo -->
             <a href="#" class="flex items-center gap-3 group">
-                <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 p-0.5 shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform">
+                <div
+                    class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 p-0.5 shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform">
                     <div class="w-full h-full bg-white rounded-[14px] flex items-center justify-center">
                         <i class="fas fa-brain text-indigo-600 text-lg"></i>
                     </div>
@@ -162,14 +187,19 @@
                 <div class="flex flex-col">
                     <span class="text-xl font-extrabold tracking-tight text-slate-900 flex items-center gap-2">
                         ModelFlow
-                        <span class="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 font-bold">v0.1</span>
+                        <span
+                            class="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 font-extrabold">v2.0-LR</span>
                     </span>
                     <span class="text-[10px] font-mono text-slate-500 tracking-wider">AUTOML PLATFORM</span>
                 </div>
             </a>
 
             <!-- Desktop Navigation Links -->
-            <nav class="hidden lg:flex items-center gap-8 text-sm font-semibold text-slate-600">
+            <nav class="hidden lg:flex items-center gap-7 text-sm font-semibold text-slate-600">
+                <a href="/products"
+                    class="hover:text-indigo-600 transition-colors text-indigo-600 font-extrabold flex items-center gap-1.5">
+                    <i class="fas fa-cubes text-xs"></i> Free AI Tools
+                </a>
                 <a href="#features" class="hover:text-indigo-600 transition-colors">Features</a>
                 <a href="#workflow" class="hover:text-indigo-600 transition-colors">Workflow</a>
                 <a href="#dashboard" class="hover:text-indigo-600 transition-colors">Showcase</a>
@@ -182,22 +212,28 @@
 
             <!-- Action CTA Buttons -->
             <div class="hidden sm:flex items-center gap-3">
-                <a href="{{ url_for('signup') if url_for is defined else '/signup' }}" class="relative group px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 text-white text-sm font-extrabold shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2 overflow-hidden">
+                <a href="{{ url_for('signup') if url_for is defined else '/signup' }}"
+                    class="relative group px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 text-white text-sm font-extrabold shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2 overflow-hidden">
                     <span class="relative z-10 flex items-center gap-2">
-                        Start Free Trail
+                        Start Free Trial
                         <i class="fas fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
                     </span>
                 </a>
             </div>
 
             <!-- Mobile Hamburger Toggle -->
-            <button id="mobileMenuBtn" class="lg:hidden text-slate-700 hover:text-slate-900 text-xl p-2" aria-label="Toggle Navigation Menu">
+            <button id="mobileMenuBtn" class="lg:hidden text-slate-700 hover:text-slate-900 text-xl p-2"
+                aria-label="Toggle Navigation Menu">
                 <i class="fas fa-bars"></i>
             </button>
         </div>
 
         <!-- Mobile Navigation Menu Drawer -->
-        <div id="mobileMenu" class="hidden lg:hidden bg-white/98 border-b border-slate-200 px-6 py-6 space-y-4 text-sm font-bold shadow-xl">
+        <div id="mobileMenu"
+            class="hidden lg:hidden bg-white/98 border-b border-slate-200 px-6 py-6 space-y-4 text-sm font-bold shadow-xl">
+            <a href="/products" class="block text-indigo-600 font-extrabold flex items-center gap-2">
+                <i class="fas fa-cubes text-xs"></i> 70 Free AI Tools & Converters
+            </a>
             <a href="#features" class="block text-slate-700 hover:text-indigo-600">Features</a>
             <a href="#workflow" class="block text-slate-700 hover:text-indigo-600">Workflow</a>
             <a href="#dashboard" class="block text-slate-700 hover:text-indigo-600">Showcase</a>
@@ -206,7 +242,8 @@
             <a href="#developers" class="block text-slate-700 hover:text-indigo-600">API Docs</a>
             <a href="#faq" class="block text-slate-700 hover:text-indigo-600">FAQ</a>
             <div class="pt-4 border-t border-slate-200 flex flex-col gap-3">
-                <a href="{{ url_for('signup') if url_for is defined else '/signup' }}" class="text-center py-2.5 rounded-xl bg-indigo-600 text-white font-extrabold">Start Free Trial</a>
+                <a href="{{ url_for('signup') if url_for is defined else '/signup' }}"
+                    class="text-center py-2.5 rounded-xl bg-indigo-600 text-white font-extrabold">Start Free Trial</a>
             </div>
         </div>
     </header>
@@ -218,17 +255,20 @@
     <section class="relative pt-6 pb-24 lg:pt-10 lg:pb-36 overflow-hidden">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
-                
+
                 <!-- Left Content -->
                 <div class="lg:col-span-7 space-y-8 text-center lg:text-left">
                     <!-- Feature Announcement & Free Offer Badges -->
                     <div class="flex flex-wrap items-center justify-center lg:justify-start gap-3">
-                        <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-amber-50 border border-amber-300/80 text-amber-900 text-xs font-bold shadow-xs">
+                        <div
+                            class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-amber-50 border border-amber-300/80 text-amber-900 text-xs font-bold shadow-xs">
                             <i class="fas fa-crown text-amber-500 text-xs"></i>
                             <span>Pro Developer is free for lucky 100 users</span>
-                            <span class="ml-1 px-2.5 py-0.5 rounded-full bg-amber-200/80 text-amber-900 border border-amber-400 text-[11px] font-mono font-black flex items-center gap-1.5">
+                            <span
+                                class="ml-1 px-2.5 py-0.5 rounded-full bg-amber-200/80 text-amber-900 border border-amber-400 text-[11px] font-mono font-black flex items-center gap-1.5">
                                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                                <span class="claimed-user-count">{{ user_count if user_count is defined else 3 }}</span>/100
+                                <span class="claimed-user-count">{{ user_count if user_count is defined else 3
+                                    }}</span>/100
                             </span>
                         </div>
                     </div>
@@ -240,18 +280,24 @@
 
                     <!-- Subheadline -->
                     <p class="text-lg sm:text-xl text-slate-600 max-w-2xl mx-auto lg:mx-0 font-medium leading-relaxed">
-                        Upload raw tabular datasets, clean data automatically, train 30+ models in parallel, compare metrics, export <code class="text-indigo-700 font-mono text-sm px-2 py-0.5 rounded bg-indigo-50 border border-indigo-200 font-bold">.pkl</code> files, and test live REST APIs
+                        Upload raw tabular datasets, clean data automatically, train 30+ models in parallel, compare
+                        metrics, export <code
+                            class="text-indigo-700 font-mono text-sm px-2 py-0.5 rounded bg-indigo-50 border border-indigo-200 font-bold">.pkl</code>
+                        files, and test live REST APIs
                     </p>
 
                     <!-- Hero Call-to-Actions -->
                     <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
-                        <a href="{{ url_for('signup') if url_for is defined else '/signup' }}" class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 text-white font-extrabold text-base shadow-xl shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 group">
+                        <a href="{{ url_for('signup') if url_for is defined else '/signup' }}"
+                            class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 text-white font-extrabold text-base shadow-xl shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 group">
                             <span>Start Free — No Credit Card</span>
                             <i class="fas fa-bolt text-amber-300 group-hover:translate-x-0.5 transition-transform"></i>
                         </a>
 
-                        <button id="openDemoBtn" class="w-full sm:w-auto px-7 py-4 rounded-2xl bg-white hover:bg-slate-50 border border-slate-300 text-slate-800 font-bold text-base shadow-xs transition-all flex items-center justify-center gap-3 group">
-                            <div class="w-7 h-7 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                        <button id="openDemoBtn"
+                            class="w-full sm:w-auto px-7 py-4 rounded-2xl bg-white hover:bg-slate-50 border border-slate-300 text-slate-800 font-bold text-base shadow-xs transition-all flex items-center justify-center gap-3 group">
+                            <div
+                                class="w-7 h-7 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-colors">
                                 <i class="fas fa-play text-xs ml-0.5"></i>
                             </div>
                             <span>Watch 2-Min Demo</span>
@@ -259,7 +305,8 @@
                     </div>
 
                     <!-- Quick Trust Guarantee Badge -->
-                    <div class="pt-4 flex items-center justify-center lg:justify-start gap-6 text-xs text-slate-600 font-bold">
+                    <div
+                        class="pt-4 flex items-center justify-center lg:justify-start gap-6 text-xs text-slate-600 font-bold">
                         <div class="flex items-center gap-2">
                             <i class="fas fa-check-circle text-emerald-600"></i> No Credit Card Required
                         </div>
@@ -275,19 +322,24 @@
                 <!-- Right Interactive Hero Mockup -->
                 <div class="lg:col-span-5 relative">
                     <!-- Glowing Backing Halo -->
-                    <div class="absolute -inset-2 bg-gradient-to-r from-indigo-500/20 via-purple-500/20 to-pink-500/20 rounded-3xl blur-2xl opacity-60 animate-pulse-slow"></div>
+                    <div
+                        class="absolute -inset-2 bg-gradient-to-r from-indigo-500/20 via-purple-500/20 to-pink-500/20 rounded-3xl blur-2xl opacity-60 animate-pulse-slow">
+                    </div>
 
                     <!-- Main Dashboard Glass Box -->
-                    <div class="relative bg-white rounded-3xl p-6 border border-slate-200/90 shadow-2xl shadow-indigo-950/10 space-y-6">
+                    <div
+                        class="relative bg-white rounded-3xl p-6 border border-slate-200/90 shadow-2xl shadow-indigo-950/10 space-y-6">
                         <!-- Top Mockup Header Bar -->
                         <div class="flex items-center justify-between pb-4 border-b border-slate-200">
                             <div class="flex items-center gap-2">
                                 <div class="w-3 h-3 rounded-full bg-rose-500"></div>
                                 <div class="w-3 h-3 rounded-full bg-amber-500"></div>
                                 <div class="w-3 h-3 rounded-full bg-emerald-500"></div>
-                                <span class="ml-2 text-xs font-mono text-slate-500 font-bold">modelflow.ai/project/customer-churn</span>
+                                <span
+                                    class="ml-2 text-xs font-mono text-slate-500 font-bold">modelflow.ai/project/customer-churn</span>
                             </div>
-                            <span class="px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-[10px] font-mono font-black flex items-center gap-1.5">
+                            <span
+                                class="px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-[10px] font-mono font-black flex items-center gap-1.5">
                                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span> Live Studio
                             </span>
                         </div>
@@ -295,17 +347,23 @@
                         <!-- Mockup Body Content -->
                         <div class="space-y-4">
                             <!-- Dataset Info Pill -->
-                            <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+                            <div
+                                class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-xs">
+                                    <div
+                                        class="w-8 h-8 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-xs">
                                         <i class="fas fa-table"></i>
                                     </div>
                                     <div>
-                                        <div class="text-xs font-extrabold text-slate-900 font-mono">telecom_churn_v2.csv</div>
-                                        <div class="text-[10px] text-slate-500 font-bold">7,043 rows • 21 features • Classification</div>
+                                        <div class="text-xs font-extrabold text-slate-900 font-mono">
+                                            telecom_churn_v2.csv</div>
+                                        <div class="text-[10px] text-slate-500 font-bold">7,043 rows • 21 features •
+                                            Classification</div>
                                     </div>
                                 </div>
-                                <span class="px-2 py-1 rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-200 font-mono text-[10px] font-black">100% Cleaned</span>
+                                <span
+                                    class="px-2 py-1 rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-200 font-mono text-[10px] font-black">100%
+                                    Cleaned</span>
                             </div>
 
                             <!-- Live Metric Gauges Grid -->
@@ -325,8 +383,10 @@
                             </div>
 
                             <!-- Model Leaderboard Ranking Mini-Table -->
-                            <div class="p-3 rounded-2xl bg-slate-900 border border-slate-800 space-y-2 text-white shadow-inner">
-                                <div class="flex items-center justify-between text-[11px] font-bold text-slate-400 pb-1 border-b border-slate-800">
+                            <div
+                                class="p-3 rounded-2xl bg-slate-900 border border-slate-800 space-y-2 text-white shadow-inner">
+                                <div
+                                    class="flex items-center justify-between text-[11px] font-bold text-slate-400 pb-1 border-b border-slate-800">
                                     <span>Algorithm</span>
                                     <span>Accuracy</span>
                                     <span>Status</span>
@@ -336,7 +396,8 @@
                                         <i class="fas fa-crown text-amber-400 text-[10px]"></i> XGBoost Classifier
                                     </span>
                                     <span class="text-emerald-400 font-bold">98.6%</span>
-                                    <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[10px] font-bold">Deployed</span>
+                                    <span
+                                        class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[10px] font-bold">Deployed</span>
                                 </div>
                                 <div class="flex items-center justify-between text-xs py-1 text-slate-400 font-mono">
                                     <span>LightGBM Model</span>
@@ -354,17 +415,21 @@
                             <div class="pt-2 flex items-center justify-between">
                                 <div class="flex items-center gap-2">
                                     <span class="w-2 h-2 rounded-full bg-indigo-600 animate-pulse"></span>
-                                    <span class="text-[11px] text-slate-600 font-mono font-bold">REST Endpoint Active</span>
+                                    <span class="text-[11px] text-slate-600 font-mono font-bold">REST Endpoint
+                                        Active</span>
                                 </div>
-                                <button class="px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs shadow-md transition-colors flex items-center gap-1.5">
+                                <button
+                                    class="px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs shadow-md transition-colors flex items-center gap-1.5">
                                     <i class="fas fa-download text-[10px]"></i> Export .PKL
                                 </button>
                             </div>
                         </div>
 
                         <!-- Floating Feature Cards Over Mockup -->
-                        <div class="hidden md:flex absolute -bottom-5 -left-4 lg:-left-6 p-3.5 rounded-2xl bg-white border border-slate-200 text-xs text-slate-900 shadow-2xl items-center gap-3 animate-float">
-                            <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center text-sm font-bold">
+                        <div
+                            class="hidden md:flex absolute -bottom-5 -left-4 lg:-left-6 p-3.5 rounded-2xl bg-white border border-slate-200 text-xs text-slate-900 shadow-2xl items-center gap-3 animate-float">
+                            <div
+                                class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center text-sm font-bold">
                                 <i class="fas fa-magic"></i>
                             </div>
                             <div>
@@ -373,8 +438,10 @@
                             </div>
                         </div>
 
-                        <div class="hidden md:flex absolute -top-6 -right-4 lg:-right-6 p-3.5 rounded-2xl bg-white border border-slate-200 text-xs text-slate-900 shadow-2xl items-center gap-3 animate-float-delayed">
-                            <div class="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 border border-purple-200 flex items-center justify-center text-sm font-bold">
+                        <div
+                            class="hidden md:flex absolute -top-6 -right-4 lg:-right-6 p-3.5 rounded-2xl bg-white border border-slate-200 text-xs text-slate-900 shadow-2xl items-center gap-3 animate-float-delayed">
+                            <div
+                                class="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 border border-purple-200 flex items-center justify-center text-sm font-bold">
                                 <i class="fas fa-rocket"></i>
                             </div>
                             <div>
@@ -401,23 +468,30 @@
                 </p>
 
                 <!-- Ecosystem & Integration Logos Grid -->
-                <div class="pt-6 flex flex-wrap items-center justify-center gap-8 lg:gap-16 opacity-80 hover:opacity-100 transition-all">
-                    <div class="flex items-center gap-2 font-mono text-sm text-slate-700 font-extrabold hover:text-indigo-600">
+                <div
+                    class="pt-6 flex flex-wrap items-center justify-center gap-8 lg:gap-16 opacity-80 hover:opacity-100 transition-all">
+                    <div
+                        class="flex items-center gap-2 font-mono text-sm text-slate-700 font-extrabold hover:text-indigo-600">
                         <i class="fab fa-python text-lg text-indigo-600"></i> Python 3.11
                     </div>
-                    <div class="flex items-center gap-2 font-mono text-sm text-slate-700 font-extrabold hover:text-sky-600">
+                    <div
+                        class="flex items-center gap-2 font-mono text-sm text-slate-700 font-extrabold hover:text-sky-600">
                         <i class="fas fa-microchip text-lg text-sky-600"></i> Scikit-Learn
                     </div>
-                    <div class="flex items-center gap-2 font-mono text-sm text-slate-700 font-extrabold hover:text-rose-600">
+                    <div
+                        class="flex items-center gap-2 font-mono text-sm text-slate-700 font-extrabold hover:text-rose-600">
                         <i class="fas fa-fire text-lg text-rose-600"></i> PyTorch
                     </div>
-                    <div class="flex items-center gap-2 font-mono text-sm text-slate-700 font-extrabold hover:text-emerald-600">
+                    <div
+                        class="flex items-center gap-2 font-mono text-sm text-slate-700 font-extrabold hover:text-emerald-600">
                         <i class="fas fa-database text-lg text-emerald-600"></i> Pandas AI
                     </div>
-                    <div class="flex items-center gap-2 font-mono text-sm text-slate-700 font-extrabold hover:text-amber-600">
+                    <div
+                        class="flex items-center gap-2 font-mono text-sm text-slate-700 font-extrabold hover:text-amber-600">
                         <i class="fab fa-aws text-lg text-amber-600"></i> AWS S3
                     </div>
-                    <div class="flex items-center gap-2 font-mono text-sm text-slate-700 font-extrabold hover:text-blue-600">
+                    <div
+                        class="flex items-center gap-2 font-mono text-sm text-slate-700 font-extrabold hover:text-blue-600">
                         <i class="fab fa-docker text-lg text-blue-600"></i> Docker Container
                     </div>
                 </div>
@@ -452,81 +526,95 @@
     <section class="py-24 relative">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center max-w-3xl mx-auto space-y-4 mb-16">
-                <span class="px-3.5 py-1 rounded-full bg-rose-50 border border-rose-200 text-rose-700 text-xs font-mono font-bold uppercase tracking-wider">
+                <span
+                    class="px-3.5 py-1 rounded-full bg-rose-50 border border-rose-200 text-rose-700 text-xs font-mono font-bold uppercase tracking-wider">
                     The Problem
                 </span>
                 <h2 class="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight">
                     Machine Learning Workflows Are Severely Broken.
                 </h2>
                 <p class="text-slate-600 text-base sm:text-lg font-medium">
-                    Traditional ML engineering demands writing thousands of lines of boilerplate Python code, wrestling with missing data, manually testing algorithms, and fighting deployment hurdles.
+                    Traditional ML engineering demands writing thousands of lines of boilerplate Python code, wrestling
+                    with missing data, manually testing algorithms, and fighting deployment hurdles.
                 </p>
             </div>
 
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Pain Card 1 -->
                 <div class="glass-panel glass-panel-hover p-7 rounded-3xl border-rose-200/80 space-y-4 group">
-                    <div class="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 border border-rose-200 flex items-center justify-center text-xl font-bold group-hover:scale-110 transition-transform">
+                    <div
+                        class="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 border border-rose-200 flex items-center justify-center text-xl font-bold group-hover:scale-110 transition-transform">
                         <i class="fas fa-broom"></i>
                     </div>
                     <h3 class="text-xl font-extrabold text-slate-900">Manual Data Cleaning Hell</h3>
                     <p class="text-sm text-slate-600 font-medium leading-relaxed">
-                        80% of data science time is wasted writing messy Pandas scripts for handling missing values, encoding categorical variables, and stripping outliers manually.
+                        80% of data science time is wasted writing messy Pandas scripts for handling missing values,
+                        encoding categorical variables, and stripping outliers manually.
                     </p>
                 </div>
 
                 <!-- Pain Card 2 -->
                 <div class="glass-panel glass-panel-hover p-7 rounded-3xl border-amber-200/80 space-y-4 group">
-                    <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 border border-amber-200 flex items-center justify-center text-xl font-bold group-hover:scale-110 transition-transform">
+                    <div
+                        class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 border border-amber-200 flex items-center justify-center text-xl font-bold group-hover:scale-110 transition-transform">
                         <i class="fas fa-vial"></i>
                     </div>
                     <h3 class="text-xl font-extrabold text-slate-900">Algorithm Selection Fatigue</h3>
                     <p class="text-sm text-slate-600 font-medium leading-relaxed">
-                        Guessing whether Random Forest, LightGBM, CatBoost, or Neural Networks perform best leads to endless trial-and-error hyperparameter tweaking.
+                        Guessing whether Random Forest, LightGBM, CatBoost, or Neural Networks perform best leads to
+                        endless trial-and-error hyperparameter tweaking.
                     </p>
                 </div>
 
                 <!-- Pain Card 3 -->
                 <div class="glass-panel glass-panel-hover p-7 rounded-3xl border-purple-200/80 space-y-4 group">
-                    <div class="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 border border-purple-200 flex items-center justify-center text-xl font-bold group-hover:scale-110 transition-transform">
+                    <div
+                        class="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 border border-purple-200 flex items-center justify-center text-xl font-bold group-hover:scale-110 transition-transform">
                         <i class="fas fa-puzzle-piece"></i>
                     </div>
                     <h3 class="text-xl font-extrabold text-slate-900">Disconnected Fragmented Tools</h3>
                     <p class="text-sm text-slate-600 font-medium leading-relaxed">
-                        Context-switching between Jupyter Notebooks, MLflow, Docker, FastAPI, and AWS creates fragile pipelines that break easily in production.
+                        Context-switching between Jupyter Notebooks, MLflow, Docker, FastAPI, and AWS creates fragile
+                        pipelines that break easily in production.
                     </p>
                 </div>
 
                 <!-- Pain Card 4 -->
                 <div class="glass-panel glass-panel-hover p-7 rounded-3xl border-indigo-200/80 space-y-4 group">
-                    <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 border border-indigo-200 flex items-center justify-center text-xl font-bold group-hover:scale-110 transition-transform">
+                    <div
+                        class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 border border-indigo-200 flex items-center justify-center text-xl font-bold group-hover:scale-110 transition-transform">
                         <i class="fas fa-server"></i>
                     </div>
                     <h3 class="text-xl font-extrabold text-slate-900">Painful Slow Deployment</h3>
                     <p class="text-sm text-slate-600 font-medium leading-relaxed">
-                        Converting a trained notebook into a high-performance REST API with authentication and scaling usually takes weeks of DevOps engineering effort.
+                        Converting a trained notebook into a high-performance REST API with authentication and scaling
+                        usually takes weeks of DevOps engineering effort.
                     </p>
                 </div>
 
                 <!-- Pain Card 5 -->
                 <div class="glass-panel glass-panel-hover p-7 rounded-3xl border-cyan-200/80 space-y-4 group">
-                    <div class="w-12 h-12 rounded-2xl bg-cyan-50 text-cyan-600 border border-cyan-200 flex items-center justify-center text-xl font-bold group-hover:scale-110 transition-transform">
+                    <div
+                        class="w-12 h-12 rounded-2xl bg-cyan-50 text-cyan-600 border border-cyan-200 flex items-center justify-center text-xl font-bold group-hover:scale-110 transition-transform">
                         <i class="fas fa-lock"></i>
                     </div>
                     <h3 class="text-xl font-extrabold text-slate-900">Black-Box Vendor Lock-in</h3>
                     <p class="text-sm text-slate-600 font-medium leading-relaxed">
-                        Many enterprise AutoML services lock your trained model weights inside proprietary clouds, charging exorbitant monthly fees just to run inferences.
+                        Many enterprise AutoML services lock your trained model weights inside proprietary clouds,
+                        charging exorbitant monthly fees just to run inferences.
                     </p>
                 </div>
 
                 <!-- Pain Card 6 -->
                 <div class="glass-panel glass-panel-hover p-7 rounded-3xl border-emerald-200/80 space-y-4 group">
-                    <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center text-xl font-bold group-hover:scale-110 transition-transform">
+                    <div
+                        class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center text-xl font-bold group-hover:scale-110 transition-transform">
                         <i class="fas fa-file-invoice"></i>
                     </div>
                     <h3 class="text-xl font-extrabold text-slate-900">Lack of Executive Reporting</h3>
                     <p class="text-sm text-slate-600 font-medium leading-relaxed">
-                        Translating complex confusion matrices and feature importance charts into clear reports for business stakeholders is tedious and time-consuming.
+                        Translating complex confusion matrices and feature importance charts into clear reports for
+                        business stakeholders is tedious and time-consuming.
                     </p>
                 </div>
             </div>
@@ -540,96 +628,130 @@
     <section id="workflow" class="py-20 bg-white/80 border-y border-slate-200/80 relative overflow-hidden">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="text-center max-w-3xl mx-auto space-y-4 mb-16">
-                <span class="px-3.5 py-1.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-mono font-bold uppercase tracking-wider inline-flex items-center gap-2">
+                <span
+                    class="px-3.5 py-1.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-mono font-bold uppercase tracking-wider inline-flex items-center gap-2">
                     <span class="w-2 h-2 rounded-full bg-indigo-600 animate-ping"></span> The Automated Pipeline
                 </span>
                 <h2 class="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight">
                     One Streamlined End-to-End AI Engine.
                 </h2>
                 <p class="text-slate-600 text-base sm:text-lg font-medium">
-                    ModelFlow automates the entire lifecycle from raw CSV ingestion to production API endpoint deployment in six simple steps.
+                    ModelFlow automates the entire lifecycle from raw CSV ingestion to production API endpoint
+                    deployment in six simple steps.
                 </p>
             </div>
 
             <!-- Workflow 6-Step Grid -->
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-5">
-                
+
                 <!-- Step 1 -->
-                <div class="glass-panel glass-panel-hover p-6 rounded-3xl text-center space-y-3 relative group flex flex-col justify-between">
+                <div
+                    class="glass-panel glass-panel-hover p-6 rounded-3xl text-center space-y-3 relative group flex flex-col justify-between">
                     <div>
-                        <div class="w-10 h-10 rounded-2xl bg-indigo-50 text-indigo-700 font-mono font-black flex items-center justify-center mx-auto text-xs border border-indigo-200 mb-2">
+                        <div
+                            class="w-10 h-10 rounded-2xl bg-indigo-50 text-indigo-700 font-mono font-black flex items-center justify-center mx-auto text-xs border border-indigo-200 mb-2">
                             01
                         </div>
-                        <div class="text-3xl text-indigo-600 my-2 group-hover:scale-110 transition-transform"><i class="fas fa-cloud-upload-alt"></i></div>
+                        <div class="text-3xl text-indigo-600 my-2 group-hover:scale-110 transition-transform"><i
+                                class="fas fa-cloud-upload-alt"></i></div>
                         <h4 class="font-extrabold text-slate-900 text-sm">Upload Dataset</h4>
-                        <p class="text-xs text-slate-500 font-bold mt-1">Drag & drop CSV, XLSX, TSV files up to 200MB.</p>
+                        <p class="text-xs text-slate-500 font-bold mt-1">Drag & drop CSV, XLSX, TSV files up to 200MB.
+                        </p>
                     </div>
-                    <span class="text-[10px] font-mono text-indigo-700 bg-indigo-50 py-1 px-2 rounded-lg font-black uppercase">Ingestion</span>
+                    <span
+                        class="text-[10px] font-mono text-indigo-700 bg-indigo-50 py-1 px-2 rounded-lg font-black uppercase">Ingestion</span>
                 </div>
 
                 <!-- Step 2 -->
-                <div class="glass-panel glass-panel-hover p-6 rounded-3xl text-center space-y-3 relative group flex flex-col justify-between">
+                <div
+                    class="glass-panel glass-panel-hover p-6 rounded-3xl text-center space-y-3 relative group flex flex-col justify-between">
                     <div>
-                        <div class="w-10 h-10 rounded-2xl bg-purple-50 text-purple-700 font-mono font-black flex items-center justify-center mx-auto text-xs border border-purple-200 mb-2">
+                        <div
+                            class="w-10 h-10 rounded-2xl bg-purple-50 text-purple-700 font-mono font-black flex items-center justify-center mx-auto text-xs border border-purple-200 mb-2">
                             02
                         </div>
-                        <div class="text-3xl text-purple-600 my-2 group-hover:scale-110 transition-transform"><i class="fas fa-wand-magic-sparkles"></i></div>
+                        <div class="text-3xl text-purple-600 my-2 group-hover:scale-110 transition-transform"><i
+                                class="fas fa-wand-magic-sparkles"></i></div>
                         <h4 class="font-extrabold text-slate-900 text-sm">AI Data Clean</h4>
-                        <p class="text-xs text-slate-500 font-bold mt-1">Auto impute missing cells, encode & strip outliers.</p>
+                        <p class="text-xs text-slate-500 font-bold mt-1">Auto impute missing cells, encode & strip
+                            outliers.</p>
                     </div>
-                    <span class="text-[10px] font-mono text-purple-700 bg-purple-50 py-1 px-2 rounded-lg font-black uppercase">Preprocessing</span>
+                    <span
+                        class="text-[10px] font-mono text-purple-700 bg-purple-50 py-1 px-2 rounded-lg font-black uppercase">Preprocessing</span>
                 </div>
 
                 <!-- Step 3 -->
-                <div class="glass-panel glass-panel-hover p-6 rounded-3xl text-center space-y-3 relative group flex flex-col justify-between">
+                <div
+                    class="glass-panel glass-panel-hover p-6 rounded-3xl text-center space-y-3 relative group flex flex-col justify-between">
                     <div>
-                        <div class="w-10 h-10 rounded-2xl bg-pink-50 text-pink-700 font-mono font-black flex items-center justify-center mx-auto text-xs border border-pink-200 mb-2">
+                        <div
+                            class="w-10 h-10 rounded-2xl bg-pink-50 text-pink-700 font-mono font-black flex items-center justify-center mx-auto text-xs border border-pink-200 mb-2">
                             03
                         </div>
-                        <div class="text-3xl text-pink-600 my-2 group-hover:scale-110 transition-transform"><i class="fas fa-cogs"></i></div>
+                        <div class="text-3xl text-pink-600 my-2 group-hover:scale-110 transition-transform"><i
+                                class="fas fa-cogs"></i></div>
                         <h4 class="font-extrabold text-slate-900 text-sm">AutoML Engine</h4>
-                        <p class="text-xs text-slate-500 font-bold mt-1">Parallel training of 30+ models with K-Fold split.</p>
+                        <p class="text-xs text-slate-500 font-bold mt-1">Parallel training of 30+ models with K-Fold
+                            split.</p>
                     </div>
-                    <span class="text-[10px] font-mono text-pink-700 bg-pink-50 py-1 px-2 rounded-lg font-black uppercase">Parallel Run</span>
+                    <span
+                        class="text-[10px] font-mono text-pink-700 bg-pink-50 py-1 px-2 rounded-lg font-black uppercase">Parallel
+                        Run</span>
                 </div>
 
                 <!-- Step 4 -->
-                <div class="glass-panel glass-panel-hover p-6 rounded-3xl text-center space-y-3 relative group flex flex-col justify-between">
+                <div
+                    class="glass-panel glass-panel-hover p-6 rounded-3xl text-center space-y-3 relative group flex flex-col justify-between">
                     <div>
-                        <div class="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-700 font-mono font-black flex items-center justify-center mx-auto text-xs border border-emerald-200 mb-2">
+                        <div
+                            class="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-700 font-mono font-black flex items-center justify-center mx-auto text-xs border border-emerald-200 mb-2">
                             04
                         </div>
-                        <div class="text-3xl text-emerald-600 my-2 group-hover:scale-110 transition-transform"><i class="fas fa-chart-pie"></i></div>
+                        <div class="text-3xl text-emerald-600 my-2 group-hover:scale-110 transition-transform"><i
+                                class="fas fa-chart-pie"></i></div>
                         <h4 class="font-extrabold text-slate-900 text-sm">Evaluation</h4>
-                        <p class="text-xs text-slate-500 font-bold mt-1">Leaderboard metrics, ROC-AUC & confusion matrix.</p>
+                        <p class="text-xs text-slate-500 font-bold mt-1">Leaderboard metrics, ROC-AUC & confusion
+                            matrix.</p>
                     </div>
-                    <span class="text-[10px] font-mono text-emerald-700 bg-emerald-50 py-1 px-2 rounded-lg font-black uppercase">Leaderboard</span>
+                    <span
+                        class="text-[10px] font-mono text-emerald-700 bg-emerald-50 py-1 px-2 rounded-lg font-black uppercase">Leaderboard</span>
                 </div>
 
                 <!-- Step 5 -->
-                <div class="glass-panel glass-panel-hover p-6 rounded-3xl text-center space-y-3 relative group flex flex-col justify-between">
+                <div
+                    class="glass-panel glass-panel-hover p-6 rounded-3xl text-center space-y-3 relative group flex flex-col justify-between">
                     <div>
-                        <div class="w-10 h-10 rounded-2xl bg-cyan-50 text-cyan-700 font-mono font-black flex items-center justify-center mx-auto text-sm border border-cyan-200 mb-2">
+                        <div
+                            class="w-10 h-10 rounded-2xl bg-cyan-50 text-cyan-700 font-mono font-black flex items-center justify-center mx-auto text-sm border border-cyan-200 mb-2">
                             05
                         </div>
-                        <div class="text-3xl text-cyan-600 my-2 group-hover:scale-110 transition-transform"><i class="fas fa-download"></i></div>
+                        <div class="text-3xl text-cyan-600 my-2 group-hover:scale-110 transition-transform"><i
+                                class="fas fa-download"></i></div>
                         <h4 class="font-extrabold text-slate-900 text-sm">Export .PKL</h4>
-                        <p class="text-xs text-slate-500 font-bold mt-1">1-Click binary download with zero vendor lock-in.</p>
+                        <p class="text-xs text-slate-500 font-bold mt-1">1-Click binary download with zero vendor
+                            lock-in.</p>
                     </div>
-                    <span class="text-[10px] font-mono text-cyan-700 bg-cyan-50 py-1 px-2 rounded-lg font-black uppercase">Local Run</span>
+                    <span
+                        class="text-[10px] font-mono text-cyan-700 bg-cyan-50 py-1 px-2 rounded-lg font-black uppercase">Local
+                        Run</span>
                 </div>
 
                 <!-- Step 6 -->
-                <div class="glass-panel glass-panel-hover p-6 rounded-3xl text-center space-y-3 relative group flex flex-col justify-between">
+                <div
+                    class="glass-panel glass-panel-hover p-6 rounded-3xl text-center space-y-3 relative group flex flex-col justify-between">
                     <div>
-                        <div class="w-10 h-10 rounded-2xl bg-amber-50 text-amber-700 font-mono font-black flex items-center justify-center mx-auto text-xs border border-amber-200 mb-2">
+                        <div
+                            class="w-10 h-10 rounded-2xl bg-amber-50 text-amber-700 font-mono font-black flex items-center justify-center mx-auto text-xs border border-amber-200 mb-2">
                             06
                         </div>
-                        <div class="text-3xl text-amber-600 my-2 group-hover:scale-110 transition-transform"><i class="fas fa-bolt"></i></div>
+                        <div class="text-3xl text-amber-600 my-2 group-hover:scale-110 transition-transform"><i
+                                class="fas fa-bolt"></i></div>
                         <h4 class="font-extrabold text-slate-900 text-sm">Deploy API</h4>
-                        <p class="text-xs text-slate-500 font-bold mt-1">Instant hosted REST API with sub-15ms latency.</p>
+                        <p class="text-xs text-slate-500 font-bold mt-1">Instant hosted REST API with sub-15ms latency.
+                        </p>
                     </div>
-                    <span class="text-[10px] font-mono text-amber-700 bg-amber-50 py-1 px-2 rounded-lg font-black uppercase">Production</span>
+                    <span
+                        class="text-[10px] font-mono text-amber-700 bg-amber-50 py-1 px-2 rounded-lg font-black uppercase">Production</span>
                 </div>
 
             </div>
@@ -643,7 +765,8 @@
     <section id="features" class="py-24 relative">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center max-w-3xl mx-auto space-y-4 mb-16">
-                <span class="px-3 py-1 rounded-full bg-purple-50 border border-purple-200 text-purple-700 text-xs font-mono font-bold uppercase tracking-wider">
+                <span
+                    class="px-3 py-1 rounded-full bg-purple-50 border border-purple-200 text-purple-700 text-xs font-mono font-bold uppercase tracking-wider">
                     Core Capabilities
                 </span>
                 <h2 class="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight">
@@ -657,54 +780,66 @@
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Feature 1 -->
                 <div class="glass-panel glass-panel-hover p-7 rounded-3xl space-y-4 group">
-                    <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl border border-indigo-200 font-bold">
+                    <div
+                        class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl border border-indigo-200 font-bold">
                         <i class="fas fa-file-csv"></i>
                     </div>
                     <h3 class="text-xl font-extrabold text-slate-900 flex items-center justify-between">
                         Dataset Ingestion
-                        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-indigo-50 border border-indigo-200 text-indigo-700 font-bold">200MB</span>
+                        <span
+                            class="text-[10px] font-mono px-2 py-0.5 rounded bg-indigo-50 border border-indigo-200 text-indigo-700 font-bold">200MB</span>
                     </h3>
                     <p class="text-sm text-slate-600 font-medium">
-                        Seamless drag-and-drop ingestion for CSV, TSV, XLSX, and XLS formats with automatic data schema detection.
+                        Seamless drag-and-drop ingestion for CSV, TSV, XLSX, and XLS formats with automatic data schema
+                        detection.
                     </p>
                 </div>
 
                 <!-- Feature 2 -->
                 <div class="glass-panel glass-panel-hover p-7 rounded-3xl space-y-4 group">
-                    <div class="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center text-xl border border-purple-200 font-bold">
+                    <div
+                        class="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center text-xl border border-purple-200 font-bold">
                         <i class="fas fa-wand-magic-sparkles"></i>
                     </div>
                     <h3 class="text-xl font-extrabold text-slate-900 flex items-center justify-between">
                         AI Data Cleaning
-                        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-50 border border-purple-200 text-purple-700 font-bold">Auto</span>
+                        <span
+                            class="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-50 border border-purple-200 text-purple-700 font-bold">Auto</span>
                     </h3>
                     <p class="text-sm text-slate-600 font-medium">
-                        Automated missing value imputation (Mean/Median/KNN), outlier removal, and one-hot categorical encoding.
+                        Automated missing value imputation (Mean/Median/KNN), outlier removal, and one-hot categorical
+                        encoding.
                     </p>
                 </div>
 
                 <!-- Feature 3 -->
                 <div class="glass-panel glass-panel-hover p-7 rounded-3xl space-y-4 group">
-                    <div class="w-12 h-12 rounded-2xl bg-pink-50 text-pink-600 flex items-center justify-center text-xl border border-pink-200 font-bold">
+                    <div
+                        class="w-12 h-12 rounded-2xl bg-pink-50 text-pink-600 flex items-center justify-center text-xl border border-pink-200 font-bold">
                         <i class="fas fa-robot"></i>
                     </div>
                     <h3 class="text-xl font-extrabold text-slate-900 flex items-center justify-between">
                         AutoML Engine
-                        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-pink-50 border border-pink-200 text-pink-700 font-bold">30+ Algos</span>
+                        <span
+                            class="text-[10px] font-mono px-2 py-0.5 rounded bg-pink-50 border border-pink-200 text-pink-700 font-bold">30+
+                            Algos</span>
                     </h3>
                     <p class="text-sm text-slate-600 font-medium">
-                        Train XGBoost, LightGBM, Random Forest, CatBoost, and Neural Nets simultaneously with K-Fold cross validation.
+                        Train XGBoost, LightGBM, Random Forest, CatBoost, and Neural Nets simultaneously with K-Fold
+                        cross validation.
                     </p>
                 </div>
 
                 <!-- Feature 4 -->
                 <div class="glass-panel glass-panel-hover p-7 rounded-3xl space-y-4 group">
-                    <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl border border-emerald-200 font-bold">
+                    <div
+                        class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl border border-emerald-200 font-bold">
                         <i class="fas fa-chart-line"></i>
                     </div>
                     <h3 class="text-xl font-extrabold text-slate-900 flex items-center justify-between">
                         Smart Visualizations
-                        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-50 border border-emerald-200 text-emerald-700 font-bold">Interactive</span>
+                        <span
+                            class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-50 border border-emerald-200 text-emerald-700 font-bold">Interactive</span>
                     </h3>
                     <p class="text-sm text-slate-600 font-medium">
                         Interactive confusion matrices, ROC/AUC curves, feature importances, and residual scatter plots.
@@ -713,12 +848,14 @@
 
                 <!-- Feature 5 -->
                 <div class="glass-panel glass-panel-hover p-7 rounded-3xl space-y-4 group">
-                    <div class="w-12 h-12 rounded-2xl bg-cyan-50 text-cyan-600 flex items-center justify-center text-xl border border-cyan-200 font-bold">
+                    <div
+                        class="w-12 h-12 rounded-2xl bg-cyan-50 text-cyan-600 flex items-center justify-center text-xl border border-cyan-200 font-bold">
                         <i class="fas fa-sliders-h"></i>
                     </div>
                     <h3 class="text-xl font-extrabold text-slate-900 flex items-center justify-between">
                         Feature Engineering
-                        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-50 border border-cyan-200 text-cyan-700 font-bold">Advanced</span>
+                        <span
+                            class="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-50 border border-cyan-200 text-cyan-700 font-bold">Advanced</span>
                     </h3>
                     <p class="text-sm text-slate-600 font-medium">
                         Automatic correlation heatmaps, variance threshold filtering, and polynomial feature generation.
@@ -727,68 +864,84 @@
 
                 <!-- Feature 6 -->
                 <div class="glass-panel glass-panel-hover p-7 rounded-3xl space-y-4 group">
-                    <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl border border-amber-200 font-bold">
+                    <div
+                        class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl border border-amber-200 font-bold">
                         <i class="fas fa-trophy"></i>
                     </div>
                     <h3 class="text-xl font-extrabold text-slate-900 flex items-center justify-between">
                         Model Leaderboard
-                        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-50 border border-amber-200 text-amber-700 font-bold">Real-Time</span>
+                        <span
+                            class="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-50 border border-amber-200 text-amber-700 font-bold">Real-Time</span>
                     </h3>
                     <p class="text-sm text-slate-600 font-medium">
-                        Compare Accuracy, F1-Score, R2, Precision, Recall, and inference latency in a sortable ranking table.
+                        Compare Accuracy, F1-Score, R2, Precision, Recall, and inference latency in a sortable ranking
+                        table.
                     </p>
                 </div>
 
                 <!-- Feature 7 -->
                 <div class="glass-panel glass-panel-hover p-7 rounded-3xl space-y-4 group">
-                    <div class="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center text-xl border border-rose-200 font-bold">
+                    <div
+                        class="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center text-xl border border-rose-200 font-bold">
                         <i class="fas fa-file-pdf"></i>
                     </div>
                     <h3 class="text-xl font-extrabold text-slate-900 flex items-center justify-between">
                         Executive Reports
-                        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-rose-50 border border-rose-200 text-rose-700 font-bold">1-Click</span>
+                        <span
+                            class="text-[10px] font-mono px-2 py-0.5 rounded bg-rose-50 border border-rose-200 text-rose-700 font-bold">1-Click</span>
                     </h3>
                     <p class="text-sm text-slate-600 font-medium">
-                        Generate comprehensive PDF & HTML diagnostic reports ready to present to stakeholders and leadership.
+                        Generate comprehensive PDF & HTML diagnostic reports ready to present to stakeholders and
+                        leadership.
                     </p>
                 </div>
 
                 <!-- Feature 8 -->
                 <div class="glass-panel glass-panel-hover p-7 rounded-3xl space-y-4 group">
-                    <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl border border-blue-200 font-bold">
+                    <div
+                        class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl border border-blue-200 font-bold">
                         <i class="fas fa-download"></i>
                     </div>
                     <h3 class="text-xl font-extrabold text-slate-900 flex items-center justify-between">
                         Model Export (.PKL)
-                        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-50 border border-blue-200 text-blue-700 font-bold">Zero Lock-In</span>
+                        <span
+                            class="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-50 border border-blue-200 text-blue-700 font-bold">Zero
+                            Lock-In</span>
                     </h3>
                     <p class="text-sm text-slate-600 font-medium">
-                        Download fully trained Python Scikit-Learn / XGBoost `.pkl` binary files to run locally anywhere.
+                        Download fully trained Python Scikit-Learn / XGBoost `.pkl` binary files to run locally
+                        anywhere.
                     </p>
                 </div>
 
                 <!-- Feature 9 -->
                 <div class="glass-panel glass-panel-hover p-7 rounded-3xl space-y-4 group">
-                    <div class="w-12 h-12 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center text-xl border border-teal-200 font-bold">
+                    <div
+                        class="w-12 h-12 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center text-xl border border-teal-200 font-bold">
                         <i class="fas fa-terminal"></i>
                     </div>
                     <h3 class="text-xl font-extrabold text-slate-900 flex items-center justify-between">
                         Live API Testing
-                        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-teal-50 border border-teal-200 text-teal-700 font-bold">REST Endpoint</span>
+                        <span
+                            class="text-[10px] font-mono px-2 py-0.5 rounded bg-teal-50 border border-teal-200 text-teal-700 font-bold">REST
+                            Endpoint</span>
                     </h3>
                     <p class="text-sm text-slate-600 font-medium">
-                        Test predictions instantly inside an interactive web API sandbox with real-time JSON input payload schema.
+                        Test predictions instantly inside an interactive web API sandbox with real-time JSON input
+                        payload schema.
                     </p>
                 </div>
 
                 <!-- Feature 10 -->
                 <div class="glass-panel glass-panel-hover p-7 rounded-3xl space-y-4 group">
-                    <div class="w-12 h-12 rounded-2xl bg-violet-50 text-violet-600 flex items-center justify-center text-xl border border-violet-200 font-bold">
+                    <div
+                        class="w-12 h-12 rounded-2xl bg-violet-50 text-violet-600 flex items-center justify-center text-xl border border-violet-200 font-bold">
                         <i class="fas fa-users"></i>
                     </div>
                     <h3 class="text-xl font-extrabold text-slate-900 flex items-center justify-between">
                         Team Collaboration
-                        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-violet-50 border border-violet-200 text-violet-700 font-bold">Workspaces</span>
+                        <span
+                            class="text-[10px] font-mono px-2 py-0.5 rounded bg-violet-50 border border-violet-200 text-violet-700 font-bold">Workspaces</span>
                     </h3>
                     <p class="text-sm text-slate-600 font-medium">
                         Share AutoML workspace projects, share experiment links, and manage role-based team permissions.
@@ -797,26 +950,32 @@
 
                 <!-- Feature 11 -->
                 <div class="glass-panel glass-panel-hover p-7 rounded-3xl space-y-4 group">
-                    <div class="w-12 h-12 rounded-2xl bg-sky-50 text-sky-600 flex items-center justify-center text-xl border border-sky-200 font-bold">
+                    <div
+                        class="w-12 h-12 rounded-2xl bg-sky-50 text-sky-600 flex items-center justify-center text-xl border border-sky-200 font-bold">
                         <i class="fas fa-history"></i>
                     </div>
                     <h3 class="text-xl font-extrabold text-slate-900 flex items-center justify-between">
                         Experiment Tracking
-                        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-sky-50 border border-sky-200 text-sky-700 font-bold">Full Audit</span>
+                        <span
+                            class="text-[10px] font-mono px-2 py-0.5 rounded bg-sky-50 border border-sky-200 text-sky-700 font-bold">Full
+                            Audit</span>
                     </h3>
                     <p class="text-sm text-slate-600 font-medium">
-                        Log hyperparameter configurations, metrics history, and model artifacts automatically for reproducibility.
+                        Log hyperparameter configurations, metrics history, and model artifacts automatically for
+                        reproducibility.
                     </p>
                 </div>
 
                 <!-- Feature 12 -->
                 <div class="glass-panel glass-panel-hover p-7 rounded-3xl space-y-4 group">
-                    <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl border border-emerald-200 font-bold">
+                    <div
+                        class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl border border-emerald-200 font-bold">
                         <i class="fas fa-tachometer-alt"></i>
                     </div>
                     <h3 class="text-xl font-extrabold text-slate-900 flex items-center justify-between">
                         Dashboard Analytics
-                        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-50 border border-emerald-200 text-emerald-700 font-bold">Real-Time</span>
+                        <span
+                            class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-50 border border-emerald-200 text-emerald-700 font-bold">Real-Time</span>
                     </h3>
                     <p class="text-sm text-slate-600 font-medium">
                         Monitor API inference volume, request latencies, score timelines, and system usage metrics.
@@ -833,7 +992,8 @@
     <section id="dashboard" class="py-24 bg-white/80 border-y border-slate-200/80 relative">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center max-w-3xl mx-auto space-y-4 mb-12">
-                <span class="px-3 py-1 rounded-full bg-cyan-50 border border-cyan-200 text-cyan-700 text-xs font-mono font-bold uppercase tracking-wider">
+                <span
+                    class="px-3 py-1 rounded-full bg-cyan-50 border border-cyan-200 text-cyan-700 text-xs font-mono font-bold uppercase tracking-wider">
                     Interactive Showcase
                 </span>
                 <h2 class="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight">
@@ -846,23 +1006,32 @@
 
             <!-- Tab Buttons -->
             <div class="flex flex-wrap items-center justify-center gap-3 mb-10">
-                <button class="tab-btn active px-5 py-2.5 rounded-2xl text-xs font-extrabold font-mono transition-all bg-indigo-600 text-white shadow-lg shadow-indigo-500/25" data-tab="overview">
+                <button
+                    class="tab-btn active px-5 py-2.5 rounded-2xl text-xs font-extrabold font-mono transition-all bg-indigo-600 text-white shadow-lg shadow-indigo-500/25"
+                    data-tab="overview">
                     <i class="fas fa-desktop mr-2"></i> Main Studio
                 </button>
-                <button class="tab-btn px-5 py-2.5 rounded-2xl text-xs font-extrabold font-mono transition-all glass-panel text-slate-700 hover:text-indigo-600" data-tab="cleaning">
+                <button
+                    class="tab-btn px-5 py-2.5 rounded-2xl text-xs font-extrabold font-mono transition-all glass-panel text-slate-700 hover:text-indigo-600"
+                    data-tab="cleaning">
                     <i class="fas fa-broom mr-2"></i> AI Cleaning Hub
                 </button>
-                <button class="tab-btn px-5 py-2.5 rounded-2xl text-xs font-extrabold font-mono transition-all glass-panel text-slate-700 hover:text-indigo-600" data-tab="leaderboard">
+                <button
+                    class="tab-btn px-5 py-2.5 rounded-2xl text-xs font-extrabold font-mono transition-all glass-panel text-slate-700 hover:text-indigo-600"
+                    data-tab="leaderboard">
                     <i class="fas fa-trophy mr-2"></i> Model Comparison
                 </button>
-                <button class="tab-btn px-5 py-2.5 rounded-2xl text-xs font-extrabold font-mono transition-all glass-panel text-slate-700 hover:text-indigo-600" data-tab="api">
+                <button
+                    class="tab-btn px-5 py-2.5 rounded-2xl text-xs font-extrabold font-mono transition-all glass-panel text-slate-700 hover:text-indigo-600"
+                    data-tab="api">
                     <i class="fas fa-plug mr-2"></i> API Testing Sandbox
                 </button>
             </div>
 
             <!-- Showcase View Containers -->
-            <div class="relative bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-2xl shadow-slate-200/60 overflow-hidden">
-                
+            <div
+                class="relative bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-2xl shadow-slate-200/60 overflow-hidden">
+
                 <!-- View 1: Main Studio -->
                 <div id="view-overview" class="tab-content block space-y-6">
                     <div class="flex items-center justify-between pb-4 border-b border-slate-200">
@@ -870,7 +1039,8 @@
                             <span class="w-3 h-3 rounded-full bg-rose-500"></span>
                             <span class="w-3 h-3 rounded-full bg-amber-500"></span>
                             <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
-                            <span class="text-xs font-mono text-slate-500 font-bold">ModelFlow Studio — Dataset Profiler & AutoML Pipeline</span>
+                            <span class="text-xs font-mono text-slate-500 font-bold">ModelFlow Studio — Dataset Profiler
+                                & AutoML Pipeline</span>
                         </div>
                         <span class="text-xs font-mono text-indigo-700 font-black">Project: Credit_Card_Fraud.csv</span>
                     </div>
@@ -878,7 +1048,8 @@
                     <div class="grid md:grid-cols-3 gap-6">
                         <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
                             <div class="text-xs text-slate-500 font-extrabold uppercase">Dataset Health Score</div>
-                            <div class="text-4xl font-black text-emerald-600 font-mono">98.4<span class="text-xs text-slate-500 font-bold">/100</span></div>
+                            <div class="text-4xl font-black text-emerald-600 font-mono">98.4<span
+                                    class="text-xs text-slate-500 font-bold">/100</span></div>
                             <div class="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
                                 <div class="bg-emerald-500 h-2 rounded-full" style="width: 98.4%"></div>
                             </div>
@@ -888,15 +1059,20 @@
                         <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
                             <div class="text-xs text-slate-500 font-extrabold uppercase">Top Model Recommendation</div>
                             <div class="text-2xl font-black text-slate-900 font-mono flex items-center justify-between">
-                                XGBoost <span class="text-xs px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold">99.1% F1</span>
+                                XGBoost <span
+                                    class="text-xs px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold">99.1%
+                                    F1</span>
                             </div>
-                            <p class="text-xs text-slate-600 font-bold">Trained on 10 K-Fold Splits with ROC-AUC optimization.</p>
+                            <p class="text-xs text-slate-600 font-bold">Trained on 10 K-Fold Splits with ROC-AUC
+                                optimization.</p>
                         </div>
 
                         <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
                             <div class="text-xs text-slate-500 font-extrabold uppercase">Live REST Endpoint</div>
-                            <div class="text-sm font-mono text-indigo-700 font-bold truncate">https://api.modelflow.ai/v1/predict/c8f2...</div>
-                            <button class="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs shadow-md transition-colors">
+                            <div class="text-sm font-mono text-indigo-700 font-bold truncate">
+                                https://api.modelflow.ai/v1/predict/c8f2...</div>
+                            <button
+                                class="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs shadow-md transition-colors">
                                 Copy API Key & cURL Command
                             </button>
                         </div>
@@ -906,30 +1082,37 @@
                 <!-- View 2: AI Data Cleaning -->
                 <div id="view-cleaning" class="tab-content hidden space-y-6">
                     <div class="flex items-center justify-between pb-4 border-b border-slate-200">
-                        <span class="text-xs font-mono text-slate-500 font-bold">AI Data Cleaning & Preprocessing Suite</span>
+                        <span class="text-xs font-mono text-slate-500 font-bold">AI Data Cleaning & Preprocessing
+                            Suite</span>
                         <span class="text-xs font-mono text-purple-700 font-extrabold">Auto Imputer Active</span>
                     </div>
                     <div class="space-y-4">
-                        <div class="p-4.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+                        <div
+                            class="p-4.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
                             <div class="flex items-center gap-3">
                                 <i class="fas fa-check-circle text-emerald-600 text-base"></i>
                                 <span class="text-sm font-extrabold text-slate-900">Missing Values Imputation</span>
                             </div>
-                            <span class="text-xs font-mono text-slate-600 font-bold">Median Strategy Applied to 'Income' (1,240 cells)</span>
+                            <span class="text-xs font-mono text-slate-600 font-bold">Median Strategy Applied to 'Income'
+                                (1,240 cells)</span>
                         </div>
-                        <div class="p-4.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+                        <div
+                            class="p-4.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
                             <div class="flex items-center gap-3">
                                 <i class="fas fa-check-circle text-emerald-600 text-base"></i>
                                 <span class="text-sm font-extrabold text-slate-900">Categorical Encoding</span>
                             </div>
-                            <span class="text-xs font-mono text-slate-600 font-bold">One-Hot Encoded 4 Columns ('State', 'Device', etc.)</span>
+                            <span class="text-xs font-mono text-slate-600 font-bold">One-Hot Encoded 4 Columns ('State',
+                                'Device', etc.)</span>
                         </div>
-                        <div class="p-4.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+                        <div
+                            class="p-4.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
                             <div class="flex items-center gap-3">
                                 <i class="fas fa-check-circle text-emerald-600 text-base"></i>
                                 <span class="text-sm font-extrabold text-slate-900">Outlier Filtering</span>
                             </div>
-                            <span class="text-xs font-mono text-slate-600 font-bold">IQR Method Trimmed 89 Extreme Anomalies</span>
+                            <span class="text-xs font-mono text-slate-600 font-bold">IQR Method Trimmed 89 Extreme
+                                Anomalies</span>
                         </div>
                     </div>
                 </div>
@@ -985,11 +1168,15 @@
                 <!-- View 4: API Sandbox -->
                 <div id="view-api" class="tab-content hidden space-y-6">
                     <div class="flex items-center justify-between pb-4 border-b border-slate-200">
-                        <span class="text-xs font-mono text-slate-500 font-bold">Interactive REST API Inference Sandbox</span>
-                        <span class="px-2.5 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 font-mono text-[10px] font-black">POST /v1/predict</span>
+                        <span class="text-xs font-mono text-slate-500 font-bold">Interactive REST API Inference
+                            Sandbox</span>
+                        <span
+                            class="px-2.5 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 font-mono text-[10px] font-black">POST
+                            /v1/predict</span>
                     </div>
                     <div class="grid md:grid-cols-2 gap-6 font-mono text-xs">
-                        <div class="p-5 rounded-2xl bg-slate-900 text-slate-100 space-y-2 border border-slate-800 shadow-inner">
+                        <div
+                            class="p-5 rounded-2xl bg-slate-900 text-slate-100 space-y-2 border border-slate-800 shadow-inner">
                             <div class="text-slate-400 font-bold uppercase text-[10px]">Input JSON Request Body</div>
                             <pre class="text-indigo-300 leading-relaxed overflow-x-auto">
 {
@@ -1000,7 +1187,8 @@
 }
                             </pre>
                         </div>
-                        <div class="p-5 rounded-2xl bg-slate-900 text-slate-100 space-y-2 border border-slate-800 shadow-inner">
+                        <div
+                            class="p-5 rounded-2xl bg-slate-900 text-slate-100 space-y-2 border border-slate-800 shadow-inner">
                             <div class="text-slate-400 font-bold flex justify-between uppercase text-[10px]">
                                 Output JSON Response
                                 <span class="text-emerald-400 font-extrabold">HTTP 200 OK (8ms)</span>
@@ -1028,7 +1216,8 @@
     <section id="playground" class="py-24 relative">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center max-w-3xl mx-auto space-y-4 mb-16">
-                <span class="px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-mono font-bold uppercase tracking-wider">
+                <span
+                    class="px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-mono font-bold uppercase tracking-wider">
                     Model & Algorithm Hub
                 </span>
                 <h2 class="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight">
@@ -1044,9 +1233,12 @@
                 <div class="glass-panel glass-panel-hover p-7 rounded-3xl space-y-3">
                     <div class="flex items-center justify-between">
                         <span class="font-extrabold text-slate-900 text-lg">XGBoost</span>
-                        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-indigo-50 border border-indigo-200 text-indigo-700 font-bold">Tree Gradient</span>
+                        <span
+                            class="text-[10px] font-mono px-2 py-0.5 rounded bg-indigo-50 border border-indigo-200 text-indigo-700 font-bold">Tree
+                            Gradient</span>
                     </div>
-                    <p class="text-xs text-slate-600 font-medium leading-relaxed">Extreme gradient boosting optimized for tabular accuracy and speed.</p>
+                    <p class="text-xs text-slate-600 font-medium leading-relaxed">Extreme gradient boosting optimized
+                        for tabular accuracy and speed.</p>
                     <div class="pt-2 flex items-center justify-between text-[11px] font-mono text-slate-500 font-bold">
                         <span>Speed: <strong class="text-emerald-600 font-black">Ultra Fast</strong></span>
                         <span>Accuracy: <strong class="text-indigo-600 font-black">99%+</strong></span>
@@ -1056,9 +1248,12 @@
                 <div class="glass-panel glass-panel-hover p-7 rounded-3xl space-y-3">
                     <div class="flex items-center justify-between">
                         <span class="font-extrabold text-slate-900 text-lg">LightGBM</span>
-                        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-50 border border-purple-200 text-purple-700 font-bold">Fast Gradient</span>
+                        <span
+                            class="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-50 border border-purple-200 text-purple-700 font-bold">Fast
+                            Gradient</span>
                     </div>
-                    <p class="text-xs text-slate-600 font-medium leading-relaxed">Lightweight tree gradient boosting framework designed for large datasets.</p>
+                    <p class="text-xs text-slate-600 font-medium leading-relaxed">Lightweight tree gradient boosting
+                        framework designed for large datasets.</p>
                     <div class="pt-2 flex items-center justify-between text-[11px] font-mono text-slate-500 font-bold">
                         <span>Speed: <strong class="text-emerald-600 font-black">Blazing</strong></span>
                         <span>Accuracy: <strong class="text-indigo-600 font-black">98.8%</strong></span>
@@ -1068,9 +1263,11 @@
                 <div class="glass-panel glass-panel-hover p-7 rounded-3xl space-y-3">
                     <div class="flex items-center justify-between">
                         <span class="font-extrabold text-slate-900 text-lg">Random Forest</span>
-                        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-pink-50 border border-pink-200 text-pink-700 font-bold">Ensemble</span>
+                        <span
+                            class="text-[10px] font-mono px-2 py-0.5 rounded bg-pink-50 border border-pink-200 text-pink-700 font-bold">Ensemble</span>
                     </div>
-                    <p class="text-xs text-slate-600 font-medium leading-relaxed">Robust decision tree ensemble with high resistance to overfitting.</p>
+                    <p class="text-xs text-slate-600 font-medium leading-relaxed">Robust decision tree ensemble with
+                        high resistance to overfitting.</p>
                     <div class="pt-2 flex items-center justify-between text-[11px] font-mono text-slate-500 font-bold">
                         <span>Speed: <strong class="text-amber-600 font-black">Medium</strong></span>
                         <span>Accuracy: <strong class="text-indigo-600 font-black">96.5%</strong></span>
@@ -1080,9 +1277,11 @@
                 <div class="glass-panel glass-panel-hover p-7 rounded-3xl space-y-3">
                     <div class="flex items-center justify-between">
                         <span class="font-extrabold text-slate-900 text-lg">CatBoost</span>
-                        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-50 border border-cyan-200 text-cyan-700 font-bold">Categorical</span>
+                        <span
+                            class="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-50 border border-cyan-200 text-cyan-700 font-bold">Categorical</span>
                     </div>
-                    <p class="text-xs text-slate-600 font-medium leading-relaxed">Specialized gradient boosting with superior handling of text & categories.</p>
+                    <p class="text-xs text-slate-600 font-medium leading-relaxed">Specialized gradient boosting with
+                        superior handling of text & categories.</p>
                     <div class="pt-2 flex items-center justify-between text-[11px] font-mono text-slate-500 font-bold">
                         <span>Speed: <strong class="text-emerald-600 font-black">Fast</strong></span>
                         <span>Accuracy: <strong class="text-indigo-600 font-black">98.2%</strong></span>
@@ -1091,22 +1290,28 @@
             </div>
 
             <!-- And 26+ More Algorithms Banner -->
-            <div class="mt-8 p-7 rounded-3xl glass-panel border-indigo-200 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+            <div
+                class="mt-8 p-7 rounded-3xl glass-panel border-indigo-200 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
                 <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 border border-indigo-200 flex items-center justify-center text-xl shrink-0 font-bold">
+                    <div
+                        class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 border border-indigo-200 flex items-center justify-center text-xl shrink-0 font-bold">
                         <i class="fas fa-layer-group"></i>
                     </div>
                     <div>
-                        <h4 class="text-base font-extrabold text-slate-900 flex items-center gap-2 justify-center sm:justify-start">
+                        <h4
+                            class="text-base font-extrabold text-slate-900 flex items-center gap-2 justify-center sm:justify-start">
                             ...And 26+ More Algorithms Supported!
-                            <span class="px-2.5 py-0.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700 text-[10px] font-mono font-bold">Auto-Selected</span>
+                            <span
+                                class="px-2.5 py-0.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700 text-[10px] font-mono font-bold">Auto-Selected</span>
                         </h4>
                         <p class="text-xs text-slate-600 font-medium mt-1">
-                            Including Neural Networks, Support Vector Machines (SVM), K-Nearest Neighbors (KNN), Ridge & Lasso Regression, Naive Bayes, Decision Trees, Gradient Boosting, Extra Trees & AdaBoost.
+                            Including Neural Networks, Support Vector Machines (SVM), K-Nearest Neighbors (KNN), Ridge &
+                            Lasso Regression, Naive Bayes, Decision Trees, Gradient Boosting, Extra Trees & AdaBoost.
                         </p>
                     </div>
                 </div>
-                <a href="#features" class="px-5 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-extrabold transition-colors shrink-0 whitespace-nowrap shadow-md">
+                <a href="#features"
+                    class="px-5 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-extrabold transition-colors shrink-0 whitespace-nowrap shadow-md">
                     View Full Specs <i class="fas fa-arrow-right ml-1"></i>
                 </a>
             </div>
@@ -1120,7 +1325,8 @@
     <section id="why-modelflow" class="py-24 bg-white/80 border-y border-slate-200/80 relative">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center max-w-3xl mx-auto space-y-4 mb-16">
-                <span class="px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-700 text-xs font-mono font-bold uppercase tracking-wider">
+                <span
+                    class="px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-700 text-xs font-mono font-bold uppercase tracking-wider">
                     Comparison
                 </span>
                 <h2 class="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight">
@@ -1131,40 +1337,47 @@
                 </p>
             </div>
 
-            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-2xl shadow-slate-200/60 overflow-x-auto">
+            <div
+                class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-2xl shadow-slate-200/60 overflow-x-auto">
                 <table class="w-full text-left text-sm">
                     <thead>
                         <tr class="border-b border-slate-200 text-slate-500 font-mono text-xs uppercase font-bold">
                             <th class="py-4 px-6">Workflow Dimension</th>
                             <th class="py-4 px-6 text-rose-600">Traditional ML Engineering</th>
-                            <th class="py-4 px-6 text-indigo-700 bg-indigo-50/80 rounded-t-2xl font-black">ModelFlow AutoML Platform</th>
+                            <th class="py-4 px-6 text-indigo-700 bg-indigo-50/80 rounded-t-2xl font-black">ModelFlow
+                                AutoML Platform</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-200 text-slate-800 font-medium">
                         <tr>
                             <td class="py-4 px-6 font-extrabold text-slate-900">Data Preprocessing</td>
                             <td class="py-4 px-6 text-slate-600">Manual Pandas coding (20-40 hours)</td>
-                            <td class="py-4 px-6 text-indigo-700 font-bold bg-indigo-50/80">Automated AI Imputation (30 seconds)</td>
+                            <td class="py-4 px-6 text-indigo-700 font-bold bg-indigo-50/80">Automated AI Imputation (30
+                                seconds)</td>
                         </tr>
                         <tr>
                             <td class="py-4 px-6 font-extrabold text-slate-900">Algorithm Search</td>
                             <td class="py-4 px-6 text-slate-600">Sequential trial-and-error notebooks</td>
-                            <td class="py-4 px-6 text-indigo-700 font-bold bg-indigo-50/80">Parallel execution of 30+ models</td>
+                            <td class="py-4 px-6 text-indigo-700 font-bold bg-indigo-50/80">Parallel execution of 30+
+                                models</td>
                         </tr>
                         <tr>
                             <td class="py-4 px-6 font-extrabold text-slate-900">Model Export</td>
                             <td class="py-4 px-6 text-slate-600">Fragile local custom pickle files</td>
-                            <td class="py-4 px-6 text-indigo-700 font-bold bg-indigo-50/80">Instant 1-click .pkl / ONNX binary download</td>
+                            <td class="py-4 px-6 text-indigo-700 font-bold bg-indigo-50/80">Instant 1-click .pkl / ONNX
+                                binary download</td>
                         </tr>
                         <tr>
                             <td class="py-4 px-6 font-extrabold text-slate-900">API Deployment</td>
                             <td class="py-4 px-6 text-slate-600">Custom Flask/FastAPI + Docker + Kubernetes</td>
-                            <td class="py-4 px-6 text-indigo-700 font-bold bg-indigo-50/80">Instant hosted REST API with API keys</td>
+                            <td class="py-4 px-6 text-indigo-700 font-bold bg-indigo-50/80">Instant hosted REST API with
+                                API keys</td>
                         </tr>
                         <tr>
                             <td class="py-4 px-6 font-extrabold text-slate-900">Stakeholder Reports</td>
                             <td class="py-4 px-6 text-slate-600">Manual PowerPoint slide creation</td>
-                            <td class="py-4 px-6 text-indigo-700 font-bold bg-indigo-50/80">Auto-generated executive PDF reports</td>
+                            <td class="py-4 px-6 text-indigo-700 font-bold bg-indigo-50/80">Auto-generated executive PDF
+                                reports</td>
                         </tr>
                     </tbody>
                 </table>
@@ -1179,16 +1392,18 @@
     <section id="developers" class="py-24 relative">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid lg:grid-cols-12 gap-12 items-center">
-                
+
                 <div class="lg:col-span-5 space-y-6">
-                    <span class="px-3.5 py-1 rounded-full bg-cyan-50 border border-cyan-200 text-cyan-700 text-xs font-mono font-bold uppercase tracking-wider">
+                    <span
+                        class="px-3.5 py-1 rounded-full bg-cyan-50 border border-cyan-200 text-cyan-700 text-xs font-mono font-bold uppercase tracking-wider">
                         Developer First
                     </span>
                     <h2 class="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
                         Built for Production API Integration.
                     </h2>
                     <p class="text-slate-600 text-base leading-relaxed font-medium">
-                        Every model trained on ModelFlow instantly exposes a secure, ultra-low latency REST API. Integrate predictions into Python, Node.js, Go, or cURL scripts in seconds.
+                        Every model trained on ModelFlow instantly exposes a secure, ultra-low latency REST API.
+                        Integrate predictions into Python, Node.js, Go, or cURL scripts in seconds.
                     </p>
 
                     <div class="space-y-3 font-mono text-xs font-bold text-slate-700">
@@ -1205,14 +1420,20 @@
                 </div>
 
                 <div class="lg:col-span-7">
-                    <div class="bg-white rounded-3xl border border-slate-200/90 overflow-hidden shadow-2xl shadow-slate-200/60">
+                    <div
+                        class="bg-white rounded-3xl border border-slate-200/90 overflow-hidden shadow-2xl shadow-slate-200/60">
                         <div class="bg-slate-900 px-6 py-4 border-b border-slate-800 flex items-center justify-between">
                             <div class="flex items-center gap-4 text-xs font-mono text-slate-400">
-                                <button class="code-tab-btn active text-indigo-400 font-bold border-b-2 border-indigo-500 pb-1" data-lang="python">Python SDK</button>
-                                <button class="code-tab-btn text-slate-400 hover:text-white pb-1" data-lang="curl">cURL REST</button>
-                                <button class="code-tab-btn text-slate-400 hover:text-white pb-1" data-lang="js">JavaScript</button>
+                                <button
+                                    class="code-tab-btn active text-indigo-400 font-bold border-b-2 border-indigo-500 pb-1"
+                                    data-lang="python">Python SDK</button>
+                                <button class="code-tab-btn text-slate-400 hover:text-white pb-1" data-lang="curl">cURL
+                                    REST</button>
+                                <button class="code-tab-btn text-slate-400 hover:text-white pb-1"
+                                    data-lang="js">JavaScript</button>
                             </div>
-                            <button id="copyCodeBtn" class="text-xs font-mono text-slate-300 hover:text-white flex items-center gap-1.5 bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700 font-bold">
+                            <button id="copyCodeBtn"
+                                class="text-xs font-mono text-slate-300 hover:text-white flex items-center gap-1.5 bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700 font-bold">
                                 <i class="fas fa-copy"></i> Copy Code
                             </button>
                         </div>
@@ -1250,7 +1471,8 @@ prediction = client.predict(
     <section id="pricing" class="py-24 bg-white/80 border-y border-slate-200/80 relative">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center max-w-3xl mx-auto space-y-4 mb-16">
-                <span class="px-3 py-1 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-mono font-bold uppercase tracking-wider">
+                <span
+                    class="px-3 py-1 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-mono font-bold uppercase tracking-wider">
                     Transparent Pricing
                 </span>
                 <h2 class="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight">
@@ -1263,90 +1485,126 @@ prediction = client.predict(
                 <!-- Billing Toggle Switch -->
                 <div class="pt-4 flex items-center justify-center gap-4">
                     <span class="text-xs font-bold text-slate-700">Monthly</span>
-                    <button id="billingToggle" class="w-14 h-8 rounded-full bg-indigo-600 p-1 transition-colors relative shadow-inner">
-                        <div id="billingDot" class="w-6 h-6 rounded-full bg-white transition-transform transform translate-x-6 shadow-md"></div>
+                    <button id="billingToggle"
+                        class="w-14 h-8 rounded-full bg-indigo-600 p-1 transition-colors relative shadow-inner">
+                        <div id="billingDot"
+                            class="w-6 h-6 rounded-full bg-white transition-transform transform translate-x-6 shadow-md">
+                        </div>
                     </button>
                     <span class="text-xs font-bold text-slate-900 flex items-center gap-1.5">
                         Annual Billing
-                        <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 text-[10px] font-mono font-extrabold">SAVE 20%</span>
+                        <span
+                            class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 text-[10px] font-mono font-extrabold">SAVE
+                            20%</span>
                     </span>
                 </div>
             </div>
 
             <!-- Pricing Cards Grid -->
             <div class="grid md:grid-cols-3 gap-8 items-stretch">
-                
+
                 <!-- Free Tier -->
-                <div class="glass-panel glass-panel-hover p-8 rounded-3xl border-slate-200 flex flex-col justify-between space-y-6">
+                <div
+                    class="glass-panel glass-panel-hover p-8 rounded-3xl border-slate-200 flex flex-col justify-between space-y-6">
                     <div class="space-y-4">
                         <div class="text-xs font-mono text-slate-500 uppercase font-extrabold">Starter Free</div>
-                        <div class="text-4xl font-black text-slate-900 font-mono">$0<span class="text-sm font-sans font-normal text-slate-500">/month</span></div>
-                        <p class="text-xs text-slate-600 font-medium">Perfect for students, hobbyists, and initial dataset exploration.</p>
+                        <div class="text-4xl font-black text-slate-900 font-mono">$0<span
+                                class="text-sm font-sans font-normal text-slate-500">/month</span></div>
+                        <p class="text-xs text-slate-600 font-medium">Perfect for students, hobbyists, and initial
+                            dataset exploration.</p>
                         <hr class="border-slate-200">
                         <ul class="space-y-3 text-xs text-slate-700 font-bold">
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-600"></i> Up to 3 Workspace Projects</li>
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-600"></i> 50MB Max Dataset Upload</li>
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-600"></i> 10 AutoML Model Runs / mo</li>
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-600"></i> Export trained <code class="text-indigo-700">.pkl</code> binaries</li>
-                            <li class="flex items-center gap-2 text-slate-400"><i class="fas fa-times text-slate-400"></i> Hosted REST API Deployment</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-600"></i> Up to 3
+                                Workspace Projects</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-600"></i> 50MB Max
+                                Dataset Upload</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-600"></i> 10 AutoML
+                                Model Runs / mo</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-600"></i> Export
+                                trained <code class="text-indigo-700">.pkl</code> binaries</li>
+                            <li class="flex items-center gap-2 text-slate-400"><i
+                                    class="fas fa-times text-slate-400"></i> Hosted REST API Deployment</li>
                         </ul>
                     </div>
-                    <a href="{{ url_for('signup') if url_for is defined else '/signup' }}" class="w-full py-3.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-900 border border-slate-300 text-center font-extrabold text-xs transition-colors">
+                    <a href="{{ url_for('signup') if url_for is defined else '/signup' }}"
+                        class="w-full py-3.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-900 border border-slate-300 text-center font-extrabold text-xs transition-colors">
                         Get Started Free
                     </a>
                 </div>
 
                 <!-- Pro Tier (Highlighted) -->
-                <div class="glass-panel p-8 rounded-3xl border-2 border-indigo-600 bg-white relative flex flex-col justify-between space-y-6 shadow-2xl shadow-indigo-500/15 transform scale-[1.02]">
-                    <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-[10px] font-mono font-black tracking-wider shadow-md">
+                <div
+                    class="glass-panel p-8 rounded-3xl border-2 border-indigo-600 bg-white relative flex flex-col justify-between space-y-6 shadow-2xl shadow-indigo-500/15 transform scale-[1.02]">
+                    <div
+                        class="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-[10px] font-mono font-black tracking-wider shadow-md">
                         MOST POPULAR
                     </div>
                     <div class="space-y-4 pt-2">
                         <div class="text-xs font-mono text-indigo-700 uppercase font-black">Pro Developer</div>
                         <div class="text-4xl font-black text-slate-900 font-mono">
-                            <span class="price-val">$29</span><span class="text-sm font-sans font-normal text-slate-500">/month</span>
+                            <span class="price-val">$29</span><span
+                                class="text-sm font-sans font-normal text-slate-500">/month</span>
                         </div>
-                        <div class="inline-flex items-center justify-between gap-2 px-3 py-1.5 rounded-xl bg-amber-50 border border-amber-300 text-amber-900 text-xs font-extrabold">
+                        <div
+                            class="inline-flex items-center justify-between gap-2 px-3 py-1.5 rounded-xl bg-amber-50 border border-amber-300 text-amber-900 text-xs font-extrabold">
                             <div class="flex items-center gap-1.5">
                                 <i class="fas fa-crown text-amber-500 text-xs"></i>
                                 <span>FREE for lucky 100 users</span>
                             </div>
-                            <span class="px-2 py-0.5 rounded-md bg-amber-200 text-amber-900 border border-amber-400 text-[11px] font-mono font-black">
-                                <span class="claimed-user-count">{{ user_count if user_count is defined else 3 }}</span>/100
+                            <span
+                                class="px-2 py-0.5 rounded-md bg-amber-200 text-amber-900 border border-amber-400 text-[11px] font-mono font-black">
+                                <span class="claimed-user-count">{{ user_count if user_count is defined else 3
+                                    }}</span>/100
                             </span>
                         </div>
-                        <p class="text-xs text-slate-600 font-medium">Ideal for data scientists, engineers, and growing SaaS startups.</p>
+                        <p class="text-xs text-slate-600 font-medium">Ideal for data scientists, engineers, and growing
+                            SaaS startups.</p>
                         <hr class="border-slate-200">
                         <ul class="space-y-3 text-xs text-slate-800 font-bold">
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-600"></i> Unlimited Workspace Projects</li>
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-600"></i> 200MB Dataset File Upload</li>
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-600"></i> Unlimited Parallel AutoML Runs</li>
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-600"></i> Hosted Live REST APIs (100k calls)</li>
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-600"></i> Executive PDF & HTML Reports</li>
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-600"></i> Priority Email & Discord Support</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-600"></i> Unlimited
+                                Workspace Projects</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-600"></i> 200MB
+                                Dataset File Upload</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-600"></i> Unlimited
+                                Parallel AutoML Runs</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-600"></i> Hosted
+                                Live REST APIs (100k calls)</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-600"></i> Executive
+                                PDF & HTML Reports</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-600"></i> Priority
+                                Email & Discord Support</li>
                         </ul>
                     </div>
-                    <a href="{{ url_for('signup') if url_for is defined else '/signup' }}" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-extrabold text-xs shadow-lg shadow-indigo-600/30 text-center transition-all">
+                    <a href="{{ url_for('signup') if url_for is defined else '/signup' }}"
+                        class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-extrabold text-xs shadow-lg shadow-indigo-600/30 text-center transition-all">
                         Start 14-Day Free Pro Trial
                     </a>
                 </div>
 
                 <!-- Enterprise Tier -->
-                <div class="glass-panel glass-panel-hover p-8 rounded-3xl border-slate-200 flex flex-col justify-between space-y-6">
+                <div
+                    class="glass-panel glass-panel-hover p-8 rounded-3xl border-slate-200 flex flex-col justify-between space-y-6">
                     <div class="space-y-4">
                         <div class="text-xs font-mono text-purple-700 uppercase font-extrabold">Enterprise AI</div>
                         <div class="text-4xl font-black text-slate-900 font-mono">Custom</div>
-                        <p class="text-xs text-slate-600 font-medium">Custom infrastructure, dedicated SLA, SOC2 & HIPAA compliance.</p>
+                        <p class="text-xs text-slate-600 font-medium">Custom infrastructure, dedicated SLA, SOC2 & HIPAA
+                            compliance.</p>
                         <hr class="border-slate-200">
                         <ul class="space-y-3 text-xs text-slate-700 font-bold">
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-600"></i> Dedicated GPU Training Nodes</li>
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-600"></i> 10GB+ Massive Dataset Ingestion</li>
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-600"></i> Single Sign-On (SAML / Okta)</li>
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-600"></i> On-Premise VPC Deployment</li>
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-600"></i> 24/7 Dedicated Solutions Engineer</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-600"></i> Dedicated
+                                GPU Training Nodes</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-600"></i> 10GB+
+                                Massive Dataset Ingestion</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-600"></i> Single
+                                Sign-On (SAML / Okta)</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-600"></i> On-Premise
+                                VPC Deployment</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-600"></i> 24/7
+                                Dedicated Solutions Engineer</li>
                         </ul>
                     </div>
-                    <a href="mailto:enterprise@modelflow.ai" class="w-full py-3.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-900 border border-slate-300 text-center font-extrabold text-xs transition-colors">
+                    <a href="mailto:enterprise@modelflow.ai"
+                        class="w-full py-3.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-900 border border-slate-300 text-center font-extrabold text-xs transition-colors">
                         Contact Enterprise Sales
                     </a>
                 </div>
@@ -1362,68 +1620,113 @@ prediction = client.predict(
     <section class="py-24 relative">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center max-w-3xl mx-auto space-y-4 mb-16">
-                <span class="px-3 py-1 rounded-full bg-pink-50 border border-pink-200 text-pink-700 text-xs font-mono font-bold uppercase tracking-wider">
-                    Testimonials
+                <span
+                    class="px-3 py-1 rounded-full bg-pink-50 border border-pink-200 text-pink-700 text-xs font-mono font-bold uppercase tracking-wider">
+                    Testimonials & Reviews
                 </span>
                 <h2 class="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight">
-                    Loved by Engineers & Data Teams.
+                    Loved by Engineers & Creators.
                 </h2>
                 <p class="text-slate-600 text-base sm:text-lg font-medium">
-                    Discover how ModelFlow simplifies machine learning for users around the world.
+                    Discover how ModelFlow is transforming machine learning workflows for top developers and educators.
                 </p>
             </div>
 
-            <div class="grid md:grid-cols-3 gap-6">
-                <div class="glass-panel glass-panel-hover p-7 rounded-3xl space-y-4">
-                    <div class="flex items-center gap-1 text-amber-500 text-xs">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                    </div>
-                    <p class="text-sm text-slate-700 font-medium italic leading-relaxed">
-                        "ModelFlow cut our model development cycle from 3 weeks down to less than 2 hours. Cleaning data and exporting production-ready .pkl models has never been this smooth."
-                    </p>
-                    <div class="flex items-center gap-3 pt-2">
-                        <div class="w-9 h-9 rounded-full bg-indigo-100 text-indigo-700 font-black font-mono flex items-center justify-center text-xs border border-indigo-200">
-                            AR
+            <div class="grid md:grid-cols-3 gap-6 items-stretch">
+                <!-- Card 1: Haris Ali Khan (Code With Harry) -->
+                <div
+                    class="glass-panel glass-panel-hover p-7 rounded-3xl space-y-5 flex flex-col justify-between border border-indigo-100 shadow-xl relative overflow-hidden group">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-1 text-amber-500 text-xs">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                                    class="fas fa-star"></i><i class="fas fa-star"></i>
+                            </div>
+                            <span
+                                class="px-2.5 py-1 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 text-[10px] font-extrabold flex items-center gap-1">
+                                <i class="fab fa-youtube text-red-500"></i> CodeWithHarry
+                            </span>
                         </div>
+                        <p class="text-sm text-slate-700 font-medium italic leading-relaxed">
+                            "Congratulations on building ModelFlow! This is a fantastic achievement, and it's great to
+                            see you turning your idea into a real product that aims to simplify the machine learning
+                            workflow.
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-3.5 pt-4 border-t border-slate-100 mt-auto">
+                        <img src="{{ url_for('static', filename='images/code-with-harry.png') }}"
+                            alt="Haris Ali Khan - Code With Harry"
+                            class="w-12 h-12 rounded-full object-cover border-2 border-indigo-500 shadow-md group-hover:scale-105 transition-transform">
                         <div>
-                            <div class="text-xs font-extrabold text-slate-900">Alex Rivera</div>
-                            <div class="text-[10px] text-slate-500 font-bold">Head of AI, TechFlow SaaS</div>
+                            <div class="text-sm font-extrabold text-slate-900 flex items-center gap-1.5">
+                                Haris Ali Khan
+                                <i class="fas fa-circle-check text-indigo-600 text-xs" title="Verified Creator"></i>
+                            </div>
+                            <div class="text-xs text-indigo-600 font-bold">Code With Harry</div>
                         </div>
                     </div>
                 </div>
 
-                <div class="glass-panel glass-panel-hover p-7 rounded-3xl space-y-4">
-                    <div class="flex items-center gap-1 text-amber-500 text-xs">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                    </div>
-                    <p class="text-sm text-slate-700 font-medium italic leading-relaxed">
-                        "As a Computer Science student, ModelFlow allowed me to train and compare XGBoost, LightGBM, and Random Forest models for my research paper effortlessly."
-                    </p>
-                    <div class="flex items-center gap-3 pt-2">
-                        <div class="w-9 h-9 rounded-full bg-purple-100 text-purple-700 font-black font-mono flex items-center justify-center text-xs border border-purple-200">
-                            SK
+                <!-- Card 2: Ali Zeeshan Khan -->
+                <div
+                    class="glass-panel glass-panel-hover p-7 rounded-3xl space-y-5 flex flex-col justify-between border border-purple-100 shadow-xl relative overflow-hidden group">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-1 text-amber-500 text-xs">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                                    class="fas fa-star"></i><i class="fas fa-star"></i>
+                            </div>
+                            <span
+                                class="px-2.5 py-1 rounded-full bg-purple-50 border border-purple-200 text-purple-700 text-[10px] font-extrabold flex items-center gap-1">
+                                <i class="fas fa-check-circle text-purple-500"></i> Verified Review
+                            </span>
                         </div>
+                        <p class="text-sm text-slate-700 font-medium italic leading-relaxed">
+                            "This is excellent work done. Very useful and perfectly done. I used it and my dataflow is
+                            working perfect."
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-3.5 pt-4 border-t border-slate-100 mt-auto">
+                        <img src="{{ url_for('static', filename='images/ali-zeeshan.png') }}" alt="Ali Zeeshan Khan"
+                            class="w-12 h-12 rounded-full object-cover border-2 border-purple-500 shadow-md group-hover:scale-105 transition-transform">
                         <div>
-                            <div class="text-xs font-extrabold text-slate-900">Sophia Chen</div>
-                            <div class="text-[10px] text-slate-500 font-bold">ML Researcher, Stanford</div>
+                            <div class="text-sm font-extrabold text-slate-900 flex items-center gap-1.5">
+                                Ali Zeeshan Khan
+                                <i class="fas fa-circle-check text-purple-600 text-xs" title="Verified User"></i>
+                            </div>
+                            <div class="text-xs text-purple-600 font-bold">SaaS & Data Engineer</div>
                         </div>
                     </div>
                 </div>
 
-                <div class="glass-panel glass-panel-hover p-7 rounded-3xl space-y-4">
-                    <div class="flex items-center gap-1 text-amber-500 text-xs">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                    </div>
-                    <p class="text-sm text-slate-700 font-medium italic leading-relaxed">
-                        "The instant REST API endpoint generation is a game-changer. We connected our frontend directly to ModelFlow without writing a single line of FastAPI or Flask code."
-                    </p>
-                    <div class="flex items-center gap-3 pt-2">
-                        <div class="w-9 h-9 rounded-full bg-emerald-100 text-emerald-700 font-black font-mono flex items-center justify-center text-xs border border-emerald-200">
-                            MJ
+                <!-- Card 3: Muhammad Yazdan -->
+                <div
+                    class="glass-panel glass-panel-hover p-7 rounded-3xl space-y-5 flex flex-col justify-between border border-emerald-100 shadow-xl relative overflow-hidden group">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-1 text-amber-500 text-xs">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                                    class="fas fa-star"></i><i class="fas fa-star"></i>
+                            </div>
+                            <span
+                                class="px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-[10px] font-extrabold flex items-center gap-1">
+                                <i class="fas fa-brain text-emerald-500"></i> ML Engineer
+                            </span>
                         </div>
+                        <p class="text-sm text-slate-700 font-medium italic leading-relaxed">
+                            "That's a great AutoML SaaS that makes my work easy. I am an ML engineer and after using
+                            ModelFlow I believe that ModelFlow is changing machine learning market."
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-3.5 pt-4 border-t border-slate-100 mt-auto">
+                        <img src="{{ url_for('static', filename='images/yazdan.png') }}" alt="Muhammad Yazdan"
+                            class="w-12 h-12 rounded-full object-cover border-2 border-emerald-500 shadow-md group-hover:scale-105 transition-transform">
                         <div>
-                            <div class="text-xs font-extrabold text-slate-900">Marcus Vance</div>
-                            <div class="text-[10px] text-slate-500 font-bold">CTO, DataScale Inc.</div>
+                            <div class="text-sm font-extrabold text-slate-900 flex items-center gap-1.5">
+                                Muhammad Yazdan
+                                <i class="fas fa-circle-check text-emerald-600 text-xs" title="Verified Engineer"></i>
+                            </div>
+                            <div class="text-xs text-emerald-600 font-bold">ML Engineer</div>
                         </div>
                     </div>
                 </div>
@@ -1438,7 +1741,8 @@ prediction = client.predict(
     <section id="faq" class="py-24 bg-white/80 border-y border-slate-200/80 relative">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
             <div class="text-center space-y-4">
-                <span class="px-3 py-1 rounded-full bg-cyan-50 border border-cyan-200 text-cyan-700 text-xs font-mono font-bold uppercase tracking-wider">
+                <span
+                    class="px-3 py-1 rounded-full bg-cyan-50 border border-cyan-200 text-cyan-700 text-xs font-mono font-bold uppercase tracking-wider">
                     Frequently Asked Questions
                 </span>
                 <h2 class="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight">
@@ -1448,54 +1752,71 @@ prediction = client.predict(
 
             <!-- FAQ Accordion List -->
             <div class="space-y-4">
-                
+
                 <div class="faq-item glass-panel rounded-3xl overflow-hidden">
-                    <button class="faq-toggle w-full p-6 text-left flex items-center justify-between text-base font-extrabold text-slate-900 hover:text-indigo-600 transition-colors">
+                    <button
+                        class="faq-toggle w-full p-6 text-left flex items-center justify-between text-base font-extrabold text-slate-900 hover:text-indigo-600 transition-colors">
                         <span>What tabular dataset formats are supported?</span>
                         <i class="fas fa-chevron-down text-xs text-slate-500 transition-transform"></i>
                     </button>
-                    <div class="faq-content hidden px-6 pb-6 text-sm text-slate-600 font-medium leading-relaxed border-t border-slate-200 pt-4">
-                        ModelFlow supports standard tabular files including CSV (.csv), TSV (.tsv), and Microsoft Excel (.xlsx, .xls) files up to 200MB in size.
+                    <div
+                        class="faq-content hidden px-6 pb-6 text-sm text-slate-600 font-medium leading-relaxed border-t border-slate-200 pt-4">
+                        ModelFlow supports standard tabular files including CSV (.csv), TSV (.tsv), and Microsoft Excel
+                        (.xlsx, .xls) files up to 200MB in size.
                     </div>
                 </div>
 
                 <div class="faq-item glass-panel rounded-3xl overflow-hidden">
-                    <button class="faq-toggle w-full p-6 text-left flex items-center justify-between text-base font-extrabold text-slate-900 hover:text-indigo-600 transition-colors">
+                    <button
+                        class="faq-toggle w-full p-6 text-left flex items-center justify-between text-base font-extrabold text-slate-900 hover:text-indigo-600 transition-colors">
                         <span>How does automated AI data cleaning work?</span>
                         <i class="fas fa-chevron-down text-xs text-slate-500 transition-transform"></i>
                     </button>
-                    <div class="faq-content hidden px-6 pb-6 text-sm text-slate-600 font-medium leading-relaxed border-t border-slate-200 pt-4">
-                        Our cleaning pipeline automatically detects data types, handles missing values (via Mean, Median, Mode, or KNN imputation), removes outlier anomalies using IQR/Z-score thresholds, and applies One-Hot or Label Encoding to categorical columns.
+                    <div
+                        class="faq-content hidden px-6 pb-6 text-sm text-slate-600 font-medium leading-relaxed border-t border-slate-200 pt-4">
+                        Our cleaning pipeline automatically detects data types, handles missing values (via Mean,
+                        Median, Mode, or KNN imputation), removes outlier anomalies using IQR/Z-score thresholds, and
+                        applies One-Hot or Label Encoding to categorical columns.
                     </div>
                 </div>
 
                 <div class="faq-item glass-panel rounded-3xl overflow-hidden">
-                    <button class="faq-toggle w-full p-6 text-left flex items-center justify-between text-base font-extrabold text-slate-900 hover:text-indigo-600 transition-colors">
+                    <button
+                        class="faq-toggle w-full p-6 text-left flex items-center justify-between text-base font-extrabold text-slate-900 hover:text-indigo-600 transition-colors">
                         <span>Can I export trained models as .pkl files?</span>
                         <i class="fas fa-chevron-down text-xs text-slate-500 transition-transform"></i>
                     </button>
-                    <div class="faq-content hidden px-6 pb-6 text-sm text-slate-600 font-medium leading-relaxed border-t border-slate-200 pt-4">
-                        Yes! ModelFlow believes in zero vendor lock-in. You can download your trained binary <code class="text-indigo-700 font-mono font-bold">.pkl</code> model files at any time to run predictions locally in your own Python script using standard Scikit-Learn or XGBoost.
+                    <div
+                        class="faq-content hidden px-6 pb-6 text-sm text-slate-600 font-medium leading-relaxed border-t border-slate-200 pt-4">
+                        Yes! ModelFlow believes in zero vendor lock-in. You can download your trained binary <code
+                            class="text-indigo-700 font-mono font-bold">.pkl</code> model files at any time to run
+                        predictions locally in your own Python script using standard Scikit-Learn or XGBoost.
                     </div>
                 </div>
 
                 <div class="faq-item glass-panel rounded-3xl overflow-hidden">
-                    <button class="faq-toggle w-full p-6 text-left flex items-center justify-between text-base font-extrabold text-slate-900 hover:text-indigo-600 transition-colors">
+                    <button
+                        class="faq-toggle w-full p-6 text-left flex items-center justify-between text-base font-extrabold text-slate-900 hover:text-indigo-600 transition-colors">
                         <span>How fast are the live deployed REST APIs?</span>
                         <i class="fas fa-chevron-down text-xs text-slate-500 transition-transform"></i>
                     </button>
-                    <div class="faq-content hidden px-6 pb-6 text-sm text-slate-600 font-medium leading-relaxed border-t border-slate-200 pt-4">
-                        ModelFlow hosted REST endpoints run on ultra-optimized C++ backed inference servers, delivering sub-15ms global latency with auto-scaling support.
+                    <div
+                        class="faq-content hidden px-6 pb-6 text-sm text-slate-600 font-medium leading-relaxed border-t border-slate-200 pt-4">
+                        ModelFlow hosted REST endpoints run on ultra-optimized C++ backed inference servers, delivering
+                        sub-15ms global latency with auto-scaling support.
                     </div>
                 </div>
 
                 <div class="faq-item glass-panel rounded-3xl overflow-hidden">
-                    <button class="faq-toggle w-full p-6 text-left flex items-center justify-between text-base font-extrabold text-slate-900 hover:text-indigo-600 transition-colors">
+                    <button
+                        class="faq-toggle w-full p-6 text-left flex items-center justify-between text-base font-extrabold text-slate-900 hover:text-indigo-600 transition-colors">
                         <span>Is my uploaded data private and secure?</span>
                         <i class="fas fa-chevron-down text-xs text-slate-500 transition-transform"></i>
                     </button>
-                    <div class="faq-content hidden px-6 pb-6 text-sm text-slate-600 font-medium leading-relaxed border-t border-slate-200 pt-4">
-                        Absolutely. All dataset uploads are encrypted in transit using TLS 1.3 and at rest using AES-256 encryption. We adhere strictly to SOC2 Type II and GDPR compliance standards.
+                    <div
+                        class="faq-content hidden px-6 pb-6 text-sm text-slate-600 font-medium leading-relaxed border-t border-slate-200 pt-4">
+                        Absolutely. All dataset uploads are encrypted in transit using TLS 1.3 and at rest using AES-256
+                        encryption. We adhere strictly to SOC2 Type II and GDPR compliance standards.
                     </div>
                 </div>
 
@@ -1509,28 +1830,36 @@ prediction = client.predict(
     <!-- ========================================== -->
     <section class="py-24 relative overflow-hidden">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="relative bg-gradient-to-br from-indigo-900 via-slate-900 to-purple-950 rounded-3xl p-10 sm:p-16 text-center space-y-8 overflow-hidden shadow-2xl text-white">
-                
-                <!-- Background Accent Glow -->
-                <div class="absolute -inset-1 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 opacity-30 blur-2xl pointer-events-none"></div>
+            <div
+                class="relative bg-gradient-to-br from-indigo-900 via-slate-900 to-purple-950 rounded-3xl p-10 sm:p-16 text-center space-y-8 overflow-hidden shadow-2xl text-white">
 
-                <span class="px-4 py-1.5 rounded-full bg-indigo-500/20 border border-indigo-400/40 text-indigo-300 text-xs font-mono font-bold uppercase tracking-wider relative z-10">
+                <!-- Background Accent Glow -->
+                <div
+                    class="absolute -inset-1 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 opacity-30 blur-2xl pointer-events-none">
+                </div>
+
+                <span
+                    class="px-4 py-1.5 rounded-full bg-indigo-500/20 border border-indigo-400/40 text-indigo-300 text-xs font-mono font-bold uppercase tracking-wider relative z-10">
                     Get Started Today
                 </span>
 
-                <h2 class="text-4xl sm:text-6xl font-black text-white tracking-tight leading-tight max-w-3xl mx-auto relative z-10">
+                <h2
+                    class="text-4xl sm:text-6xl font-black text-white tracking-tight leading-tight max-w-3xl mx-auto relative z-10">
                     Ready to Build Smarter Machine Learning Models?
                 </h2>
 
                 <p class="text-indigo-100 text-base sm:text-lg max-w-xl mx-auto font-medium relative z-10">
-                    Join thousands of developers, researchers, and data teams training and deploying AI models 14x faster with ModelFlow.
+                    Join thousands of developers, researchers, and data teams training and deploying AI models 14x
+                    faster with ModelFlow.
                 </p>
 
                 <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2 relative z-10">
-                    <a href="{{ url_for('signup') if url_for is defined else '/signup' }}" class="w-full sm:w-auto px-9 py-4 rounded-2xl bg-white hover:bg-slate-100 text-indigo-950 font-black text-base shadow-xl hover:scale-105 active:scale-95 transition-all">
+                    <a href="{{ url_for('signup') if url_for is defined else '/signup' }}"
+                        class="w-full sm:w-auto px-9 py-4 rounded-2xl bg-white hover:bg-slate-100 text-indigo-950 font-black text-base shadow-xl hover:scale-105 active:scale-95 transition-all">
                         Start Free Workspace Trial
                     </a>
-                    <a href="mailto:demo@modelflow.ai" class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-indigo-950/60 border border-indigo-700/50 text-white font-extrabold text-base hover:bg-indigo-900/80 transition-colors">
+                    <a href="mailto:demo@modelflow.ai"
+                        class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-indigo-950/60 border border-indigo-700/50 text-white font-extrabold text-base hover:bg-indigo-900/80 transition-colors">
                         Schedule Live Demo
                     </a>
                 </div>
@@ -1544,30 +1873,38 @@ prediction = client.predict(
     <!-- ========================================== -->
     <footer class="bg-white border-t border-slate-200/90 pt-16 pb-12 text-sm text-slate-600">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-            
+
             <div class="grid grid-cols-2 md:grid-cols-5 gap-8">
                 <!-- Brand Info -->
                 <div class="col-span-2 space-y-4">
                     <div class="flex items-center gap-3">
-                        <div class="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-bold text-sm shadow-md">
+                        <div
+                            class="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-bold text-sm shadow-md">
                             <i class="fas fa-brain"></i>
                         </div>
                         <span class="text-xl font-black text-slate-900 tracking-tight">ModelFlow</span>
                     </div>
                     <p class="text-xs text-slate-600 max-w-xs leading-relaxed font-medium">
-                        The all-in-one AutoML platform for automated data cleaning, model training, comparison, .pkl export, and live API deployment.
+                        The all-in-one AutoML platform for automated data cleaning, model training, comparison, .pkl
+                        export, and live API deployment.
                     </p>
                     <div class="flex items-center gap-4 text-slate-500">
-                        <a href="https://github.com" target="_blank" class="hover:text-indigo-600 transition-colors"><i class="fab fa-github text-lg"></i></a>
-                        <a href="https://discord.gg" target="_blank" class="hover:text-indigo-600 transition-colors"><i class="fab fa-discord text-lg"></i></a>
-                        <a href="https://twitter.com" target="_blank" class="hover:text-indigo-600 transition-colors"><i class="fab fa-twitter text-lg"></i></a>
-                        <a href="https://linkedin.com" target="_blank" class="hover:text-indigo-600 transition-colors"><i class="fab fa-linkedin text-lg"></i></a>
+                        <a href="https://github.com" target="_blank" class="hover:text-indigo-600 transition-colors"><i
+                                class="fab fa-github text-lg"></i></a>
+                        <a href="https://discord.gg" target="_blank" class="hover:text-indigo-600 transition-colors"><i
+                                class="fab fa-discord text-lg"></i></a>
+                        <a href="https://twitter.com" target="_blank" class="hover:text-indigo-600 transition-colors"><i
+                                class="fab fa-twitter text-lg"></i></a>
+                        <a href="https://linkedin.com" target="_blank"
+                            class="hover:text-indigo-600 transition-colors"><i class="fab fa-linkedin text-lg"></i></a>
                     </div>
                 </div>
 
                 <!-- Product -->
                 <div class="space-y-3 text-xs">
                     <div class="font-black text-slate-900 uppercase font-mono tracking-wider">Product</div>
+                    <a href="/products" class="block hover:text-indigo-600 font-black text-indigo-600">🎁 70 Free AI
+                        Tools</a>
                     <a href="#features" class="block hover:text-indigo-600 font-bold">AutoML Engine</a>
                     <a href="#workflow" class="block hover:text-indigo-600 font-bold">AI Data Cleaning</a>
                     <a href="#dashboard" class="block hover:text-indigo-600 font-bold">Model Comparison</a>
@@ -1581,23 +1918,31 @@ prediction = client.predict(
                     <a href="#developers" class="block hover:text-indigo-600 font-bold">Documentation</a>
                     <a href="#playground" class="block hover:text-indigo-600 font-bold">Algorithm Guide</a>
                     <a href="#faq" class="block hover:text-indigo-600 font-bold">FAQ & Support</a>
-                    <a href="{{ url_for('login') if url_for is defined else '/login' }}" class="block hover:text-indigo-600 font-bold">Log In</a>
-                    <a href="{{ url_for('signup') if url_for is defined else '/signup' }}" class="block hover:text-indigo-600 font-bold">Sign Up</a>
+                    <a href="{{ url_for('login') if url_for is defined else '/login' }}"
+                        class="block hover:text-indigo-600 font-bold">Log In</a>
+                    <a href="{{ url_for('signup') if url_for is defined else '/signup' }}"
+                        class="block hover:text-indigo-600 font-bold">Sign Up</a>
                 </div>
 
                 <!-- Company -->
                 <div class="space-y-3 text-xs">
                     <div class="font-black text-slate-900 uppercase font-mono tracking-wider">Legal & Security</div>
-                    <a href="javascript:void(0)" onclick="openModal('privacyModal')" class="block hover:text-indigo-600 font-bold transition-colors">Privacy Policy</a>
-                    <a href="javascript:void(0)" onclick="openModal('termsModal')" class="block hover:text-indigo-600 font-bold transition-colors">Terms of Service</a>
-                    <a href="javascript:void(0)" onclick="openModal('securityModal')" class="block hover:text-indigo-600 font-bold transition-colors">Security (SOC2)</a>
-                    <a href="javascript:void(0)" onclick="openModal('statusModal')" class="block hover:text-indigo-600 font-bold transition-colors">Status Page</a>
+                    <a href="javascript:void(0)" onclick="openModal('privacyModal')"
+                        class="block hover:text-indigo-600 font-bold transition-colors">Privacy Policy</a>
+                    <a href="javascript:void(0)" onclick="openModal('termsModal')"
+                        class="block hover:text-indigo-600 font-bold transition-colors">Terms of Service</a>
+                    <a href="javascript:void(0)" onclick="openModal('securityModal')"
+                        class="block hover:text-indigo-600 font-bold transition-colors">Security (SOC2)</a>
+                    <a href="javascript:void(0)" onclick="openModal('statusModal')"
+                        class="block hover:text-indigo-600 font-bold transition-colors">Status Page</a>
                 </div>
             </div>
 
-            <div class="pt-8 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 font-bold gap-4">
+            <div
+                class="pt-8 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 font-bold gap-4">
                 <div>© 2026 ModelFlow Inc. All rights reserved. Build Smarter. Train Faster.</div>
-                <div class="flex items-center gap-2 font-mono text-[11px] cursor-pointer group" onclick="openModal('statusModal')">
+                <div class="flex items-center gap-2 font-mono text-[11px] cursor-pointer group"
+                    onclick="openModal('statusModal')">
                     <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
                     <span class="text-emerald-700 font-black group-hover:underline">All Systems Operational</span>
                 </div>
@@ -1609,8 +1954,10 @@ prediction = client.predict(
     <!-- ========================================== -->
     <!-- DEMO VIDEO MODAL -->
     <!-- ========================================== -->
-    <div id="demoModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/80 backdrop-blur-md p-4">
-        <div class="relative bg-white rounded-3xl border border-slate-200 w-full max-w-4xl overflow-hidden shadow-2xl space-y-4 p-6">
+    <div id="demoModal"
+        class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/80 backdrop-blur-md p-4">
+        <div
+            class="relative bg-white rounded-3xl border border-slate-200 w-full max-w-4xl overflow-hidden shadow-2xl space-y-4 p-6">
             <div class="flex items-center justify-between border-b border-slate-200 pb-3">
                 <span class="text-sm font-extrabold text-slate-900 flex items-center gap-2">
                     <i class="fas fa-play-circle text-indigo-600"></i> ModelFlow 2-Minute Product Demo
@@ -1620,11 +1967,14 @@ prediction = client.predict(
                 </button>
             </div>
             <!-- Video Mockup Frame -->
-            <div class="aspect-video bg-slate-900 rounded-2xl overflow-hidden flex flex-col items-center justify-center relative group">
-                <div class="w-20 h-20 rounded-full bg-indigo-600 text-white flex items-center justify-center text-2xl shadow-2xl group-hover:scale-110 transition-transform cursor-pointer">
+            <div
+                class="aspect-video bg-slate-900 rounded-2xl overflow-hidden flex flex-col items-center justify-center relative group">
+                <div
+                    class="w-20 h-20 rounded-full bg-indigo-600 text-white flex items-center justify-center text-2xl shadow-2xl group-hover:scale-110 transition-transform cursor-pointer">
                     <i class="fas fa-play ml-1"></i>
                 </div>
-                <p class="mt-4 text-xs font-mono text-slate-300 font-bold">Interactive Video Demonstration — ModelFlow AutoML Studio</p>
+                <p class="mt-4 text-xs font-mono text-slate-300 font-bold">Interactive Video Demonstration — ModelFlow
+                    AutoML Studio</p>
             </div>
         </div>
     </div>
@@ -1633,8 +1983,10 @@ prediction = client.predict(
     <!-- ========================================== -->
     <!-- PRIVACY POLICY MODAL -->
     <!-- ========================================== -->
-    <div id="privacyModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/80 backdrop-blur-md p-4">
-        <div class="relative bg-white rounded-3xl border border-slate-200 w-full max-w-2xl overflow-hidden shadow-2xl space-y-4 p-6 sm:p-8 max-h-[85vh] overflow-y-auto text-slate-900">
+    <div id="privacyModal"
+        class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/80 backdrop-blur-md p-4">
+        <div
+            class="relative bg-white rounded-3xl border border-slate-200 w-full max-w-2xl overflow-hidden shadow-2xl space-y-4 p-6 sm:p-8 max-h-[85vh] overflow-y-auto text-slate-900">
             <div class="flex items-center justify-between border-b border-slate-200 pb-4">
                 <h3 class="text-lg font-extrabold text-slate-900 flex items-center gap-2">
                     <i class="fas fa-shield-alt text-indigo-600"></i> ModelFlow Privacy Policy & Commitment
@@ -1646,24 +1998,30 @@ prediction = client.predict(
 
             <div class="space-y-4 text-xs text-slate-600 leading-relaxed font-medium">
                 <div class="p-3.5 rounded-2xl bg-indigo-50 border border-indigo-200 text-indigo-900 font-bold">
-                    🛡️ Your data belongs 100% to you. ModelFlow never uses uploaded datasets or model weights to train foundation models without explicit consent.
+                    🛡️ Your data belongs 100% to you. ModelFlow never uses uploaded datasets or model weights to train
+                    foundation models without explicit consent.
                 </div>
 
                 <h4 class="font-extrabold text-slate-900 text-sm">1. Data Protection & Encryption</h4>
-                <p>All data transmitted between your browser and ModelFlow servers is encrypted using TLS 1.3. Uploaded dataset files and trained binary weights are stored with AES-256 encryption at rest.</p>
+                <p>All data transmitted between your browser and ModelFlow servers is encrypted using TLS 1.3. Uploaded
+                    dataset files and trained binary weights are stored with AES-256 encryption at rest.</p>
 
                 <h4 class="font-extrabold text-slate-900 text-sm">2. Data Usage & Confidentiality</h4>
-                <p>Uploaded datasets are processed strictly in memory to run AI data cleaning, feature profiling, and model training. We do not sell or share customer dataset content with third parties.</p>
+                <p>Uploaded datasets are processed strictly in memory to run AI data cleaning, feature profiling, and
+                    model training. We do not sell or share customer dataset content with third parties.</p>
 
                 <h4 class="font-extrabold text-slate-900 text-sm">3. Data Retention & Permanent Erasure</h4>
-                <p>Users can permanently delete projects, uploaded datasets, prediction history, and trained model binaries at any time directly inside the workspace UI.</p>
+                <p>Users can permanently delete projects, uploaded datasets, prediction history, and trained model
+                    binaries at any time directly inside the workspace UI.</p>
 
                 <h4 class="font-extrabold text-slate-900 text-sm">4. Global Compliance Standards</h4>
-                <p>ModelFlow complies with standard data privacy regulations including GDPR (General Data Protection Regulation) and CCPA (California Consumer Privacy Act).</p>
+                <p>ModelFlow complies with standard data privacy regulations including GDPR (General Data Protection
+                    Regulation) and CCPA (California Consumer Privacy Act).</p>
             </div>
 
             <div class="pt-4 border-t border-slate-200 text-right">
-                <button onclick="closeModal('privacyModal')" class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs shadow-md transition-colors">
+                <button onclick="closeModal('privacyModal')"
+                    class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs shadow-md transition-colors">
                     Close Privacy Policy
                 </button>
             </div>
@@ -1673,8 +2031,10 @@ prediction = client.predict(
     <!-- ========================================== -->
     <!-- TERMS OF SERVICE MODAL -->
     <!-- ========================================== -->
-    <div id="termsModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/80 backdrop-blur-md p-4">
-        <div class="relative bg-white rounded-3xl border border-slate-200 w-full max-w-2xl overflow-hidden shadow-2xl space-y-4 p-6 sm:p-8 max-h-[85vh] overflow-y-auto text-slate-900">
+    <div id="termsModal"
+        class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/80 backdrop-blur-md p-4">
+        <div
+            class="relative bg-white rounded-3xl border border-slate-200 w-full max-w-2xl overflow-hidden shadow-2xl space-y-4 p-6 sm:p-8 max-h-[85vh] overflow-y-auto text-slate-900">
             <div class="flex items-center justify-between border-b border-slate-200 pb-4">
                 <h3 class="text-lg font-extrabold text-slate-900 flex items-center gap-2">
                     <i class="fas fa-file-contract text-indigo-600"></i> ModelFlow Terms of Service
@@ -1686,20 +2046,27 @@ prediction = client.predict(
 
             <div class="space-y-4 text-xs text-slate-600 leading-relaxed font-medium">
                 <h4 class="font-extrabold text-slate-900 text-sm">1. Platform Services</h4>
-                <p>ModelFlow provides an automated machine learning (AutoML) software-as-a-service platform for tabular data ingestion, cleaning, training, evaluation, model export (.pkl), and REST API prediction deployment.</p>
+                <p>ModelFlow provides an automated machine learning (AutoML) software-as-a-service platform for tabular
+                    data ingestion, cleaning, training, evaluation, model export (.pkl), and REST API prediction
+                    deployment.</p>
 
                 <h4 class="font-extrabold text-slate-900 text-sm">2. Ownership & Intellectual Property</h4>
-                <p>Users retain full ownership and intellectual property rights over all raw uploaded datasets, feature definitions, trained model binary weights (.pkl), and prediction results generated on the platform.</p>
+                <p>Users retain full ownership and intellectual property rights over all raw uploaded datasets, feature
+                    definitions, trained model binary weights (.pkl), and prediction results generated on the platform.
+                </p>
 
                 <h4 class="font-extrabold text-slate-900 text-sm">3. Acceptable Use Guidelines</h4>
-                <p>Users agree not to upload malicious payloads, conduct automated denial-of-service (DoS) attacks on prediction endpoints, or reverse-engineer platform API infrastructure.</p>
+                <p>Users agree not to upload malicious payloads, conduct automated denial-of-service (DoS) attacks on
+                    prediction endpoints, or reverse-engineer platform API infrastructure.</p>
 
                 <h4 class="font-extrabold text-slate-900 text-sm">4. Service Availability & SLA</h4>
-                <p>ModelFlow strives to maintain 99.9% uptime for hosted REST prediction endpoints. Scheduled maintenance windows will be communicated via the System Status Page.</p>
+                <p>ModelFlow strives to maintain 99.9% uptime for hosted REST prediction endpoints. Scheduled
+                    maintenance windows will be communicated via the System Status Page.</p>
             </div>
 
             <div class="pt-4 border-t border-slate-200 text-right">
-                <button onclick="closeModal('termsModal')" class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs shadow-md transition-colors">
+                <button onclick="closeModal('termsModal')"
+                    class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs shadow-md transition-colors">
                     Accept & Close Terms
                 </button>
             </div>
@@ -1709,8 +2076,10 @@ prediction = client.predict(
     <!-- ========================================== -->
     <!-- SECURITY (SOC2) MODAL -->
     <!-- ========================================== -->
-    <div id="securityModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/80 backdrop-blur-md p-4">
-        <div class="relative bg-white rounded-3xl border border-slate-200 w-full max-w-2xl overflow-hidden shadow-2xl space-y-4 p-6 sm:p-8 max-h-[85vh] overflow-y-auto text-slate-900">
+    <div id="securityModal"
+        class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/80 backdrop-blur-md p-4">
+        <div
+            class="relative bg-white rounded-3xl border border-slate-200 w-full max-w-2xl overflow-hidden shadow-2xl space-y-4 p-6 sm:p-8 max-h-[85vh] overflow-y-auto text-slate-900">
             <div class="flex items-center justify-between border-b border-slate-200 pb-4">
                 <h3 class="text-lg font-extrabold text-slate-900 flex items-center gap-2">
                     <i class="fas fa-lock text-emerald-600"></i> Enterprise Security & SOC 2 Standards
@@ -1735,17 +2104,21 @@ prediction = client.predict(
                 </div>
 
                 <h4 class="font-extrabold text-slate-900 text-sm">1. Multi-Tenant Architecture Isolation</h4>
-                <p>Customer datasets, project states, and trained binary bundles are stored in logically isolated directories scoped strictly by user authentication tokens.</p>
+                <p>Customer datasets, project states, and trained binary bundles are stored in logically isolated
+                    directories scoped strictly by user authentication tokens.</p>
 
                 <h4 class="font-extrabold text-slate-900 text-sm">2. REST API Security & Authentication</h4>
-                <p>Hosted API endpoints utilize 256-bit API keys with SHA-256 hashing. Rate-limiting protections prevent unauthorized API scanning or abuse.</p>
+                <p>Hosted API endpoints utilize 256-bit API keys with SHA-256 hashing. Rate-limiting protections prevent
+                    unauthorized API scanning or abuse.</p>
 
                 <h4 class="font-extrabold text-slate-900 text-sm">3. Continuous Auditing & Vulnerability Scans</h4>
-                <p>Automated dependency vulnerability audits run daily across all Python ML packages (Scikit-Learn, LightGBM, XGBoost, Flask).</p>
+                <p>Automated dependency vulnerability audits run daily across all Python ML packages (Scikit-Learn,
+                    LightGBM, XGBoost, Flask).</p>
             </div>
 
             <div class="pt-4 border-t border-slate-200 text-right">
-                <button onclick="closeModal('securityModal')" class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs shadow-md transition-colors">
+                <button onclick="closeModal('securityModal')"
+                    class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs shadow-md transition-colors">
                     Close Security Brief
                 </button>
             </div>
@@ -1755,14 +2128,17 @@ prediction = client.predict(
     <!-- ========================================== -->
     <!-- STATUS PAGE MODAL -->
     <!-- ========================================== -->
-    <div id="statusModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/80 backdrop-blur-md p-4">
-        <div class="relative bg-white rounded-3xl border border-slate-200 w-full max-w-2xl overflow-hidden shadow-2xl space-y-4 p-6 sm:p-8 max-h-[85vh] overflow-y-auto text-slate-900">
+    <div id="statusModal"
+        class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/80 backdrop-blur-md p-4">
+        <div
+            class="relative bg-white rounded-3xl border border-slate-200 w-full max-w-2xl overflow-hidden shadow-2xl space-y-4 p-6 sm:p-8 max-h-[85vh] overflow-y-auto text-slate-900">
             <div class="flex items-center justify-between border-b border-slate-200 pb-4">
                 <div>
                     <h3 class="text-lg font-extrabold text-slate-900 flex items-center gap-2">
                         <i class="fas fa-heartbeat text-emerald-600"></i> ModelFlow Live Infrastructure Status
                     </h3>
-                    <p class="text-xs text-slate-500 font-bold mt-0.5">Real-time system health and service uptime metrics</p>
+                    <p class="text-xs text-slate-500 font-bold mt-0.5">Real-time system health and service uptime
+                        metrics</p>
                 </div>
                 <button onclick="closeModal('statusModal')" class="text-slate-400 hover:text-slate-800 text-lg">
                     <i class="fas fa-times"></i>
@@ -1771,49 +2147,65 @@ prediction = client.predict(
 
             <div class="space-y-4 text-xs font-medium">
                 <!-- Overall Status Banner -->
-                <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-300 text-emerald-900 flex items-center justify-between">
+                <div
+                    class="p-4 rounded-2xl bg-emerald-50 border border-emerald-300 text-emerald-900 flex items-center justify-between">
                     <div class="flex items-center gap-3">
                         <span class="w-3 h-3 rounded-full bg-emerald-500 animate-ping"></span>
                         <span class="font-extrabold text-sm">All Systems Operational</span>
                     </div>
-                    <span class="font-mono text-xs font-bold bg-emerald-100 border border-emerald-300 px-2.5 py-1 rounded-lg">99.98% Uptime</span>
+                    <span
+                        class="font-mono text-xs font-bold bg-emerald-100 border border-emerald-300 px-2.5 py-1 rounded-lg">99.98%
+                        Uptime</span>
                 </div>
 
                 <!-- Live Services Health Matrix -->
                 <div class="space-y-2.5">
-                    <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+                    <div
+                        class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
                         <span class="font-bold text-slate-900">⚡ AutoML Model Training Pipeline</span>
-                        <span class="text-emerald-700 font-extrabold flex items-center gap-1.5"><i class="fas fa-check-circle"></i> Operational (0ms delay)</span>
+                        <span class="text-emerald-700 font-extrabold flex items-center gap-1.5"><i
+                                class="fas fa-check-circle"></i> Operational (0ms delay)</span>
                     </div>
-                    <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+                    <div
+                        class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
                         <span class="font-bold text-slate-900">🚀 Hosted REST Inference API Cluster</span>
-                        <span class="text-emerald-700 font-extrabold flex items-center gap-1.5"><i class="fas fa-check-circle"></i> Operational (12ms avg)</span>
+                        <span class="text-emerald-700 font-extrabold flex items-center gap-1.5"><i
+                                class="fas fa-check-circle"></i> Operational (12ms avg)</span>
                     </div>
-                    <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+                    <div
+                        class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
                         <span class="font-bold text-slate-900">🧹 AI Data Cleaning & Profiling Engine</span>
-                        <span class="text-emerald-700 font-extrabold flex items-center gap-1.5"><i class="fas fa-check-circle"></i> Operational</span>
+                        <span class="text-emerald-700 font-extrabold flex items-center gap-1.5"><i
+                                class="fas fa-check-circle"></i> Operational</span>
                     </div>
-                    <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+                    <div
+                        class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
                         <span class="font-bold text-slate-900">📊 Plotly Visualization Generator</span>
-                        <span class="text-emerald-700 font-extrabold flex items-center gap-1.5"><i class="fas fa-check-circle"></i> Operational</span>
+                        <span class="text-emerald-700 font-extrabold flex items-center gap-1.5"><i
+                                class="fas fa-check-circle"></i> Operational</span>
                     </div>
-                    <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+                    <div
+                        class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
                         <span class="font-bold text-slate-900">📄 PDF Executive Report Engine</span>
-                        <span class="text-emerald-700 font-extrabold flex items-center gap-1.5"><i class="fas fa-check-circle"></i> Operational</span>
+                        <span class="text-emerald-700 font-extrabold flex items-center gap-1.5"><i
+                                class="fas fa-check-circle"></i> Operational</span>
                     </div>
                 </div>
 
                 <!-- Recent History -->
                 <div class="pt-2">
-                    <div class="font-bold text-slate-900 text-xs uppercase font-mono tracking-wider mb-2">90-Day Incident History</div>
-                    <div class="p-3 rounded-xl bg-slate-100 border border-slate-200 text-slate-600 text-[11px] font-bold text-center">
+                    <div class="font-bold text-slate-900 text-xs uppercase font-mono tracking-wider mb-2">90-Day
+                        Incident History</div>
+                    <div
+                        class="p-3 rounded-xl bg-slate-100 border border-slate-200 text-slate-600 text-[11px] font-bold text-center">
                         Zero incidents reported in the last 90 days.
                     </div>
                 </div>
             </div>
 
             <div class="pt-4 border-t border-slate-200 text-right">
-                <button onclick="closeModal('statusModal')" class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs shadow-md transition-colors">
+                <button onclick="closeModal('statusModal')"
+                    class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs shadow-md transition-colors">
                     Close Status Page
                 </button>
             </div>
@@ -1825,14 +2217,14 @@ prediction = client.predict(
     <!-- INTERACTIVE JAVASCRIPT LOGIC -->
     <!-- ========================================== -->
     <script>
-        window.openModal = function(id) {
+        window.openModal = function (id) {
             const modal = document.getElementById(id);
             if (modal) {
                 modal.classList.remove('hidden');
                 modal.classList.add('flex');
             }
         };
-        window.closeModal = function(id) {
+        window.closeModal = function (id) {
             const modal = document.getElementById(id);
             if (modal) {
                 modal.classList.add('hidden');
@@ -1851,7 +2243,7 @@ prediction = client.predict(
                         });
                     }
                 })
-                .catch(() => {});
+                .catch(() => { });
 
             // Mobile Menu Toggle & Auto Close
             const mobileBtn = document.getElementById('mobileMenuBtn');
@@ -1869,12 +2261,12 @@ prediction = client.predict(
             const openDemoBtn = document.getElementById('openDemoBtn');
             const closeDemoBtn = document.getElementById('closeDemoBtn');
             const demoModal = document.getElementById('demoModal');
-            
+
             openDemoBtn?.addEventListener('click', () => {
                 demoModal.classList.remove('hidden');
                 demoModal.classList.add('flex');
             });
-            
+
             closeDemoBtn?.addEventListener('click', () => {
                 demoModal.classList.add('hidden');
                 demoModal.classList.remove('flex');
@@ -1975,4 +2367,5 @@ prediction = client.predict(
     <!-- ModelFlow Global Dashboard Theme JS -->
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
+
 </html>

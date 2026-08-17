@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>10 Free SaaS AI Tools & Writing Utilities | ModelFlow AI</title>
+    <meta name="description" content="Explore ModelFlow's 10 free online AI tools: AI Prompt Generator, Prompt Improver, Grammar Checker, Spell Checker, AI Humanizer, Content Detector, Paraphrasing, Text Summarizer, Expander, & SEO Meta Generator.">
+    <meta name="keywords" content="Free AI Tools, Prompt Generator, AI Humanizer, Grammar Checker, AI Content Detector, Paraphrasing Tool, Text Summarizer, SEO Meta Description Generator, ModelFlow">
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="10 Free AI Tools for Prompting, Writing & SEO | ModelFlow">
+    <meta property="og:description" content="100% Free AI tools. No credit card, no registration, no limits. Boost your productivity today.">
+    <meta property="og:url" content="https://modelflow.ai/products">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- ModelFlow Global CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+        html, body {
+            background-color: #FAFBFF;
+            color: #0F172A;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .glass-panel {
+            background: #FFFFFF;
+            border: 1px solid rgba(226, 232, 240, 0.9);
+            box-shadow: 0 10px 30px -10px rgba(99, 102, 241, 0.08), 0 4px 12px -2px rgba(15, 23, 42, 0.03);
+        }
+
+        .glass-panel-hover {
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .glass-panel-hover:hover {
+            transform: translateY(-5px);
+            border-color: rgba(99, 102, 241, 0.4);
+            box-shadow: 0 25px 50px -12px rgba(99, 102, 241, 0.16), 0 10px 20px -5px rgba(15, 23, 42, 0.05);
+        }
+
+        .gradient-accent {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #db2777 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .grid-pattern {
+            background-size: 48px 48px;
+            background-image: 
+                linear-gradient(to right, rgba(99, 102, 241, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(99, 102, 241, 0.05) 1px, transparent 1px);
+        }
+    </style>
+</head>
+<body class="bg-[#FAFBFF] text-slate-900 antialiased font-sans selection:bg-indigo-600 selection:text-white">
+
+    <!-- Ambient Glowing Light Orbs -->
+    <div class="fixed top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-gradient-to-tr from-indigo-300/30 via-purple-300/25 to-pink-200/20 rounded-full blur-[140px] pointer-events-none -z-10 animate-pulse"></div>
+    <div class="fixed top-[40%] right-[-10%] w-[600px] h-[600px] bg-cyan-200/25 rounded-full blur-[160px] pointer-events-none -z-10"></div>
+    <div class="fixed inset-0 grid-pattern opacity-70 pointer-events-none -z-10"></div>
+
+    <!-- ========================================== -->
+    <!-- NAVIGATION HEADER -->
+    <!-- ========================================== -->
+    <header class="sticky top-0 z-50 backdrop-blur-xl bg-[#FAFBFF]/85 border-b border-slate-200/80 shadow-xs transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <a href="/" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 p-0.5 shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform">
+                    <div class="w-full h-full bg-white rounded-[14px] flex items-center justify-center">
+                        <i class="fas fa-brain text-indigo-600 text-lg"></i>
+                    </div>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-xl font-extrabold tracking-tight text-slate-900 flex items-center gap-2">
+                        ModelFlow
+                        <span class="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 font-bold">v0.1</span>
+                    </span>
+                    <span class="text-[10px] font-mono text-slate-500 tracking-wider">AI PRODUCTS HUB</span>
+                </div>
+            </a>
+
+            <!-- Navigation Links -->
+            <nav class="hidden lg:flex items-center gap-8 text-sm font-semibold text-slate-600">
+                <a href="/" class="hover:text-indigo-600 transition-colors">Home</a>
+                <a href="/products" class="text-indigo-600 font-extrabold flex items-center gap-1.5">
+                    <i class="fas fa-cubes text-xs"></i> AI Products
+                </a>
+                <a href="/#features" class="hover:text-indigo-600 transition-colors">AutoML Specs</a>
+                <a href="/#pricing" class="hover:text-indigo-600 transition-colors">Pricing</a>
+                <a href="/#developers" class="hover:text-indigo-600 transition-colors">API Docs</a>
+            </nav>
+
+            <!-- Actions -->
+            <div class="flex items-center gap-3">
+                <a href="/" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-xs font-extrabold shadow-md shadow-indigo-500/20 hover:scale-105 transition-all flex items-center gap-2">
+                    <i class="fas fa-bolt text-amber-300"></i> ModelFlow Workspace
+                </a>
+            </div>
+        </div>
+    </header>
+
+
+    <!-- ========================================== -->
+    <!-- HERO SECTION -->
+    <!-- ========================================== -->
+    <section class="relative pt-12 pb-16 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
+            
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-mono font-bold uppercase tracking-wider">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                <span>100% Free AI Productivity Suite</span>
+            </div>
+
+            <h1 class="text-4xl sm:text-6xl font-black text-slate-900 tracking-tight leading-tight max-w-4xl mx-auto">
+                Explore Free <span class="gradient-accent">SaaS AI Tools</span> & Writing Accelerators.
+            </h1>
+
+            <p class="text-slate-600 text-lg max-w-2xl mx-auto font-medium leading-relaxed">
+                Zero subscriptions. Zero credit cards. High-performance AI tools for prompt generation, grammar correction, humanizing AI content, and SEO metadata.
+            </p>
+
+            <!-- Realtime Search Bar & Category Filter -->
+            <div class="pt-4 max-w-xl mx-auto space-y-4">
+                <div class="relative">
+                    <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input type="text" id="toolSearchInput" placeholder="Search AI tools (e.g. Prompt, Grammar, Humanizer, SEO)..." 
+                        class="w-full pl-11 pr-4 py-3.5 rounded-2xl bg-white border border-slate-300 text-slate-900 text-sm font-medium focus:outline-none focus:border-indigo-500 shadow-md">
+                </div>
+
+                <div class="flex flex-wrap items-center justify-center gap-2 text-xs font-bold font-mono">
+                    <button class="cat-btn active px-3.5 py-1.5 rounded-xl bg-indigo-600 text-white shadow-md transition-all" data-cat="all">All Tools (70)</button>
+                    <button class="cat-btn px-3.5 py-1.5 rounded-xl bg-white text-slate-700 border border-slate-300 hover:border-indigo-400 transition-all" data-cat="PDF & Document Tools">PDF & Documents</button>
+                    <button class="cat-btn px-3.5 py-1.5 rounded-xl bg-white text-slate-700 border border-slate-300 hover:border-indigo-400 transition-all" data-cat="Markdown & Text Tools">Markdown & Text</button>
+                    <button class="cat-btn px-3.5 py-1.5 rounded-xl bg-white text-slate-700 border border-slate-300 hover:border-indigo-400 transition-all" data-cat="Image Conversion Tools">Image Converters</button>
+                    <button class="cat-btn px-3.5 py-1.5 rounded-xl bg-white text-slate-700 border border-slate-300 hover:border-indigo-400 transition-all" data-cat="Developer Converters">Developer Converters</button>
+                    <button class="cat-btn px-3.5 py-1.5 rounded-xl bg-white text-slate-700 border border-slate-300 hover:border-indigo-400 transition-all" data-cat="Prompt Engineering">Prompting</button>
+                    <button class="cat-btn px-3.5 py-1.5 rounded-xl bg-white text-slate-700 border border-slate-300 hover:border-indigo-400 transition-all" data-cat="Writing & Editing">Writing</button>
+                    <button class="cat-btn px-3.5 py-1.5 rounded-xl bg-white text-slate-700 border border-slate-300 hover:border-indigo-400 transition-all" data-cat="Content Creation">Content</button>
+                    <button class="cat-btn px-3.5 py-1.5 rounded-xl bg-white text-slate-700 border border-slate-300 hover:border-indigo-400 transition-all" data-cat="AI Content Optimization">AI Optimization</button>
+                    <button class="cat-btn px-3.5 py-1.5 rounded-xl bg-white text-slate-700 border border-slate-300 hover:border-indigo-400 transition-all" data-cat="Career Tools">Career</button>
+                    <button class="cat-btn px-3.5 py-1.5 rounded-xl bg-white text-slate-700 border border-slate-300 hover:border-indigo-400 transition-all" data-cat="Social Media">Social</button>
+                    <button class="cat-btn px-3.5 py-1.5 rounded-xl bg-white text-slate-700 border border-slate-300 hover:border-indigo-400 transition-all" data-cat="SEO Tools">SEO</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ========================================== -->
+    <!-- 10 PRODUCT CARDS GRID -->
+    <!-- ========================================== -->
+    <section class="pb-24 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div id="toolsGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                {% for slug, tool in catalog.items() %}
+                <div class="tool-card glass-panel glass-panel-hover p-8 rounded-3xl space-y-6 flex flex-col justify-between group" data-category="{{ tool.category }}" data-name="{{ tool.name }}" data-desc="{{ tool.short_description }}">
+                    
+                    <div class="space-y-4">
+                        <!-- Card Header Badge Row -->
+                        <div class="flex items-center justify-between">
+                            <span class="text-[11px] font-mono px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 font-bold border border-slate-200 uppercase">
+                                {{ tool.category }}
+                            </span>
+                            <span class="px-3 py-1 rounded-full bg-emerald-100 border border-emerald-300 text-emerald-800 text-xs font-mono font-black shadow-xs flex items-center gap-1.5">
+                                <i class="fas fa-gift text-emerald-600 text-[10px]"></i> FREE
+                            </span>
+                        </div>
+
+                        <!-- Icon & Title -->
+                        <div class="flex items-center gap-4 pt-2">
+                            <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-indigo-50 via-purple-50 to-pink-50 border border-indigo-100 flex items-center justify-center text-2xl text-indigo-600 group-hover:scale-110 transition-transform shrink-0 shadow-xs">
+                                <i class="{{ tool.icon }}"></i>
+                            </div>
+                            <h3 class="text-xl font-extrabold text-slate-900 group-hover:text-indigo-600 transition-colors leading-tight">
+                                {{ tool.name }}
+                            </h3>
+                        </div>
+
+                        <!-- Short Description -->
+                        <p class="text-xs text-slate-600 font-medium leading-relaxed">
+                            {{ tool.short_description }}
+                        </p>
+                    </div>
+
+                    <!-- Card Footer Action CTA -->
+                    <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
+                        <span class="text-[11px] font-mono text-slate-400 font-bold">100% Free Tool</span>
+                        <a href="/products/{{ slug }}" class="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-indigo-600 text-white font-extrabold text-xs shadow-md transition-all flex items-center gap-2 group-hover:translate-x-1">
+                            <span>Try Tool Now</span>
+                            <i class="fas fa-arrow-right text-[10px]"></i>
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ========================================== -->
+    <!-- FLAGSHIP MODELFLOW CTA BANNER -->
+    <!-- ========================================== -->
+    <section class="py-20 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="relative bg-gradient-to-br from-indigo-900 via-slate-900 to-purple-950 rounded-3xl p-10 sm:p-14 text-center space-y-6 overflow-hidden shadow-2xl text-white">
+                <span class="px-3.5 py-1.5 rounded-full bg-indigo-500/20 border border-indigo-400/40 text-indigo-300 text-xs font-mono font-bold uppercase tracking-wider">
+                    Flagship Product
+                </span>
+                <h2 class="text-3xl sm:text-5xl font-black text-white tracking-tight">
+                    Need Custom Machine Learning Models?
+                </h2>
+                <p class="text-slate-300 text-base max-w-2xl mx-auto font-medium">
+                    ModelFlow is the world's most intuitive AutoML studio. Upload CSV datasets, clean data automatically, train 30+ ML models, export .pkl binaries, and deploy REST APIs.
+                </p>
+                <div class="pt-2 flex items-center justify-center gap-4">
+                    <a href="/" class="px-8 py-3.5 rounded-2xl bg-white hover:bg-slate-100 text-indigo-950 font-black text-sm shadow-xl transition-transform hover:scale-105">
+                        Launch ModelFlow Flagship Workspace
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ========================================== -->
+    <!-- FOOTER -->
+    <!-- ========================================== -->
+    <footer class="bg-white border-t border-slate-200/90 pt-12 pb-10 text-xs text-slate-600">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 font-bold">
+            <div>© 2026 ModelFlow Inc. Free AI SaaS Products Directory.</div>
+            <div class="flex items-center gap-6">
+                <a href="/" class="hover:text-indigo-600">ModelFlow Flagship</a>
+                <a href="/products" class="hover:text-indigo-600">All AI Tools</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Interactive Filter Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('toolSearchInput');
+            const catBtns = document.querySelectorAll('.cat-btn');
+            const cards = document.querySelectorAll('.tool-card');
+
+            let currentCat = 'all';
+
+            function filterCards() {
+                const query = searchInput.value.toLowerCase().trim();
+
+                cards.forEach(card => {
+                    const cat = card.getAttribute('data-category');
+                    const name = card.getAttribute('data-name').toLowerCase();
+                    const desc = card.getAttribute('data-desc').toLowerCase();
+
+                    const matchesCat = (currentCat === 'all' || cat === currentCat);
+                    const matchesSearch = (!query || name.includes(query) || desc.includes(query));
+
+                    if (matchesCat && matchesSearch) {
+                        card.style.display = 'flex';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            }
+
+            searchInput?.addEventListener('input', filterCards);
+
+            catBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    catBtns.forEach(b => {
+                        b.classList.remove('bg-indigo-600', 'text-white', 'shadow-md');
+                        b.classList.add('bg-white', 'text-slate-700');
+                    });
+                    btn.classList.add('bg-indigo-600', 'text-white', 'shadow-md');
+                    btn.classList.remove('bg-white', 'text-slate-700');
+
+                    currentCat = btn.getAttribute('data-cat');
+                    filterCards();
+                });
+            });
+        });
+    </script>
+</body>
+</html>

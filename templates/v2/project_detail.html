@@ -1,0 +1,518 @@
+{% extends "v2/base_v2.html" %}
+
+{% block title %}{{ ctx.project.name }} — ModelFlow Dev v2.0-LR{% endblock %}
+{% block breadcrumb %}{{ ctx.project.name }}{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    
+    <!-- PROJECT TOP HEADER -->
+    <div class="open-card p-6 space-y-4">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div class="space-y-1">
+                <div class="flex items-center gap-2">
+                    <span class="px-2.5 py-0.5 rounded-lg bg-indigo-50 text-indigo-700 font-mono text-[10px] font-extrabold border border-indigo-200">
+                        ISOLATED PROJECT WORKSPACE
+                    </span>
+                    <span class="text-xs font-mono text-slate-400 font-bold">ID: {{ ctx.project.id }}</span>
+                </div>
+                <h1 class="text-3xl font-black text-slate-900 font-outfit">{{ ctx.project.name }}</h1>
+                <p class="text-xs text-slate-600 font-medium max-w-3xl leading-relaxed">{{ ctx.project.description }}</p>
+            </div>
+
+            <div class="flex items-center gap-3 shrink-0">
+                <span class="px-3.5 py-1.5 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 font-mono text-xs font-bold flex items-center gap-1.5">
+                    <i class="fas fa-check-circle text-emerald-600"></i> Production Active
+                </span>
+            </div>
+        </div>
+
+        <!-- TAB NAVIGATION SYSTEM -->
+        <div class="flex flex-wrap items-center gap-1 pt-4 border-t border-slate-200/80 text-xs font-extrabold">
+            <a href="?tab=dashboard" class="px-4 py-2 rounded-xl transition-all flex items-center gap-2 {% if active_tab == 'dashboard' %}bg-indigo-600 text-white shadow-sm{% else %}text-slate-600 hover:bg-slate-100{% endif %}">
+                <i class="fas fa-chart-line text-[11px]"></i> Dashboard
+            </a>
+            <a href="?tab=datasets" class="px-4 py-2 rounded-xl transition-all flex items-center gap-2 {% if active_tab == 'datasets' %}bg-indigo-600 text-white shadow-sm{% else %}text-slate-600 hover:bg-slate-100{% endif %}">
+                <i class="fas fa-database text-[11px]"></i> Datasets ({{ ctx.datasets|length }})
+            </a>
+            <a href="?tab=experiments" class="px-4 py-2 rounded-xl transition-all flex items-center gap-2 {% if active_tab == 'experiments' %}bg-indigo-600 text-white shadow-sm{% else %}text-slate-600 hover:bg-slate-100{% endif %}">
+                <i class="fas fa-vial text-[11px]"></i> Experiments ({{ ctx.experiments|length }})
+            </a>
+            <a href="?tab=models" class="px-4 py-2 rounded-xl transition-all flex items-center gap-2 {% if active_tab == 'models' %}bg-indigo-600 text-white shadow-sm{% else %}text-slate-600 hover:bg-slate-100{% endif %}">
+                <i class="fas fa-box text-[11px]"></i> Model Registry ({{ ctx.models|length }})
+            </a>
+            <a href="?tab=deployments" class="px-4 py-2 rounded-xl transition-all flex items-center gap-2 {% if active_tab == 'deployments' %}bg-indigo-600 text-white shadow-sm{% else %}text-slate-600 hover:bg-slate-100{% endif %}">
+                <i class="fas fa-rocket text-[11px]"></i> Deployments ({{ ctx.deployments|length }})
+            </a>
+            <a href="?tab=monitoring" class="px-4 py-2 rounded-xl transition-all flex items-center gap-2 {% if active_tab == 'monitoring' %}bg-indigo-600 text-white shadow-sm{% else %}text-slate-600 hover:bg-slate-100{% endif %}">
+                <i class="fas fa-heartbeat text-[11px]"></i> Telemetry
+            </a>
+            <a href="?tab=logs" class="px-4 py-2 rounded-xl transition-all flex items-center gap-2 {% if active_tab == 'logs' %}bg-indigo-600 text-white shadow-sm{% else %}text-slate-600 hover:bg-slate-100{% endif %}">
+                <i class="fas fa-list-ol text-[11px]"></i> Prediction Logs ({{ ctx.prediction_logs|length }})
+            </a>
+            <a href="?tab=knowledge" class="px-4 py-2 rounded-xl transition-all flex items-center gap-2 {% if active_tab == 'knowledge' %}bg-indigo-600 text-white shadow-sm{% else %}text-slate-600 hover:bg-slate-100{% endif %}">
+                <i class="fas fa-book-bookmark text-[11px]"></i> Knowledge Hub ({{ ctx.knowledge|length }})
+            </a>
+            <a href="?tab=reports" class="px-4 py-2 rounded-xl transition-all flex items-center gap-2 {% if active_tab == 'reports' %}bg-indigo-600 text-white shadow-sm{% else %}text-slate-600 hover:bg-slate-100{% endif %}">
+                <i class="fas fa-file-pdf text-[11px]"></i> Reports
+            </a>
+        </div>
+    </div>
+
+    <!-- MAIN GRID WITH CONTEXTUAL AI ADVISOR SIDEBAR -->
+    <div class="grid lg:grid-cols-12 gap-8 items-start">
+        
+        <!-- LEFT MAIN CONTENT CONTAINER (8 COLS) -->
+        <div class="lg:col-span-8 space-y-8">
+            
+            {% if active_tab == 'dashboard' %}
+            <!-- PROJECT DASHBOARD VIEW -->
+            <div class="space-y-6">
+                <!-- Lifecycle Pipeline Visualization -->
+                <div class="open-card p-6 space-y-4">
+                    <div class="text-xs font-mono font-extrabold text-slate-900 uppercase tracking-wider flex items-center justify-between">
+                        <span>End-to-End Machine Learning Lifecycle</span>
+                        <span class="text-indigo-600 font-bold">ModelFlow v2.0-LR Architecture</span>
+                    </div>
+
+                    <div class="grid grid-cols-5 gap-3 text-center text-xs font-bold font-mono">
+                        <div class="p-3 rounded-2xl bg-indigo-50 text-indigo-900 border border-indigo-200 space-y-1">
+                            <div class="text-[10px] text-indigo-600 uppercase">Step 01</div>
+                            <div>Dataset</div>
+                            <div class="text-[10px] text-slate-500 font-medium">v1.2 (Managed)</div>
+                        </div>
+
+                        <div class="p-3 rounded-2xl bg-purple-50 text-purple-900 border border-purple-200 space-y-1">
+                            <div class="text-[10px] text-purple-600 uppercase">Step 02</div>
+                            <div>Experiment</div>
+                            <div class="text-[10px] text-slate-500 font-medium">Run #48 XGBoost</div>
+                        </div>
+
+                        <div class="p-3 rounded-2xl bg-sky-50 text-sky-900 border border-sky-200 space-y-1">
+                            <div class="text-[10px] text-sky-600 uppercase">Step 03</div>
+                            <div>Model Card</div>
+                            <div class="text-[10px] text-slate-500 font-medium">Registry v2.1</div>
+                        </div>
+
+                        <div class="p-3 rounded-2xl bg-emerald-50 text-emerald-900 border border-emerald-200 space-y-1">
+                            <div class="text-[10px] text-emerald-600 uppercase">Step 04</div>
+                            <div>Deployment</div>
+                            <div class="text-[10px] text-slate-500 font-medium">Constant Endpoint</div>
+                        </div>
+
+                        <div class="p-3 rounded-2xl bg-amber-50 text-amber-900 border border-amber-200 space-y-1">
+                            <div class="text-[10px] text-amber-600 uppercase">Step 05</div>
+                            <div>Monitoring</div>
+                            <div class="text-[10px] text-slate-500 font-medium">Telemetry Logs</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Models & Deployments Summary -->
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="open-card p-6 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-extrabold text-slate-900 text-sm font-outfit">Active Deployment Endpoint</h3>
+                            <span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 font-mono text-[10px] font-bold">Live</span>
+                        </div>
+                        {% if ctx.deployments %}
+                        {% set dep = ctx.deployments[0] %}
+                        <div class="space-y-2 text-xs">
+                            <div class="font-bold text-slate-900">{{ dep.name }}</div>
+                            <div class="p-2.5 rounded-xl bg-slate-900 text-emerald-400 font-mono text-[11px] truncate">
+                                {{ dep.endpoint_url }}
+                            </div>
+                            <div class="flex justify-between text-[11px] text-slate-500 font-medium pt-1">
+                                <span>Active Model: <b class="text-slate-900">{{ dep.active_model_version }}</b></span>
+                                <span>Total Requests: <b class="text-slate-900">{{ dep.stats.total_requests }}</b></span>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="open-card p-6 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-extrabold text-slate-900 text-sm font-outfit">Registered Model Champion</h3>
+                            <span class="px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 font-mono text-[10px] font-bold">Approved</span>
+                        </div>
+                        {% if ctx.models %}
+                        {% set mod = ctx.models[0] %}
+                        <div class="space-y-2 text-xs">
+                            <div class="font-bold text-slate-900">{{ mod.name }} ({{ mod.version }})</div>
+                            <div class="grid grid-cols-3 gap-2 text-center pt-1 font-mono">
+                                <div class="p-2 rounded-xl bg-slate-50 border border-slate-200">
+                                    <div class="text-[9px] text-slate-400">Accuracy</div>
+                                    <div class="font-bold text-indigo-600">{{ mod.metrics.accuracy }}</div>
+                                </div>
+                                <div class="p-2 rounded-xl bg-slate-50 border border-slate-200">
+                                    <div class="text-[9px] text-slate-400">F1 Score</div>
+                                    <div class="font-bold text-indigo-600">{{ mod.metrics.f1_score }}</div>
+                                </div>
+                                <div class="p-2 rounded-xl bg-slate-50 border border-slate-200">
+                                    <div class="text-[9px] text-slate-400">ROC-AUC</div>
+                                    <div class="font-bold text-indigo-600">{{ mod.metrics.roc_auc }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            {% elif active_tab == 'datasets' %}
+            <!-- DATASETS ASSET MODULE -->
+            <div class="space-y-6">
+                <div class="flex items-center justify-between">
+                    <h3 class="font-extrabold text-slate-900 text-base font-outfit">Managed Datasets & Versions</h3>
+                    <span class="text-xs font-mono text-slate-500">Supports CSV, Excel, JSON, SQL, API, Sheets</span>
+                </div>
+
+                {% for ds in ctx.datasets %}
+                <div class="open-card p-6 space-y-6">
+                    <div class="flex items-center justify-between border-b border-slate-200 pb-4">
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-2">
+                                <span class="px-2.5 py-0.5 rounded-md bg-indigo-50 text-indigo-700 font-mono text-[10px] font-bold border border-indigo-200">
+                                    Source: {{ ds.source }}
+                                </span>
+                                <span class="text-xs font-mono text-emerald-700 font-bold">Active Version: {{ ds.current_version }}</span>
+                            </div>
+                            <h4 class="font-extrabold text-slate-900 text-lg">{{ ds.name }}</h4>
+                        </div>
+                        <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 font-mono text-xs font-black">
+                            Quality: 98%
+                        </span>
+                    </div>
+
+                    <!-- Dataset Versions History Table -->
+                    <div class="space-y-2">
+                        <div class="text-xs font-mono font-bold text-slate-900 uppercase">Version Lineage</div>
+                        <table class="w-full text-left text-xs">
+                            <thead>
+                                <tr class="border-b border-slate-200 text-slate-400 font-mono uppercase text-[10px]">
+                                    <th class="pb-2">Version</th>
+                                    <th class="pb-2">Records</th>
+                                    <th class="pb-2">Columns</th>
+                                    <th class="pb-2">Size</th>
+                                    <th class="pb-2">Created</th>
+                                    <th class="pb-2 text-right">Lineage Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 font-medium text-slate-700">
+                                {% for ver in ds.versions %}
+                                <tr>
+                                    <td class="py-2.5 font-mono font-bold text-indigo-600">{{ ver.version }}</td>
+                                    <td class="py-2.5 font-mono">{{ ver.records }}</td>
+                                    <td class="py-2.5 font-mono">{{ ver.columns }}</td>
+                                    <td class="py-2.5 font-mono">{{ ver.size }}</td>
+                                    <td class="py-2.5 text-slate-500">{{ ver.created_at }}</td>
+                                    <td class="py-2.5 text-right font-medium text-slate-600">{{ ver.changes }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Schema Overview -->
+                    <div class="space-y-2 pt-2 border-t border-slate-100">
+                        <div class="text-xs font-mono font-bold text-slate-900 uppercase">Field Schema</div>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                            {% for col in ds.schema %}
+                            <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs">
+                                <div class="font-bold text-slate-900 truncate">{{ col.column }}</div>
+                                <div class="text-[10px] text-slate-500 font-mono">{{ col.type }}</div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            {% elif active_tab == 'experiments' %}
+            <!-- EXPERIMENTS TRACKER -->
+            <div class="space-y-6">
+                <div class="flex items-center justify-between">
+                    <h3 class="font-extrabold text-slate-900 text-base font-outfit">Reproducible Experiment Runs</h3>
+                    <span class="text-xs font-mono text-slate-500 font-bold">Every training run creates a new entry</span>
+                </div>
+
+                <div class="open-card p-6 space-y-4">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead>
+                                <tr class="border-b border-slate-200 text-slate-400 font-mono uppercase text-[10px]">
+                                    <th class="pb-3">Run Name</th>
+                                    <th class="pb-3">Dataset</th>
+                                    <th class="pb-3">Algorithm</th>
+                                    <th class="pb-3">Accuracy</th>
+                                    <th class="pb-3">ROC-AUC</th>
+                                    <th class="pb-3">Duration</th>
+                                    <th class="pb-3 text-right">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 font-medium text-slate-700">
+                                {% for exp in ctx.experiments %}
+                                <tr>
+                                    <td class="py-3 font-bold text-slate-900">{{ exp.name }}</td>
+                                    <td class="py-3 font-mono text-indigo-600">{{ exp.dataset_version }}</td>
+                                    <td class="py-3">{{ exp.algorithm }}</td>
+                                    <td class="py-3 font-mono font-bold text-emerald-700">{{ (exp.metrics.accuracy * 100)|round(1) }}%</td>
+                                    <td class="py-3 font-mono font-bold text-indigo-700">{{ exp.metrics.roc_auc }}</td>
+                                    <td class="py-3 font-mono text-slate-500">{{ exp.duration }}</td>
+                                    <td class="py-3 text-right">
+                                        <span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 font-mono text-[10px] font-bold">
+                                            {{ exp.status }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            {% elif active_tab == 'models' %}
+            <!-- MODEL REGISTRY -->
+            <div class="space-y-6">
+                <div class="flex items-center justify-between">
+                    <h3 class="font-extrabold text-slate-900 text-base font-outfit">Versioned Model Registry</h3>
+                    <span class="text-xs font-mono text-slate-500 font-bold">Immutable Weights & Model Cards</span>
+                </div>
+
+                {% for mod in ctx.models %}
+                <div class="open-card p-6 space-y-6">
+                    <div class="flex items-center justify-between border-b border-slate-200 pb-4">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="px-2.5 py-0.5 rounded bg-indigo-50 text-indigo-700 font-mono text-[10px] font-bold">
+                                    Version {{ mod.version }}
+                                </span>
+                                <span class="text-xs font-mono text-slate-400">Ref: {{ mod.experiment_id }}</span>
+                            </div>
+                            <h4 class="font-extrabold text-slate-900 text-lg mt-1">{{ mod.name }}</h4>
+                        </div>
+                        <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 font-mono text-xs font-black">
+                            {{ mod.approval_status }}
+                        </span>
+                    </div>
+
+                    <!-- Feature Importance Breakdown -->
+                    <div class="space-y-2">
+                        <div class="text-xs font-mono font-bold text-slate-900 uppercase">Top Feature Importance</div>
+                        <div class="space-y-2">
+                            {% for feat in mod.feature_importance %}
+                            <div class="space-y-1">
+                                <div class="flex justify-between text-xs font-medium">
+                                    <span class="text-slate-800 font-bold">{{ feat.feature }}</span>
+                                    <span class="font-mono text-slate-500">{{ (feat.importance * 100)|round(1) }}%</span>
+                                </div>
+                                <div class="w-full bg-slate-100 rounded-full h-1.5">
+                                    <div class="bg-indigo-600 h-1.5 rounded-full" style="width: {{ feat.importance * 100 }}%"></div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            {% elif active_tab == 'deployments' %}
+            <!-- DEPLOYMENT CENTER -->
+            <div class="space-y-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="font-extrabold text-slate-900 text-base font-outfit">Deployment Center</h3>
+                        <p class="text-xs text-slate-500 font-medium">Constant Endpoint URLs with zero-downtime pointer switching.</p>
+                    </div>
+                </div>
+
+                {% for dep in ctx.deployments %}
+                <div class="open-card p-6 space-y-6">
+                    <div class="flex items-center justify-between border-b border-slate-200 pb-4">
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-2">
+                                <span class="px-2.5 py-0.5 rounded-md bg-emerald-50 text-emerald-700 font-mono text-[10px] font-bold border border-emerald-200">
+                                    ENV: {{ dep.environment }}
+                                </span>
+                                <span class="text-xs font-mono text-indigo-700 font-bold">Active Pointer: {{ dep.active_model_version }}</span>
+                            </div>
+                            <h4 class="font-extrabold text-slate-900 text-lg">{{ dep.name }}</h4>
+                        </div>
+                        <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 font-mono text-xs font-black">
+                            {{ dep.health_status }}
+                        </span>
+                    </div>
+
+                    <!-- Constant Endpoint URL Box -->
+                    <div class="space-y-1">
+                        <div class="text-[10px] font-mono text-slate-400 font-bold uppercase">Constant Endpoint URL (Never Changes)</div>
+                        <div class="p-3.5 rounded-xl bg-slate-900 text-emerald-400 font-mono text-xs flex items-center justify-between">
+                            <span>{{ dep.endpoint_url }}</span>
+                            <span class="text-slate-400 text-[10px]">AUTH: {{ dep.auth_key[:10] }}...</span>
+                        </div>
+                    </div>
+
+                    <!-- Pointer Switcher Selector -->
+                    <div class="p-4 rounded-2xl bg-indigo-50/60 border border-indigo-200 space-y-3">
+                        <div class="text-xs font-extrabold text-indigo-950 font-mono">Zero-Downtime Model Version Switcher</div>
+                        <div class="flex items-center gap-3">
+                            <select id="switchModelSelect" class="flex-1 p-2.5 rounded-xl bg-white border border-slate-300 text-xs font-bold text-slate-900">
+                                {% for m in ctx.models %}
+                                <option value="{{ m.id }}" {% if m.version == dep.active_model_version %}selected{% endif %}>
+                                    Model Version {{ m.version }} — {{ m.name }} (ROC-AUC: {{ m.metrics.roc_auc }})
+                                </option>
+                                {% endfor %}
+                            </select>
+                            <button onclick="switchPointer('{{ dep.id }}')" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs shadow-md">
+                                Switch Pointer
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            {% elif active_tab == 'monitoring' or active_tab == 'logs' %}
+            <!-- PREDICTION LOGS & MONITORING -->
+            <div class="space-y-6">
+                <div class="flex items-center justify-between">
+                    <h3 class="font-extrabold text-slate-900 text-base font-outfit">Prediction Logs Audit Trail</h3>
+                    <span class="text-xs font-mono text-slate-500 font-bold">Real-time Telemetry Log</span>
+                </div>
+
+                <div class="open-card p-6 space-y-4">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead>
+                                <tr class="border-b border-slate-200 text-slate-400 font-mono uppercase text-[10px]">
+                                    <th class="pb-3">Timestamp</th>
+                                    <th class="pb-3">Model Ver</th>
+                                    <th class="pb-3">Prediction</th>
+                                    <th class="pb-3">Confidence</th>
+                                    <th class="pb-3">Latency</th>
+                                    <th class="pb-3 text-right">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 font-medium text-slate-700">
+                                {% for log in ctx.prediction_logs %}
+                                <tr>
+                                    <td class="py-3 font-mono text-slate-500">{{ log.timestamp }}</td>
+                                    <td class="py-3 font-mono font-bold text-indigo-600">{{ log.model_version }}</td>
+                                    <td class="py-3 font-bold text-slate-900">{{ log.prediction }}</td>
+                                    <td class="py-3 font-mono text-emerald-700 font-bold">{{ log.confidence }}</td>
+                                    <td class="py-3 font-mono text-slate-500">{{ log.latency_ms }} ms</td>
+                                    <td class="py-3 text-right">
+                                        <span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 font-mono text-[10px] font-bold">
+                                            {{ log.status }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            {% elif active_tab == 'knowledge' %}
+            <!-- KNOWLEDGE HUB -->
+            <div class="space-y-6">
+                <div class="flex items-center justify-between">
+                    <h3 class="font-extrabold text-slate-900 text-base font-outfit">Project Knowledge Hub</h3>
+                    <button onclick="document.getElementById('addNoteModal').classList.remove('hidden')" class="px-4 py-2 rounded-xl bg-indigo-600 text-white font-extrabold text-xs shadow-md">
+                        <i class="fas fa-plus"></i> Add Note
+                    </button>
+                </div>
+
+                <div class="grid gap-4">
+                    {% for item in ctx.knowledge %}
+                    <div class="open-card p-6 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-0.5 rounded bg-indigo-50 text-indigo-700 font-mono text-[10px] font-bold">
+                                {{ item.category }}
+                            </span>
+                            <span class="text-xs font-mono text-slate-400">{{ item.date }} • {{ item.author }}</span>
+                        </div>
+                        <h4 class="font-extrabold text-slate-900 text-base">{{ item.title }}</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed font-medium">{{ item.content }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            {% else %}
+            <!-- REPORTS & FILES -->
+            <div class="open-card p-8 text-center space-y-4">
+                <div class="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-xl mx-auto">
+                    <i class="fas fa-folder-open"></i>
+                </div>
+                <h3 class="font-extrabold text-slate-900 text-lg font-outfit">Project Files & Reports</h3>
+                <p class="text-xs text-slate-500 max-w-md mx-auto">Generate automated PDF executive summaries or manage binary datasets, model weights, and document files.</p>
+            </div>
+            {% endif %}
+
+        </div>
+
+        <!-- RIGHT SIDEBAR: CONTEXT-AWARE AI ADVISOR CARD (4 COLS) -->
+        <div class="lg:col-span-4 space-y-6 sticky top-24">
+            
+            <div class="open-card p-6 space-y-4 bg-gradient-to-b from-white via-indigo-50/20 to-white">
+                <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+                    <span class="text-xs font-mono font-extrabold text-indigo-900 uppercase flex items-center gap-2">
+                        <i class="fas fa-brain text-indigo-600"></i> AI Workflow Advisor
+                    </span>
+                    <span class="px-2.5 py-0.5 rounded bg-indigo-100 text-indigo-800 font-mono text-[10px] font-bold">
+                        {{ ai_advisor.score }}
+                    </span>
+                </div>
+
+                <div class="font-extrabold text-slate-900 text-sm font-outfit">
+                    {{ ai_advisor.title }}
+                </div>
+
+                <ul class="space-y-2.5 text-xs text-slate-600 font-medium">
+                    {% for sug in ai_advisor.suggestions %}
+                    <li class="flex items-start gap-2.5 p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+                        <i class="fas fa-lightbulb text-amber-500 text-xs mt-0.5 shrink-0"></i>
+                        <span class="leading-relaxed">{{ sug }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+
+                <div class="pt-2 text-[10px] font-mono text-slate-400 text-center font-bold">
+                    Context: {{ ctx.project.name }}
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<script>
+    async function switchPointer(depId) {
+        const select = document.getElementById('switchModelSelect');
+        const targetModelId = select.value;
+
+        try {
+            const res = await fetch(`/api/v2/deployments/${depId}/switch-model`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ model_id: targetModelId })
+            });
+            const json = await res.json();
+            if (json.success) {
+                alert(json.message);
+                window.location.reload();
+            } else {
+                alert(json.error || 'Switch failed.');
+            }
+        } catch (err) {
+            alert('Connection error.');
+        }
+    }
+</script>
+{% endblock %}

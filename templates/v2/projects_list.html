@@ -1,0 +1,54 @@
+{% extends "v2/base_v2.html" %}
+
+{% block title %}Projects Directory — ModelFlow Dev v2.0-LR{% endblock %}
+{% block breadcrumb %}Projects Repository{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-2xl font-black text-slate-900 font-outfit">Isolated Projects Directory</h1>
+            <p class="text-xs text-slate-500 font-medium">All projects are 100% isolated environments with zero data leakage.</p>
+        </div>
+        <button onclick="document.getElementById('newProjectModal').classList.remove('hidden')" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-extrabold shadow-md flex items-center gap-2">
+            <i class="fas fa-plus"></i> New Project
+        </button>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-6">
+        {% for proj in projects %}
+        <div class="open-card p-6 space-y-5 hover:border-indigo-300 transition-all flex flex-col justify-between">
+            <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        {% for tag in proj.tags %}
+                        <span class="px-2.5 py-0.5 rounded-lg bg-slate-100 text-slate-700 text-[10px] font-mono font-extrabold border border-slate-200">
+                            {{ tag }}
+                        </span>
+                        {% endfor %}
+                    </div>
+                    <span class="text-[10px] font-mono text-slate-400 font-bold">{{ proj.created_at }}</span>
+                </div>
+
+                <h3 class="text-lg font-black text-slate-900 font-outfit">
+                    {{ proj.name }}
+                </h3>
+
+                <p class="text-xs text-slate-600 leading-relaxed font-medium">
+                    {{ proj.description }}
+                </p>
+            </div>
+
+            <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-xs font-bold text-slate-500">
+                    Owner: <span class="text-slate-900">{{ proj.owner }}</span>
+                </div>
+                <a href="/v2/projects/{{ proj.id }}" class="px-4 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-600 hover:text-white text-indigo-700 text-xs font-extrabold transition-all flex items-center gap-1.5">
+                    Open Project Workspace <i class="fas fa-arrow-right text-[10px]"></i>
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
