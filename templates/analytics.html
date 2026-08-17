@@ -11,19 +11,19 @@
     <div class="relative overflow-hidden rounded-3xl bg-white border border-slate-300 p-6 md:p-8 shadow-sm text-slate-900">
         <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div class="flex items-center gap-5">
-                {% if data.user_info.picture %}
-                <img src="{{ data.user_info.picture }}" alt="{{ data.user_info.name }}"
+                {% if data.user_info and data.user_info.picture %}
+                <img src="{{ data.user_info.picture }}" alt="{{ data.user_info.name if data.user_info and data.user_info.name else 'User' }}"
                     class="w-20 h-20 rounded-2xl object-cover border-2 border-indigo-300 shadow-xs">
                 {% else %}
                 <div class="w-20 h-20 rounded-2xl bg-indigo-600 flex items-center justify-center font-extrabold text-white text-3xl shadow-xs border border-indigo-700">
-                    {{ data.user_info.name[0]|upper if data.user_info.name else 'U' }}
+                    {{ (data.user_info.name[0]|upper) if (data.user_info and data.user_info.name) else 'U' }}
                 </div>
                 {% endif %}
 
                 <div class="space-y-1">
                     <div class="flex items-center gap-3 flex-wrap">
-                        <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight">{{ data.user_info.name }}</h2>
-                        {% if data.user_info.provider == 'google' %}
+                        <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight">{{ data.user_info.name if (data.user_info and data.user_info.name) else 'Developer User' }}</h2>
+                        {% if data.user_info and data.user_info.provider == 'google' %}
                         <span class="px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-700 text-xs font-bold border border-indigo-200 flex items-center gap-1.5 shadow-xs">
                             <i class="fab fa-google text-indigo-600"></i> Google Verified Account
                         </span>
@@ -38,15 +38,19 @@
                     </div>
 
                     <p class="text-sm text-slate-600 font-medium flex items-center gap-2">
-                        <i class="fas fa-envelope text-slate-400"></i> {{ data.user_info.email }}
+                        <i class="fas fa-envelope text-slate-400"></i> {{ data.user_info.email if (data.user_info and data.user_info.email) else 'N/A' }}
                     </p>
 
                     <div class="flex items-center gap-4 pt-1 text-xs text-slate-600 font-medium">
                         <span class="flex items-center gap-1.5">
                             <i class="fas fa-calendar-alt text-indigo-600"></i> Joined: 
                             <strong class="text-slate-900 font-bold">
-                                {% if data.user_info.created_at and data.user_info.created_at.strftime %}
-                                    {{ data.user_info.created_at.strftime('%b %d, %Y') }}
+                                {% if data.user_info and data.user_info.created_at %}
+                                    {% if data.user_info.created_at.strftime %}
+                                        {{ data.user_info.created_at.strftime('%b %d, %Y') }}
+                                    {% else %}
+                                        {{ data.user_info.created_at[:10] }}
+                                    {% endif %}
                                 {% else %}
                                     Active
                                 {% endif %}
@@ -54,7 +58,7 @@
                         </span>
                         <span>•</span>
                         <span class="flex items-center gap-1.5">
-                            <i class="fas fa-cube text-sky-600"></i> Active Workspaces: <strong class="text-slate-900 font-bold">{{ data.stats.total_projects }}</strong>
+                            <i class="fas fa-cube text-sky-600"></i> Active Workspaces: <strong class="text-slate-900 font-bold">{{ data.stats.total_projects if (data.stats and data.stats.total_projects is not none) else 0 }}</strong>
                         </span>
                     </div>
                 </div>
@@ -70,15 +74,16 @@
     </div>
 
     <!-- User Platform Mastery & Engagement Scoring System Card -->
+    {% set rating = data.platform_rating if (data and data.platform_rating) else {} %}
     <div class="rounded-3xl bg-gradient-to-br from-indigo-900 via-slate-900 to-indigo-950 p-6 md:p-8 shadow-xl text-white border border-indigo-700/50 space-y-6">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-indigo-800/60 pb-6">
             <div class="space-y-2">
                 <div class="flex items-center gap-3 flex-wrap">
                     <span class="px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/40 text-xs font-black uppercase tracking-wider flex items-center gap-1.5 shadow-xs">
-                        <i class="fas {{ data.platform_rating.tier_icon }}"></i> {{ data.platform_rating.tier_title }}
+                        <i class="fas {{ rating.tier_icon if rating.tier_icon else 'fa-award' }} text-amber-400"></i> {{ rating.tier_title if rating.tier_title else 'Novice Explorer' }}
                     </span>
                     <span class="text-xs font-bold text-indigo-200">
-                        Rating: <strong class="text-white font-extrabold text-sm">{{ data.platform_rating.star_rating }} / 5.0</strong> {{ data.platform_rating.stars_html }}
+                        Rating: <strong class="text-white font-extrabold text-sm">{{ rating.star_rating if rating.star_rating else '1.0' }} / 5.0</strong> {{ rating.stars_html if rating.stars_html else '⭐' }}
                     </span>
                 </div>
                 <h3 class="text-2xl font-black tracking-tight text-white flex items-center gap-2">
@@ -93,11 +98,11 @@
             <div class="flex items-center gap-4 shrink-0 bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/15 shadow-inner">
                 <div class="text-right">
                     <span class="text-[11px] font-extrabold text-indigo-200 uppercase tracking-widest block">Platform Score</span>
-                    <span class="text-4xl font-black text-white font-mono tracking-tight">{{ data.platform_rating.score }}</span>
+                    <span class="text-4xl font-black text-white font-mono tracking-tight">{{ rating.score if rating.score is not none else 0 }}</span>
                     <span class="text-xs font-bold text-indigo-300"> / 100 PTS</span>
                 </div>
                 <div class="w-14 h-14 rounded-2xl bg-indigo-600/80 border border-indigo-400/50 flex items-center justify-center text-amber-300 text-2xl shadow-lg">
-                    <i class="fas {{ data.platform_rating.tier_icon }}"></i>
+                    <i class="fas {{ rating.tier_icon if rating.tier_icon else 'fa-award' }} text-amber-300"></i>
                 </div>
             </div>
         </div>
@@ -106,66 +111,72 @@
         <div class="space-y-2">
             <div class="flex justify-between items-center text-xs font-bold text-indigo-200">
                 <span>Overall Mastery Progress</span>
-                <span class="font-mono text-amber-300 font-extrabold">{{ data.platform_rating.score }}% Achieved</span>
+                <span class="font-mono text-amber-300 font-extrabold">{{ rating.score if rating.score is not none else 0 }}% Achieved</span>
             </div>
             <div class="w-full h-4 bg-indigo-950/80 rounded-full border border-indigo-700/60 p-0.5 overflow-hidden shadow-inner">
-                <div class="h-full rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-amber-400 transition-all duration-1000 shadow-md" style="width: {{ data.platform_rating.score }}%;"></div>
+                <div class="h-full rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-amber-400 transition-all duration-1000 shadow-md" style="width: {{ rating.score if rating.score is not none else 0 }}%;"></div>
             </div>
         </div>
 
         <!-- Metric Breakdown & Recommendations Sub-Grid -->
+        {% set breakdown = rating.breakdown if (rating and rating.breakdown) else {} %}
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-2">
             <!-- Workspaces Score -->
+            {% set ws_score = breakdown.workspaces if breakdown.workspaces is not none else 0 %}
             <div class="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm space-y-1">
                 <div class="flex items-center justify-between text-indigo-300 text-xs font-bold uppercase">
                     <span>Workspaces</span>
-                    <span class="font-mono text-white font-black">{{ data.platform_rating.breakdown.workspaces }} / 25</span>
+                    <span class="font-mono text-white font-black">{{ ws_score }} / 25</span>
                 </div>
-                <p class="text-xs text-indigo-200 font-medium">{{ data.stats.total_projects }} Active Projects</p>
+                <p class="text-xs text-indigo-200 font-medium">{{ data.stats.total_projects if (data.stats and data.stats.total_projects is not none) else 0 }} Active Projects</p>
                 <div class="w-full h-1.5 bg-indigo-950 rounded-full overflow-hidden mt-2">
-                    <div class="h-full bg-indigo-400 rounded-full" style="width: {{ (data.platform_rating.breakdown.workspaces / 25 * 100)|round }}%;"></div>
+                    <div class="h-full bg-indigo-400 rounded-full" style="width: {{ (ws_score / 25 * 100)|round|int }}%;"></div>
                 </div>
             </div>
 
             <!-- Model Builds Score -->
+            {% set m_score = breakdown.models if breakdown.models is not none else 0 %}
             <div class="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm space-y-1">
                 <div class="flex items-center justify-between text-indigo-300 text-xs font-bold uppercase">
                     <span>Model Builds</span>
-                    <span class="font-mono text-white font-black">{{ data.platform_rating.breakdown.models }} / 35</span>
+                    <span class="font-mono text-white font-black">{{ m_score }} / 35</span>
                 </div>
-                <p class="text-xs text-indigo-200 font-medium">{{ data.stats.total_models_trained }} Trained Models</p>
+                <p class="text-xs text-indigo-200 font-medium">{{ data.stats.total_models_trained if (data.stats and data.stats.total_models_trained is not none) else 0 }} Trained Models</p>
                 <div class="w-full h-1.5 bg-indigo-950 rounded-full overflow-hidden mt-2">
-                    <div class="h-full bg-sky-400 rounded-full" style="width: {{ (data.platform_rating.breakdown.models / 35 * 100)|round }}%;"></div>
+                    <div class="h-full bg-sky-400 rounded-full" style="width: {{ (m_score / 35 * 100)|round|int }}%;"></div>
                 </div>
             </div>
 
             <!-- Peak Quality Score -->
+            {% set q_score = breakdown.quality if breakdown.quality is not none else 0 %}
             <div class="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm space-y-1">
                 <div class="flex items-center justify-between text-indigo-300 text-xs font-bold uppercase">
                     <span>Peak Accuracy</span>
-                    <span class="font-mono text-white font-black">{{ data.platform_rating.breakdown.quality }} / 25</span>
+                    <span class="font-mono text-white font-black">{{ q_score }} / 25</span>
                 </div>
                 <p class="text-xs text-indigo-200 font-medium">Top Accuracy Performance</p>
                 <div class="w-full h-1.5 bg-indigo-950 rounded-full overflow-hidden mt-2">
-                    <div class="h-full bg-emerald-400 rounded-full" style="width: {{ (data.platform_rating.breakdown.quality / 25 * 100)|round }}%;"></div>
+                    <div class="h-full bg-emerald-400 rounded-full" style="width: {{ (q_score / 25 * 100)|round|int }}%;"></div>
                 </div>
             </div>
 
             <!-- Platform Activity Score -->
+            {% set a_score = breakdown.activity if breakdown.activity is not none else 0 %}
             <div class="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm space-y-1">
                 <div class="flex items-center justify-between text-indigo-300 text-xs font-bold uppercase">
                     <span>Activity & Logs</span>
-                    <span class="font-mono text-white font-black">{{ data.platform_rating.breakdown.activity }} / 15</span>
+                    <span class="font-mono text-white font-black">{{ a_score }} / 15</span>
                 </div>
-                <p class="text-xs text-indigo-200 font-medium">{{ data.stats.total_activities }} Total Actions Logged</p>
+                <p class="text-xs text-indigo-200 font-medium">{{ data.stats.total_activities if (data.stats and data.stats.total_activities is not none) else 0 }} Total Actions Logged</p>
                 <div class="w-full h-1.5 bg-indigo-950 rounded-full overflow-hidden mt-2">
-                    <div class="h-full bg-amber-400 rounded-full" style="width: {{ (data.platform_rating.breakdown.activity / 15 * 100)|round }}%;"></div>
+                    <div class="h-full bg-amber-400 rounded-full" style="width: {{ (a_score / 15 * 100)|round|int }}%;"></div>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- User KPI Metrics Row -->
+    {% set stats = data.stats if (data and data.stats) else {} %}
     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
         <!-- Total Projects -->
         <div class="bg-white border border-slate-300 rounded-2xl p-4 space-y-2 shadow-xs relative overflow-hidden group hover:border-indigo-400 transition-all text-slate-900">
@@ -175,7 +186,7 @@
                     <i class="fas fa-folder-open"></i>
                 </div>
             </div>
-            <p class="text-2xl font-black text-slate-900">{{ data.stats.total_projects }}</p>
+            <p class="text-2xl font-black text-slate-900">{{ stats.total_projects if stats.total_projects is not none else 0 }}</p>
             <p class="text-[11px] text-slate-500 font-medium">Created Workspaces</p>
         </div>
 
@@ -187,7 +198,7 @@
                     <i class="fas fa-robot"></i>
                 </div>
             </div>
-            <p class="text-2xl font-black text-slate-900">{{ data.stats.total_models_trained }}</p>
+            <p class="text-2xl font-black text-slate-900">{{ stats.total_models_trained if stats.total_models_trained is not none else 0 }}</p>
             <p class="text-[11px] text-slate-500 font-medium">AutoML Model Builds</p>
         </div>
 
@@ -200,11 +211,11 @@
                 </div>
             </div>
             <p class="text-2xl font-black text-emerald-700">
-                {% if data.stats.max_score > 0 %}
-                    {% if data.stats.max_score <= 1.0 %}
-                        {{ (data.stats.max_score * 100)|round(1) }}%
+                {% if stats.max_score and stats.max_score > 0 %}
+                    {% if stats.max_score <= 1.0 %}
+                        {{ (stats.max_score * 100)|round(1) }}%
                     {% else %}
-                        {{ data.stats.max_score|round(3) }}
+                        {{ stats.max_score|round(3) }}
                     {% endif %}
                 {% else %}
                     —
@@ -222,11 +233,11 @@
                 </div>
             </div>
             <p class="text-2xl font-black text-amber-700">
-                {% if data.stats.avg_score > 0 %}
-                    {% if data.stats.avg_score <= 1.0 %}
-                        {{ (data.stats.avg_score * 100)|round(1) }}%
+                {% if stats.avg_score and stats.avg_score > 0 %}
+                    {% if stats.avg_score <= 1.0 %}
+                        {{ (stats.avg_score * 100)|round(1) }}%
                     {% else %}
-                        {{ data.stats.avg_score|round(3) }}
+                        {{ stats.avg_score|round(3) }}
                     {% endif %}
                 {% else %}
                     —
@@ -244,11 +255,11 @@
                 </div>
             </div>
             <p class="text-2xl font-black text-slate-900">
-                {% if data.stats.min_score > 0 %}
-                    {% if data.stats.min_score <= 1.0 %}
-                        {{ (data.stats.min_score * 100)|round(1) }}%
+                {% if stats.min_score and stats.min_score > 0 %}
+                    {% if stats.min_score <= 1.0 %}
+                        {{ (stats.min_score * 100)|round(1) }}%
                     {% else %}
-                        {{ data.stats.min_score|round(3) }}
+                        {{ stats.min_score|round(3) }}
                     {% endif %}
                 {% else %}
                     —
@@ -265,7 +276,7 @@
                     <i class="fas fa-list-check"></i>
                 </div>
             </div>
-            <p class="text-2xl font-black text-purple-700">{{ data.stats.total_activities }}</p>
+            <p class="text-2xl font-black text-purple-700">{{ stats.total_activities if stats.total_activities is not none else 0 }}</p>
             <p class="text-[11px] text-slate-500 font-medium">Total User Operations</p>
         </div>
     </div>
@@ -280,7 +291,7 @@
                 </h3>
                 <span class="text-xs text-slate-500 font-mono">Min • Avg • Max</span>
             </div>
-            <div id="chartScoreRange" class="w-full min-h-[320px] max-h-[360px] overflow-hidden"></div>
+            <div id="chartScoreRange" class="w-full h-[320px]"></div>
         </div>
 
         <!-- Chart 2: Trained Models by Algorithm -->
@@ -291,7 +302,7 @@
                 </h3>
                 <span class="text-xs text-slate-500 font-mono">Trained Architectures</span>
             </div>
-            <div id="chartAlgoPie" class="w-full min-h-[320px] max-h-[360px] overflow-hidden"></div>
+            <div id="chartAlgoPie" class="w-full h-[320px]"></div>
         </div>
 
         <!-- Chart 3: Score Progression Timeline -->
@@ -302,7 +313,7 @@
                 </h3>
                 <span class="text-xs text-slate-500 font-mono">Sequential Builds</span>
             </div>
-            <div id="chartScoreTimeline" class="w-full min-h-[320px] max-h-[360px] overflow-hidden"></div>
+            <div id="chartScoreTimeline" class="w-full h-[320px]"></div>
         </div>
 
         <!-- Chart 4: Project Task Distribution -->
@@ -313,7 +324,7 @@
                 </h3>
                 <span class="text-xs text-slate-500 font-mono">Classification vs Regression</span>
             </div>
-            <div id="chartTaskDonut" class="w-full min-h-[320px] max-h-[360px] overflow-hidden"></div>
+            <div id="chartTaskDonut" class="w-full h-[320px]"></div>
         </div>
     </div>
 
@@ -328,11 +339,11 @@
                 <p class="text-xs text-slate-600 font-medium">Detailed list of all models built across your project workspaces</p>
             </div>
             <span class="px-3 py-1 rounded-full bg-slate-100 text-xs font-bold text-slate-700 border border-slate-300 shadow-xs">
-                {{ data.trained_models|length }} Trained Models
+                {{ data.trained_models|length if (data and data.trained_models) else 0 }} Trained Models
             </span>
         </div>
 
-        {% if data.trained_models %}
+        {% if data and data.trained_models %}
         <div class="overflow-x-auto custom-scrollbar rounded-xl border border-slate-300">
             <table class="w-full text-left text-xs text-slate-900">
                 <thead class="bg-slate-50 text-slate-700 font-extrabold uppercase tracking-wider border-b border-slate-300">
@@ -349,14 +360,14 @@
                     {% for m in data.trained_models %}
                     <tr class="hover:bg-slate-50 transition-colors">
                         <td class="px-4 py-3.5 font-bold text-slate-900">
-                            <i class="fas fa-folder text-indigo-600 mr-2"></i> {{ m.project_name }}
+                            <i class="fas fa-folder text-indigo-600 mr-2"></i> {{ m.project_name if m.project_name else 'Workspace' }}
                         </td>
                         <td class="px-4 py-3.5 font-mono text-indigo-700 font-bold">
-                            {{ m.model_name }}
+                            {{ m.model_name if m.model_name else 'Model' }}
                         </td>
                         <td class="px-4 py-3.5 capitalize">
                             <span class="px-2.5 py-1 rounded-full text-[11px] font-bold border {% if m.task == 'classification' %}bg-indigo-50 border-indigo-200 text-indigo-700{% elif m.task == 'regression' %}bg-sky-50 border-sky-200 text-sky-700{% else %}bg-slate-100 border-slate-300 text-slate-700{% endif %}">
-                                {{ m.task }}
+                                {{ m.task if m.task else 'general' }}
                             </span>
                         </td>
                         <td class="px-4 py-3.5 font-bold font-mono">
@@ -429,7 +440,7 @@
             </div>
         </div>
 
-        {% if data.history_events %}
+        {% if data and data.history_events %}
         <div class="overflow-x-auto custom-scrollbar rounded-xl border border-slate-300">
             <table class="w-full text-left text-xs text-slate-900" id="historyTable">
                 <thead class="bg-slate-50 text-slate-700 font-extrabold uppercase tracking-wider border-b border-slate-300">
@@ -444,10 +455,14 @@
                     {% for h in data.history_events %}
                     <tr class="history-row hover:bg-slate-50 transition-colors" data-type="{{ h.action_type }}">
                         <td class="px-4 py-3.5 text-slate-500 font-mono whitespace-nowrap">
-                            {% if h.timestamp and h.timestamp.strftime %}
-                                {{ h.timestamp.strftime('%Y-%m-%d %H:%M') }}
+                            {% if h.timestamp %}
+                                {% if h.timestamp.strftime %}
+                                    {{ h.timestamp.strftime('%Y-%m-%d %H:%M') }}
+                                {% else %}
+                                    {{ h.timestamp[:16] }}
+                                {% endif %}
                             {% else %}
-                                {{ h.timestamp }}
+                                —
                             {% endif %}
                         </td>
                         <td class="px-4 py-3.5">
@@ -478,7 +493,7 @@
                             {% endif %}
                         </td>
                         <td class="px-4 py-3.5 font-semibold text-slate-900">
-                            {{ h.description }}
+                            {{ h.description if h.description else 'Operation completed' }}
                         </td>
                         <td class="px-4 py-3.5">
                             <span class="text-emerald-700 font-bold text-[11px] flex items-center gap-1">
@@ -487,6 +502,12 @@
                         </td>
                     </tr>
                     {% endfor %}
+                    <tr id="noHistoryResults" class="hidden">
+                        <td colspan="4" class="py-8 text-center text-slate-400 font-medium">
+                            <i class="fas fa-search text-2xl mb-2 text-slate-300 block"></i>
+                            No activity logs matching your search filter.
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -502,66 +523,61 @@
 <!-- Plotly Rendering Script Data -->
 <script id="analytics-charts-data" type="application/json">
 {
-    "score_range": {{ (charts.score_range if charts and charts.score_range else '{}')|safe }},
-    "algo_pie": {{ (charts.algo_pie if charts and charts.algo_pie else '{}')|safe }},
-    "score_timeline": {{ (charts.score_timeline if charts and charts.score_timeline else '{}')|safe }},
-    "task_donut": {{ (charts.task_donut if charts and charts.task_donut else '{}')|safe }}
+    "score_range": {{ (charts.score_range if charts and charts.get('score_range') else '{}')|safe }},
+    "algo_pie": {{ (charts.algo_pie if charts and charts.get('algo_pie') else '{}')|safe }},
+    "score_timeline": {{ (charts.score_timeline if charts and charts.get('score_timeline') else '{}')|safe }},
+    "task_donut": {{ (charts.task_donut if charts and charts.get('task_donut') else '{}')|safe }}
 }
 </script>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const dataElem = document.getElementById("analytics-charts-data");
-        const chartsData = dataElem ? JSON.parse(dataElem.textContent || "{}") : {};
-
-        const scoreRangeSpec = chartsData.score_range || {};
-        const algoPieSpec = chartsData.algo_pie || {};
-        const scoreTimelineSpec = chartsData.score_timeline || {};
-        const taskDonutSpec = chartsData.task_donut || {};
-
-        const config = { responsive: true, displayModeBar: false, autosizable: true };
-
-        const chartIds = ["chartScoreRange", "chartAlgoPie", "chartScoreTimeline", "chartTaskDonut"];
-
-        if (typeof Plotly !== "undefined") {
-            if (scoreRangeSpec && scoreRangeSpec.data && scoreRangeSpec.data.length > 0) {
-                Plotly.newPlot("chartScoreRange", scoreRangeSpec.data, scoreRangeSpec.layout, config);
+        let chartsData = {};
+        if (dataElem) {
+            try {
+                chartsData = JSON.parse(dataElem.textContent || "{}");
+            } catch(err) {
+                console.error("Error parsing analytics charts JSON:", err);
             }
-            if (algoPieSpec && algoPieSpec.data && algoPieSpec.data.length > 0) {
-                Plotly.newPlot("chartAlgoPie", algoPieSpec.data, algoPieSpec.layout, config);
-            }
-            if (scoreTimelineSpec && scoreTimelineSpec.data && scoreTimelineSpec.data.length > 0) {
-                Plotly.newPlot("chartScoreTimeline", scoreTimelineSpec.data, scoreTimelineSpec.layout, config);
-            }
-            if (taskDonutSpec && taskDonutSpec.data && taskDonutSpec.data.length > 0) {
-                Plotly.newPlot("chartTaskDonut", taskDonutSpec.data, taskDonutSpec.layout, config);
-            }
+        }
 
-            function resizeCharts() {
-                chartIds.forEach(id => {
+        function initAnalyticsCharts() {
+            if (typeof renderPlotly === "function") {
+                renderPlotly("chartScoreRange", chartsData.score_range);
+                renderPlotly("chartAlgoPie", chartsData.algo_pie);
+                renderPlotly("chartScoreTimeline", chartsData.score_timeline);
+                renderPlotly("chartTaskDonut", chartsData.task_donut);
+            }
+        }
+
+        initAnalyticsCharts();
+
+        window.addEventListener("resize", function() {
+            if (typeof Plotly !== "undefined") {
+                ["chartScoreRange", "chartAlgoPie", "chartScoreTimeline", "chartTaskDonut"].forEach(function(id) {
                     const el = document.getElementById(id);
                     if (el && (el.classList.contains('js-plotly-plot') || el.querySelector('.js-plotly-plot'))) {
                         try {
                             Plotly.Plots.resize(el);
-                        } catch (err) {
-                            console.warn("Plotly resize skipped for " + id, err);
+                        } catch(e) {
+                            // ignore resize error
                         }
                     }
                 });
             }
-
-            setTimeout(resizeCharts, 150);
-            window.addEventListener('resize', resizeCharts);
-        }
+        });
 
         // Table search and filter logic
         const searchInput = document.getElementById("historySearch");
         const filterSelect = document.getElementById("historyFilter");
         const rows = document.querySelectorAll(".history-row");
+        const noResultsRow = document.getElementById("noHistoryResults");
 
         function filterTable() {
             const query = searchInput ? searchInput.value.toLowerCase().trim() : "";
             const selectedType = filterSelect ? filterSelect.value : "all";
+            let visibleCount = 0;
 
             rows.forEach(row => {
                 const text = row.innerText.toLowerCase();
@@ -572,10 +588,19 @@
 
                 if (matchesQuery && matchesType) {
                     row.style.display = "";
+                    visibleCount++;
                 } else {
                     row.style.display = "none";
                 }
             });
+
+            if (noResultsRow) {
+                if (visibleCount === 0 && rows.length > 0) {
+                    noResultsRow.classList.remove("hidden");
+                } else {
+                    noResultsRow.classList.add("hidden");
+                }
+            }
         }
 
         if (searchInput) {
@@ -588,4 +613,3 @@
     });
 </script>
 {% endblock %}
-

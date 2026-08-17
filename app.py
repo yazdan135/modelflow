@@ -311,7 +311,17 @@ def get_user_analytics_data(user_id):
                     "metadata": {"models_trained": len(leaderboard), "best_model": best_m}
                 })
 
-    history_events.sort(key=lambda x: x.get("timestamp") if isinstance(x.get("timestamp"), datetime) else datetime.min, reverse=True)
+    def parse_ts(ts):
+        if isinstance(ts, datetime):
+            return ts
+        if isinstance(ts, str):
+            try:
+                return datetime.fromisoformat(ts.replace("Z", "+00:00"))
+            except Exception:
+                pass
+        return datetime.min
+
+    history_events.sort(key=lambda x: parse_ts(x.get("timestamp")), reverse=True)
 
     min_score = min(all_scores) if all_scores else 0.0
     max_score = max(all_scores) if all_scores else 0.0
@@ -335,31 +345,31 @@ def get_user_analytics_data(user_id):
     if total_engagement_score >= 90:
         tier_title = "Grandmaster AI Architect"
         tier_badge = "bg-amber-100 text-amber-900 border-amber-300"
-        tier_icon = "fa-trophy text-amber-500"
+        tier_icon = "fa-trophy"
         star_rating = "5.0"
         stars_html = "⭐⭐⭐⭐⭐"
     elif total_engagement_score >= 70:
         tier_title = "Senior ML Specialist"
         tier_badge = "bg-indigo-100 text-indigo-900 border-indigo-300"
-        tier_icon = "fa-medal text-indigo-600"
+        tier_icon = "fa-medal"
         star_rating = "4.5"
         stars_html = "⭐⭐⭐⭐✨"
     elif total_engagement_score >= 45:
         tier_title = "Data Science Practitioner"
         tier_badge = "bg-emerald-100 text-emerald-900 border-emerald-300"
-        tier_icon = "fa-award text-emerald-600"
+        tier_icon = "fa-award"
         star_rating = "3.8"
         stars_html = "⭐⭐⭐⭐"
     elif total_engagement_score >= 20:
         tier_title = "ML Apprentice"
         tier_badge = "bg-blue-100 text-blue-900 border-blue-300"
-        tier_icon = "fa-star text-blue-500"
+        tier_icon = "fa-star"
         star_rating = "2.8"
         stars_html = "⭐⭐⭐"
     else:
         tier_title = "Novice Explorer"
         tier_badge = "bg-slate-100 text-slate-900 border-slate-300"
-        tier_icon = "fa-seedling text-emerald-500"
+        tier_icon = "fa-seedling"
         star_rating = "1.5"
         stars_html = "⭐⭐"
 
@@ -2060,19 +2070,59 @@ def execute_code():
 @login_required
 def analytics():
     project = get_current_project()
-    analytics_data = get_user_analytics_data(current_user.id)
-    
-    charts = {}
-    charts["algo_pie"] = vu.user_algorithm_pie(analytics_data["algo_counts"], dark_mode=False).to_json()
-    charts["task_donut"] = vu.user_task_donut(analytics_data["task_counts"], dark_mode=False).to_json()
-    charts["score_timeline"] = vu.user_score_history_line(analytics_data["score_timeline"], dark_mode=False).to_json()
-    charts["score_range"] = vu.user_score_range_bar(
-        analytics_data["stats"]["min_score"],
-        analytics_data["stats"]["avg_score"],
-        analytics_data["stats"]["max_score"],
-        dark_mode=False
-    ).to_json()
+    try:
+        analytics_data = get_user_analytics_data(current_user.id)
+    except Exception as e:
+        print(f"Error fetching analytics data: {e}")
+        traceback.print_exc()
+        analytics_data = {
+            "user_info": {
+                "name": getattr(current_user, "name", "User"),
+                "email": getattr(current_user, "email", ""),
+                "provider": getattr(current_user, "provider", "local"),
+                "picture": getattr(current_user, "picture", None),
+                "created_at": getattr(current_user, "created_at", datetime.utcnow()),
+            },
+            "stats": {
+                "total_projects": 0,
+                "total_models_trained": 0,
+                "total_datasets_uploaded": 0,
+                "min_score": 0.0,
+                "max_score": 0.0,
+                "avg_score": 0.0,
+                "total_activities": 0
+            },
+            "platform_rating": {
+                "score": 0,
+                "tier_title": "Novice Explorer",
+                "tier_badge": "bg-slate-100 text-slate-900 border-slate-300",
+                "tier_icon": "fa-seedling",
+                "star_rating": "1.0",
+                "stars_html": "⭐",
+                "breakdown": {"workspaces": 0, "models": 0, "quality": 0, "activity": 0}
+            },
+            "algo_counts": {},
+            "task_counts": {},
+            "trained_models": [],
+            "history_events": [],
+            "score_timeline": []
+        }
 
+    charts = {}
+    try:
+        charts["algo_pie"] = vu.user_algorithm_pie(analytics_data.get("algo_counts", {}), dark_mode=False).to_json()
+        charts["task_donut"] = vu.user_task_donut(analytics_data.get("task_counts", {}), dark_mode=False).to_json()
+        charts["score_timeline"] = vu.user_score_history_line(analytics_data.get("score_timeline", []), dark_mode=False).to_json()
+        stats = analytics_data.get("stats", {})
+        charts["score_range"] = vu.user_score_range_bar(
+            stats.get("min_score", 0.0),
+            stats.get("avg_score", 0.0),
+            stats.get("max_score", 0.0),
+            dark_mode=False
+        ).to_json()
+    except Exception as e:
+        print(f"Error generating analytics charts: {e}")
+        traceback.print_exc()
 
     return render_template(
         "analytics.html",
