@@ -5,6 +5,7 @@ import uuid
 import shutil
 import traceback
 import time
+import random
 from datetime import datetime
 from functools import wraps
 import numpy as np
@@ -41,7 +42,7 @@ app = Flask(__name__)
 app.url_map.strict_slashes = False
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 
-ATLAS_MONGO_URI = os.getenv("MONGO_URI") or "mongodb+srv://muhammadyazdan375_db_user:apd0QkBc5zOcxoog@modelflow.vveha5i.mongodb.net/modelflow?retryWrites=true&w=majority&tls=true&tlsAllowInvalidCertificates=true"
+ATLAS_MONGO_URI = os.getenv("MONGO_URI", "")
 ADMIN_EMAIL = (os.getenv("ADMIN_EMAIL") or "admin@yazdan.com").strip().lower()
 ADMIN_PASSWORD = (os.getenv("ADMIN_PASSWORD") or "yazdan243").strip()
 
@@ -177,11 +178,37 @@ def create_new_project(user_id, project_name=None):
     log_user_activity(user_id, project_id, "project", f"Created new workspace project '{project_name}'")
     return project
 
+def sanitize_for_mongo(obj):
+    if isinstance(obj, dict):
+        return {str(k): sanitize_for_mongo(v) for k, v in obj.items()}
+    elif isinstance(obj, (list, tuple)):
+        return [sanitize_for_mongo(v) for v in obj]
+    elif isinstance(obj, np.integer):
+        return int(obj)
+    elif isinstance(obj, np.floating):
+        return float(obj) if not (np.isnan(obj) or np.isinf(obj)) else None
+    elif isinstance(obj, np.ndarray):
+        return sanitize_for_mongo(obj.tolist())
+    elif isinstance(obj, np.bool_):
+        return bool(obj)
+    elif isinstance(obj, (int, float, str, bool)):
+        return obj
+    elif obj is None:
+        return None
+    try:
+        if pd.isna(obj):
+            return None
+    except Exception:
+        pass
+    return str(obj)
+
 def update_project_state(project_id, state):
-    db.projects.update_one(
-        {"_id": project_id},
-        {"$set": {"state": state, "updated_at": datetime.utcnow()}}
+    clean_state = sanitize_for_mongo(state)
+    res = db.projects.update_one(
+        {"_id": str(project_id)},
+        {"$set": {"state": clean_state, "updated_at": datetime.utcnow()}}
     )
+    print(f"[DEBUG update_project_state] project_id={project_id}, matched={res.matched_count}, modified={res.modified_count}")
 
 def is_model_trained(project_dir, state):
     if not state or "best_model" not in state or not state.get("best_model"):
@@ -533,7 +560,13 @@ def login():
             flash("Invalid email or password.", "danger")
             return redirect(url_for("login"))
         
-        if bcrypt.checkpw(password.encode('utf-8'), user_data["password"]):
+        stored_pw = user_data["password"]
+        if isinstance(stored_pw, str):
+            stored_pw = stored_pw.encode('utf-8')
+        else:
+            stored_pw = bytes(stored_pw)
+
+        if bcrypt.checkpw(password.encode('utf-8'), stored_pw):
             user = User(user_data)
             login_user(user)
             flash("Logged in successfully!", "success")
@@ -797,117 +830,67 @@ def upload_page():
     state = project.get("state", {})
     return render_template("index.html", state=state, current_project=project)
 
-@app.route("/load_sample/<sample_id>", methods=["POST", "GET"])
-@login_required
-def load_sample(sample_id):
-    project = get_current_project()
-    if not project:
-        projects = get_user_projects(current_user.id)
-        if projects:
-            project = projects[0]
-            set_current_project(project["_id"])
-        else:
-            flash("Please create your first project workspace to start dataset upload.", "info")
-            return redirect(url_for("new_project"))
-
-    project_dir = get_project_dir(current_user.id, project["_id"])
-    
-    if sample_id == "iris":
-        from sklearn.datasets import load_iris
-        raw = load_iris(as_frame=True)
-        df = raw.frame
-        df.rename(columns={"target": "species_class"}, inplace=True)
-        filename = "iris_flowers_classification.csv"
-    elif sample_id == "housing":
-        from sklearn.datasets import fetch_california_housing
-        raw = fetch_california_housing(as_frame=True)
-        df = raw.frame.head(500)
-        df.rename(columns={"MedHouseVal": "house_price_value"}, inplace=True)
-        filename = "housing_prices_regression.csv"
-    elif sample_id == "churn":
-        np.random.seed(42)
-        n = 300
-        df = pd.DataFrame({
-            "account_age_months": np.random.randint(1, 72, n),
-            "monthly_charges_usd": np.round(np.random.uniform(20, 120, n), 2),
-            "total_support_calls": np.random.randint(0, 10, n),
-            "contract_type": np.random.choice(["Month-to-Month", "One Year", "Two Year"], n),
-            "payment_method": np.random.choice(["Credit Card", "Bank Transfer", "Electronic Check"], n),
-            "churn_status": np.random.choice(["No", "Yes"], n, p=[0.75, 0.25])
-        })
-        filename = "customer_churn_telecom.csv"
-    else:
-        flash("Unknown sample dataset requested.", "warning")
-        return redirect(url_for("upload_page"))
-
-    du.save_df(project_dir, df)
-    du.save_df(project_dir, df, name="original.pkl")
-
-    info = du.basic_file_info(df, filename)
-    profile = du.profile_dataset(df)
-
-    state = {
-        "file_info": info,
-        "profile": profile,
-        "cleaning_log": [],
-        "target": None,
-        "task": None
-    }
-    du.save_state(project_dir, state)
-    update_project_state(project["_id"], state)
-
-    du.create_cleaning_snapshot(project_dir, df, "Initial sample dataset load")
-    log_user_activity(current_user.id, project["_id"], "dataset", f"Loaded sample dataset '{filename}'", metadata=info)
-
-    flash(f"Loaded sample dataset '{filename}' successfully ({info['rows']} rows, {info['columns']} columns).", "success")
-    return redirect(url_for("explore"))
-
 @app.route("/upload", methods=["POST"])
 @login_required
 def upload():
-    project = get_current_project()
-    if not project:
-        projects = get_user_projects(current_user.id)
-        if projects:
-            project = projects[0]
-            set_current_project(project["_id"])
-        else:
-            flash("Please create a project workspace first before uploading datasets.", "warning")
-            return redirect(url_for("new_project"))
+    try:
+        project = get_current_project()
+        if not project:
+            projects = get_user_projects(current_user.id)
+            if projects:
+                project = projects[0]
+                set_current_project(project["_id"])
+            else:
+                flash("Please create a project workspace first before uploading datasets.", "warning")
+                return redirect(url_for("new_project"))
 
-    project_dir = get_project_dir(current_user.id, project["_id"])
-    file = request.files.get("file")
-    if not file or file.filename == "":
-        flash("Please choose a CSV, TSV, or Excel file.", "danger")
+        project_dir = get_project_dir(current_user.id, project["_id"])
+        file = request.files.get("file")
+        if not file or file.filename == "":
+            flash("Please choose a CSV, TSV, or Excel file.", "danger")
+            return redirect(url_for("upload_page"))
+
+        from werkzeug.utils import secure_filename
+        raw_name = file.filename
+        safe_name = secure_filename(raw_name)
+        if not safe_name:
+            safe_name = f"dataset_{int(time.time())}.csv"
+
+        ext = safe_name.rsplit(".", 1)[-1].lower() if "." in safe_name else ""
+        if ext not in ("csv", "xlsx", "xls", "tsv"):
+            flash("Only .csv, .xlsx, .xls, and .tsv files are supported.", "danger")
+            return redirect(url_for("upload_page"))
+
+        df = du.read_uploaded_file(file)
+        if df is None or df.empty:
+            flash("The uploaded dataset is empty or could not be parsed.", "danger")
+            return redirect(url_for("upload_page"))
+
+        du.save_df(project_dir, df)
+        du.save_df(project_dir, df, name="original.pkl")
+
+        info = du.basic_file_info(df, safe_name)
+        profile = du.profile_dataset(df)
+
+        state = {
+            "file_info": info,
+            "profile": profile,
+            "cleaning_log": [],
+            "target": None,
+            "task": None
+        }
+        du.save_state(project_dir, state)
+        update_project_state(project["_id"], state)
+        
+        du.create_cleaning_snapshot(project_dir, df, "Initial raw upload")
+        log_user_activity(current_user.id, project["_id"], "dataset", f"Uploaded dataset '{safe_name}' ({info['rows']} rows, {info['columns']} columns)", metadata=info)
+
+        flash(f"Uploaded '{safe_name}' successfully — {info['rows']} rows, {info['columns']} columns ({info['memory_usage']}).", "success")
+        return redirect(url_for("explore"))
+    except Exception as e:
+        traceback.print_exc()
+        flash(f"Failed to upload dataset: {str(e)}", "danger")
         return redirect(url_for("upload_page"))
-
-    ext = file.filename.rsplit(".", 1)[-1].lower()
-    if ext not in ("csv", "xlsx", "xls", "tsv"):
-        flash("Only .csv, .xlsx, .xls, and .tsv files are supported.", "danger")
-        return redirect(url_for("upload_page"))
-
-    df = du.read_uploaded_file(file)
-    du.save_df(project_dir, df)
-    du.save_df(project_dir, df, name="original.pkl")
-
-    info = du.basic_file_info(df, file.filename)
-    profile = du.profile_dataset(df)
-
-    state = {
-        "file_info": info,
-        "profile": profile,
-        "cleaning_log": [],
-        "target": None,
-        "task": None
-    }
-    du.save_state(project_dir, state)
-    update_project_state(project["_id"], state)
-    
-    du.create_cleaning_snapshot(project_dir, df, "Initial raw upload")
-    log_user_activity(current_user.id, project["_id"], "dataset", f"Uploaded dataset '{file.filename}' ({info['rows']} rows, {info['columns']} columns)", metadata=info)
-
-    flash(f"Uploaded '{file.filename}' successfully — {info['rows']} rows, {info['columns']} columns ({info['memory_usage']}).", "success")
-    return redirect(url_for("explore"))
 
 @app.route("/explore")
 @login_required
@@ -2035,11 +2018,35 @@ else:
 def execute_code():
     project = get_current_project()
     project_dir = get_project_dir(current_user.id, project["_id"]) if project else None
-    data = request.json
+    data = request.json or {}
     code = data.get("code", "")
+    
+    # Security AST / keyword validation: Block system modules and dangerous functions
+    forbidden_terms = [
+        "import os", "import sys", "import subprocess", "import shutil",
+        "os.", "sys.", "subprocess.", "shutil.", "open(", "eval(", "exec(",
+        "__import__", "globals(", "locals(", "getattr(", "setattr(", "delattr(",
+        "__builtins__", "system(", "popen(", "unlink(", "remove(", "rmdir("
+    ]
+    code_lower = code.lower()
+    for term in forbidden_terms:
+        if term in code_lower:
+            return jsonify({
+                "success": False,
+                "output": f"Security Error: Code execution blocked due to forbidden keyword/module: '{term}'. Only safe data operations are allowed."
+            }), 403
+
     try:
         df = du.load_df(project_dir) if project_dir else None
+        safe_builtins = {
+            "print": print, "range": range, "len": len, "str": str, "int": int,
+            "float": float, "bool": bool, "list": list, "dict": dict, "set": set,
+            "tuple": tuple, "sum": sum, "min": min, "max": max, "abs": abs,
+            "round": round, "enumerate": enumerate, "zip": zip, "isinstance": isinstance,
+            "type": type, "any": any, "all": all, "sorted": sorted
+        }
         exec_globals = {
+            "__builtins__": safe_builtins,
             "pd": pd,
             "np": np,
             "df": df,
@@ -2272,124 +2279,12 @@ def reset():
     flash("Session reset. Select or create a project to continue.", "info")
     return redirect(url_for("index"))
 
-# =====================================================================
-# FREE AI SAAS PRODUCTS & TOOLS ENGINE ROUTES
-# =====================================================================
-from utils.tools_engine import (
-    TOOLS_CATALOG, process_tool_execution,
-    convert_json_to_yaml, convert_yaml_to_json, convert_csv_to_json,
-    convert_json_to_xml, convert_xml_to_json
-)
-from utils.real_converters import (
-    images_to_pdf_bytes, image_format_convert, text_or_md_to_pdf_bytes,
-    word_docx_to_pdf_bytes, pdf_to_word_bytes, pdf_to_text_string,
-    pdf_to_markdown_string, pdf_merge_bytes, pdf_split_bytes, pdf_rotate_bytes,
-    pdf_protect_bytes, pdf_remove_password_bytes
-)
-
-@app.route("/products")
-def products_index():
-    return render_template("products/index.html", catalog=TOOLS_CATALOG)
-
-@app.route("/products/<slug>")
-def product_detail(slug):
-    tool = TOOLS_CATALOG.get(slug)
-    if not tool:
-        flash("The requested AI product tool was not found.", "warning")
-        return redirect(url_for("products_index"))
-    return render_template("products/detail.html", tool=tool, catalog=TOOLS_CATALOG)
-
-@app.route("/api/tools/<slug>/process", methods=["POST"])
-def api_process_tool(slug):
-    tool = TOOLS_CATALOG.get(slug)
-    if not tool:
-        return jsonify({"success": False, "error": "Unknown tool slug requested."}), 404
-    
-    data = request.get_json() or {}
-    res = process_tool_execution(slug, data)
-    return jsonify(res)
-
-@app.route("/api/tools/<slug>/convert", methods=["POST"])
-def api_convert_file(slug):
-    try:
-        uploaded_files = request.files.getlist("file") or request.files.getlist("files") or request.files.getlist("file_upload")
-        file_bytes_list = [f.read() for f in uploaded_files if f and f.filename]
-        text_input = request.form.get("input_content") or request.form.get("text") or ""
-
-        # PDF Conversions
-        if slug in ["image-to-pdf", "jpg-to-pdf", "png-to-pdf", "webp-to-pdf"]:
-            if not file_bytes_list and text_input:
-                file_bytes_list.append(text_input.encode('utf-8'))
-            pdf_out = images_to_pdf_bytes(file_bytes_list)
-            return send_file(io.BytesIO(pdf_out), mimetype="application/pdf", as_attachment=True, download_name="converted_images.pdf")
-
-        elif slug == "word-to-pdf":
-            pdf_out = word_docx_to_pdf_bytes(file_bytes_list[0]) if file_bytes_list else text_or_md_to_pdf_bytes(text_input, is_markdown=False)
-            return send_file(io.BytesIO(pdf_out), mimetype="application/pdf", as_attachment=True, download_name="converted_word.pdf")
-
-        elif slug == "pdf-to-word":
-            docx_out = pdf_to_word_bytes(file_bytes_list[0]) if file_bytes_list else b""
-            return send_file(io.BytesIO(docx_out), mimetype="application/vnd.openxmlformats-officedocument.wordprocessingml.document", as_attachment=True, download_name="converted_pdf.docx")
-
-        elif slug in ["markdown-to-pdf", "html-to-pdf", "text-to-pdf"]:
-            pdf_out = text_or_md_to_pdf_bytes(text_input or (file_bytes_list[0].decode('utf-8') if file_bytes_list else ""), is_markdown=(slug != "text-to-pdf"))
-            return send_file(io.BytesIO(pdf_out), mimetype="application/pdf", as_attachment=True, download_name="converted_document.pdf")
-
-        elif slug == "pdf-to-markdown":
-            md_out = pdf_to_markdown_string(file_bytes_list[0]) if file_bytes_list else f"# Extracted Content\n\n{text_input}"
-            return send_file(io.BytesIO(md_out.encode('utf-8')), mimetype="text/markdown", as_attachment=True, download_name="extracted_pdf.md")
-
-        elif slug == "pdf-to-text":
-            txt_out = pdf_to_text_string(file_bytes_list[0]) if file_bytes_list else text_input
-            return send_file(io.BytesIO(txt_out.encode('utf-8')), mimetype="text/plain", as_attachment=True, download_name="extracted_pdf.txt")
-
-        elif slug in ["jpg-to-png", "png-to-jpg", "webp-to-jpg", "jpg-to-webp", "bmp-to-png", "tiff-to-jpg", "avif-to-png", "svg-to-png", "png-to-svg", "heic-to-jpg"]:
-            target_ext = slug.split("-to-")[-1].upper()
-            if target_ext == "JPG": target_ext = "JPEG"
-            img_out = image_format_convert(file_bytes_list[0], target_format=target_ext) if file_bytes_list else b""
-            return send_file(io.BytesIO(img_out), mimetype=f"image/{target_ext.lower()}", as_attachment=True, download_name=f"converted_image.{target_ext.lower()}")
-
-        elif slug == "merge-pdf":
-            pdf_out = pdf_merge_bytes(file_bytes_list) if len(file_bytes_list) >= 2 else text_or_md_to_pdf_bytes("Merged Document Content", is_markdown=False)
-            return send_file(io.BytesIO(pdf_out), mimetype="application/pdf", as_attachment=True, download_name="merged_documents.pdf")
-
-        elif slug == "split-pdf":
-            page_r = request.form.get("pages", "1-2")
-            pdf_out = pdf_split_bytes(file_bytes_list[0], page_range_str=page_r) if file_bytes_list else text_or_md_to_pdf_bytes("Split Content", is_markdown=False)
-            return send_file(io.BytesIO(pdf_out), mimetype="application/pdf", as_attachment=True, download_name="split_document.pdf")
-
-        # Developer Format Converters
-        elif slug == "json-to-yaml":
-            res_str = convert_json_to_yaml(text_input or (file_bytes_list[0].decode('utf-8') if file_bytes_list else "{}"))
-            return send_file(io.BytesIO(res_str.encode('utf-8')), mimetype="text/yaml", as_attachment=True, download_name="converted.yaml")
-
-        elif slug == "yaml-to-json":
-            res_str = convert_yaml_to_json(text_input or (file_bytes_list[0].decode('utf-8') if file_bytes_list else ""))
-            return send_file(io.BytesIO(res_str.encode('utf-8')), mimetype="application/json", as_attachment=True, download_name="converted.json")
-
-        elif slug == "csv-to-json":
-            res_str = convert_csv_to_json(text_input or (file_bytes_list[0].decode('utf-8') if file_bytes_list else ""))
-            return send_file(io.BytesIO(res_str.encode('utf-8')), mimetype="application/json", as_attachment=True, download_name="converted.json")
-
-        elif slug == "json-to-xml":
-            res_str = convert_json_to_xml(text_input or (file_bytes_list[0].decode('utf-8') if file_bytes_list else "{}"))
-            return send_file(io.BytesIO(res_str.encode('utf-8')), mimetype="application/xml", as_attachment=True, download_name="converted.xml")
-
-        elif slug == "xml-to-json":
-            res_str = convert_xml_to_json(text_input or (file_bytes_list[0].decode('utf-8') if file_bytes_list else ""))
-            return send_file(io.BytesIO(res_str.encode('utf-8')), mimetype="application/json", as_attachment=True, download_name="converted.json")
-
-        return jsonify({"success": True, "message": f"Processed {slug}"})
-
-    except Exception as e:
-        return jsonify({"success": False, "error": f"File conversion failed: {str(e)}"}), 400
-
 
 # =====================================================================
 # MODELFLOW DEV V2.0-LR ENTERPRISE WORKSPACE & PROJECT ROUTES
 # =====================================================================
 from utils.v2_engine import (
-    get_workspace_data, get_project_full_context, create_new_project,
+    get_workspace_data, get_project_full_context, create_new_project as v2_create_new_project,
     switch_deployment_model_version, get_contextual_ai_advisor
 )
 from utils.v2_models import load_store, save_store, generate_uuid
@@ -2422,7 +2317,7 @@ def api_v2_create_project():
         return jsonify({"success": False, "error": "Project name is required."}), 400
     
     ws, _ = get_workspace_data()
-    proj = create_new_project(ws["id"], name, desc, tags)
+    proj = v2_create_new_project(ws["id"], name, desc, tags)
     return jsonify({"success": True, "project": proj, "redirect": f"/v2/projects/{proj['id']}"})
 
 @app.route("/api/v2/deployments/<dep_id>/switch-model", methods=["POST"])
@@ -2507,6 +2402,166 @@ def api_v2_add_knowledge():
     store.setdefault("knowledge_hub", []).insert(0, item)
     save_store(store)
     return jsonify({"success": True, "item": item})
+
+
+# -------------------------------------------------------------------------
+# Conversational AI Assistant Endpoints (Google Gemini Integration)
+# -------------------------------------------------------------------------
+
+@app.route("/api/ai/chat", methods=["POST"])
+def api_ai_chat():
+    if not current_user.is_authenticated:
+        return jsonify({"success": False, "error": "Authentication required."}), 401
+
+    data = request.get_json() or {}
+    user_message = data.get("message", "").strip()
+    conv_id = data.get("conversation_id")
+    proj_id = data.get("project_id")
+
+    if not user_message:
+        return jsonify({"success": False, "error": "Message content cannot be empty."}), 400
+
+    user_id = str(current_user.id)
+
+    # Get or create conversation record
+    conv_doc = None
+    if conv_id:
+        conv_doc = db.conversations.find_one({"_id": conv_id, "user_id": user_id})
+
+    if not conv_doc:
+        conv_id = str(uuid.uuid4())
+        conv_title = user_message[:40] + ("..." if len(user_message) > 40 else "")
+        conv_doc = {
+            "_id": conv_id,
+            "user_id": user_id,
+            "project_id": proj_id,
+            "title": conv_title,
+            "messages": [],
+            "created_at": datetime.utcnow(),
+            "updated_at": datetime.utcnow()
+        }
+
+    # Load active project context if available
+    project_context = None
+    target_pid = proj_id or session.get("current_project_id")
+    if target_pid:
+        project_data = db.projects.find_one({"_id": target_pid, "user_id": user_id})
+        if project_data:
+            project_dir = get_project_dir(user_id, target_pid)
+            state = du.load_state(project_dir)
+            profile = state.get("profile", {})
+            ai_data = state.get("ai", {})
+            leaderboard = state.get("leaderboard", [])
+            
+            project_context = {
+                "project_name": project_data.get("name"),
+                "dataset_shape": profile.get("shape"),
+                "health_score": profile.get("health_score"),
+                "suggested_target": ai_data.get("suggested_target"),
+                "suggested_task": ai_data.get("suggested_task"),
+                "total_models_trained": len(leaderboard),
+                "best_model": leaderboard[0]["model"] if leaderboard else None,
+                "best_accuracy": leaderboard[0].get("score") if leaderboard else None
+            }
+
+    # Append new user message to history
+    messages_history = conv_doc.get("messages", [])
+    messages_history.append({
+        "role": "user",
+        "content": user_message,
+        "timestamp": datetime.utcnow().isoformat()
+    })
+
+    # Prepare message payload for Gemini (keep last 12 messages for performance)
+    payload_history = [
+        {"role": m["role"], "content": m["content"]}
+        for m in messages_history[-12:]
+    ]
+
+    try:
+        ai_response, provider_name = au.generate_chat_response_with_fallback(payload_history, project_context=project_context)
+    except Exception as e:
+        print(f"[API AI Chat Critical Error]: {str(e)}")
+        ai_response = au._generate_modelflow_engine_chat_response(payload_history, project_context=project_context)
+        provider_name = "ModelFlow Engine Fallback"
+
+    ai_badge = "AI: Gemini" if provider_name == "Gemini AI" else "AI: ModelFlow Engine Fallback"
+
+    # Append AI response to history
+    messages_history.append({
+        "role": "model",
+        "content": ai_response,
+        "provider": provider_name,
+        "timestamp": datetime.utcnow().isoformat()
+    })
+
+    conv_doc["messages"] = messages_history
+    conv_doc["updated_at"] = datetime.utcnow()
+    db.conversations.update_one(
+        {"_id": conv_id},
+        {"$set": conv_doc},
+        upsert=True
+    )
+
+    return jsonify({
+        "success": True,
+        "conversation_id": conv_id,
+        "title": conv_doc.get("title", "New Conversation"),
+        "response": ai_response,
+        "provider": provider_name,
+        "ai_badge": ai_badge
+    })
+
+
+@app.route("/api/ai/conversations", methods=["GET"])
+@login_required
+def api_ai_get_conversations():
+    user_id = str(current_user.id)
+    convs = list(db.conversations.find({"user_id": user_id}).sort("updated_at", -1).limit(20))
+    result = []
+    for c in convs:
+        result.append({
+            "id": c["_id"],
+            "title": c.get("title", "Conversation"),
+            "updated_at": c.get("updated_at", datetime.utcnow()).isoformat() if isinstance(c.get("updated_at"), datetime) else str(c.get("updated_at")),
+            "message_count": len(c.get("messages", []))
+        })
+    return jsonify({"success": True, "conversations": result})
+
+
+@app.route("/api/ai/conversations/<conv_id>", methods=["GET"])
+@login_required
+def api_ai_get_conversation_detail(conv_id):
+    user_id = str(current_user.id)
+    conv = db.conversations.find_one({"_id": conv_id, "user_id": user_id})
+    if not conv:
+        return jsonify({"success": False, "error": "Conversation not found."}), 404
+    
+    return jsonify({
+        "success": True,
+        "conversation": {
+            "id": conv["_id"],
+            "title": conv.get("title"),
+            "messages": conv.get("messages", [])
+        }
+    })
+
+
+@app.route("/api/ai/conversations/new", methods=["POST"])
+@login_required
+def api_ai_new_conversation():
+    new_id = str(uuid.uuid4())
+    return jsonify({"success": True, "conversation_id": new_id})
+
+
+@app.route("/api/ai/conversations/<conv_id>", methods=["DELETE"])
+@login_required
+def api_ai_delete_conversation(conv_id):
+    user_id = str(current_user.id)
+    db.conversations.delete_one({"_id": conv_id, "user_id": user_id})
+    return jsonify({"success": True})
+
+
 
 if __name__ == "__main__":
     import sys

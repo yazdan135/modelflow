@@ -309,7 +309,7 @@
                                     <span class="font-mono text-slate-500">{{ (feat.importance * 100)|round(1) }}%</span>
                                 </div>
                                 <div class="w-full bg-slate-100 rounded-full h-1.5">
-                                    <div class="bg-indigo-600 h-1.5 rounded-full" style="width: {{ feat.importance * 100 }}%"></div>
+                                    <div class="bg-indigo-600 h-1.5 rounded-full" style="--feat-pct: {{ feat.importance * 100 }}%; width: var(--feat-pct);"></div>
                                 </div>
                             </div>
                             {% endfor %}

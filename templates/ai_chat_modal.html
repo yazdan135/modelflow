@@ -1,0 +1,353 @@
+<!-- ========================================================================= -->
+<!-- ModelFlow AI Assistant Floating Chat Widget & Drawer                      -->
+<!-- ========================================================================= -->
+
+<!-- Floating AI Trigger Button -->
+<button id="aiChatToggleBtn" onclick="toggleAiChatDrawer()" class="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 px-4 py-3 bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 hover:from-indigo-500 hover:to-purple-500 text-white font-extrabold text-xs rounded-full shadow-2xl hover:shadow-indigo-500/40 transition-all duration-300 transform hover:scale-105 active:scale-95 group border border-white/20">
+    <div class="relative flex items-center justify-center w-6 h-6 rounded-full bg-white/20 text-amber-300">
+        <i class="fas fa-brain text-sm group-hover:rotate-12 transition-transform duration-300"></i>
+        <span class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-emerald-400 rounded-full border-2 border-indigo-900 animate-pulse"></span>
+    </div>
+    <span class="font-outfit tracking-wide">ModelFlow AI</span>
+</button>
+
+<!-- Slide-over AI Chat Panel Container -->
+<div id="aiChatPanel" class="fixed bottom-24 right-4 sm:right-6 z-50 w-[92vw] sm:w-[440px] h-[580px] max-h-[82vh] bg-white rounded-3xl shadow-2xl border border-slate-200/80 flex flex-col overflow-hidden transition-all duration-300 opacity-0 pointer-events-none transform translate-y-4 font-inter">
+    
+    <!-- Panel Header -->
+    <div class="bg-slate-900 text-white p-4 flex items-center justify-between border-b border-slate-800 shrink-0">
+        <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-amber-300 shadow-md">
+                <i class="fas fa-sparkles text-base"></i>
+            </div>
+            <div>
+                <div class="flex items-center gap-2">
+                    <h3 class="text-sm font-black font-outfit text-white tracking-tight">ModelFlow AI Assistant</h3>
+                    <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 shadow-sm shadow-emerald-400"></span>
+                </div>
+                <p class="text-[10px] text-slate-400 font-medium">Powered by Google Gemini 3.6 Flash</p>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-1.5">
+            <!-- New Conversation Button -->
+            <button onclick="startNewAiChat()" title="Start New Chat" class="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors text-xs flex items-center gap-1 font-bold">
+                <i class="fas fa-plus"></i> <span class="hidden sm:inline">New</span>
+            </button>
+
+            <!-- History Toggle Button -->
+            <button onclick="toggleAiHistoryList()" title="Chat History" class="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors text-xs">
+                <i class="fas fa-history"></i>
+            </button>
+
+            <!-- Close Button -->
+            <button onclick="toggleAiChatDrawer()" title="Close" class="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors text-xs">
+                <i class="fas fa-times text-sm"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- History Dropdown Overlay -->
+    <div id="aiHistoryDrawer" class="hidden bg-slate-800 border-b border-slate-700 p-3 max-h-48 overflow-y-auto shrink-0 transition-all text-xs">
+        <div class="flex items-center justify-between mb-2">
+            <span class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">Past Conversations</span>
+            <button onclick="startNewAiChat()" class="text-[11px] text-indigo-400 hover:text-indigo-300 font-bold">+ New Chat</button>
+        </div>
+        <div id="aiHistoryList" class="space-y-1 text-slate-300">
+            <!-- Dynamically populated -->
+            <p class="text-[11px] text-slate-400 italic p-1">Loading history...</p>
+        </div>
+    </div>
+
+    <!-- Active Conversation Title Banner -->
+    <div class="bg-indigo-50/80 px-4 py-1.5 border-b border-indigo-100/60 flex items-center justify-between text-[11px] font-semibold text-indigo-900 shrink-0">
+        <div class="flex items-center gap-1.5 truncate max-w-[80%]">
+            <i class="fas fa-comments text-indigo-500"></i>
+            <span id="aiChatActiveTitle" class="truncate font-mono">New Chat</span>
+        </div>
+        <span class="text-[10px] text-indigo-500 font-mono" id="aiChatMsgCount">0 msgs</span>
+    </div>
+
+    <!-- Chat Messages Scroll Container -->
+    <div id="aiChatMessages" class="flex-1 p-4 overflow-y-auto space-y-3.5 bg-slate-50/50 text-xs">
+        <!-- Initial Welcome Message -->
+        <div class="flex gap-3 max-w-[90%]">
+            <div class="w-7 h-7 rounded-lg bg-indigo-600 text-amber-300 flex items-center justify-center shrink-0 shadow-sm mt-0.5">
+                <i class="fas fa-brain text-xs"></i>
+            </div>
+            <div class="bg-white p-3.5 rounded-2xl rounded-tl-sm border border-slate-200/80 shadow-xs text-slate-800 space-y-2 leading-relaxed">
+                <p class="font-bold text-slate-900">Hello! I am your ModelFlow AI Assistant. 👋</p>
+                <p>How can I assist you with your machine learning workflow today?</p>
+                <div class="pt-1 flex flex-wrap gap-1.5">
+                    <button onclick="quickSendPrompt('What is ModelFlow and how does AutoML work?')" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-[11px] font-medium transition-colors border border-indigo-100">
+                        What is ModelFlow?
+                    </button>
+                    <button onclick="quickSendPrompt('Analyze my dataset quality and suggest recommendations')" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-[11px] font-medium transition-colors border border-indigo-100">
+                        Dataset Advice
+                    </button>
+                    <button onclick="quickSendPrompt('How do I choose between XGBoost and Random Forest?')" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-[11px] font-medium transition-colors border border-indigo-100">
+                        Model Guidance
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Indicator Bar -->
+    <div id="aiChatLoading" class="hidden px-4 py-2 bg-white border-t border-slate-100 flex items-center gap-2 text-xs text-indigo-600 font-medium">
+        <i class="fas fa-circle-notch fa-spin"></i>
+        <span>ModelFlow AI is thinking...</span>
+    </div>
+
+    <!-- Chat Input Form -->
+    <form id="aiChatForm" onsubmit="handleAiChatSubmit(event)" class="p-3 bg-white border-t border-slate-200/80 flex items-center gap-2 shrink-0">
+        <textarea id="aiChatInput" rows="1" placeholder="Ask ModelFlow AI... (Shift+Enter for line)" class="flex-1 px-3.5 py-2.5 text-xs bg-slate-100/80 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-slate-800 placeholder-slate-400 resize-none max-h-24"></textarea>
+        <button type="submit" id="aiChatSendBtn" class="w-9 h-9 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white flex items-center justify-center transition-all duration-200 shrink-0 shadow-md shadow-indigo-600/20 active:scale-95 disabled:opacity-50">
+            <i class="fas fa-paper-plane text-xs"></i>
+        </button>
+    </form>
+</div>
+
+<!-- Simple Client-side Script for AI Assistant Panel -->
+<script>
+    let currentConversationId = null;
+    let isAiChatOpen = false;
+
+    function toggleAiChatDrawer() {
+        const panel = document.getElementById('aiChatPanel');
+        isAiChatOpen = !isAiChatOpen;
+        if (isAiChatOpen) {
+            panel.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+            panel.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
+            document.getElementById('aiChatInput').focus();
+            loadAiHistoryList();
+        } else {
+            panel.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+            panel.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+        }
+    }
+
+    function toggleAiHistoryList() {
+        const drawer = document.getElementById('aiHistoryDrawer');
+        drawer.classList.toggle('hidden');
+        if (!drawer.classList.contains('hidden')) {
+            loadAiHistoryList();
+        }
+    }
+
+    async function loadAiHistoryList() {
+        const listContainer = document.getElementById('aiHistoryList');
+        try {
+            const res = await fetch('/api/ai/conversations');
+            const data = await res.json();
+            if (data.success && data.conversations) {
+                if (data.conversations.length === 0) {
+                    listContainer.innerHTML = '<p class="text-[11px] text-slate-400 italic p-1">No previous chats.</p>';
+                    return;
+                }
+                listContainer.innerHTML = data.conversations.map(c => `
+                    <div onclick="openConversation('${c.id}')" class="p-2 rounded-lg hover:bg-slate-700/80 cursor-pointer flex items-center justify-between group transition-colors">
+                        <span class="truncate text-slate-200 font-medium group-hover:text-white">${escapeHtml(c.title)}</span>
+                        <div class="flex items-center gap-2">
+                            <span class="text-[10px] text-slate-400">${c.message_count} msgs</span>
+                            <button onclick="event.stopPropagation(); deleteConversation('${c.id}')" class="text-slate-400 hover:text-rose-400 p-0.5"><i class="fas fa-trash-alt text-[10px]"></i></button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        } catch (err) {
+            listContainer.innerHTML = '<p class="text-[11px] text-rose-400 p-1">Failed to load history.</p>';
+        }
+    }
+
+    async function openConversation(convId) {
+        try {
+            const res = await fetch(`/api/ai/conversations/${convId}`);
+            const data = await res.json();
+            if (data.success && data.conversation) {
+                currentConversationId = convId;
+                document.getElementById('aiChatActiveTitle').innerText = data.conversation.title || 'Conversation';
+                document.getElementById('aiHistoryDrawer').classList.add('hidden');
+                
+                const messagesContainer = document.getElementById('aiChatMessages');
+                messagesContainer.innerHTML = '';
+                
+                data.conversation.messages.forEach(msg => {
+                    appendMessageBubble(msg.role === 'user' ? 'user' : 'ai', msg.content, msg.provider);
+                });
+                updateMsgCount(data.conversation.messages.length);
+                scrollToBottom();
+            }
+        } catch (err) {
+            console.error('Error opening conversation:', err);
+        }
+    }
+
+    async function startNewAiChat() {
+        currentConversationId = null;
+        document.getElementById('aiChatActiveTitle').innerText = 'New Chat';
+        document.getElementById('aiHistoryDrawer').classList.add('hidden');
+        document.getElementById('aiChatMsgCount').innerText = '0 msgs';
+        
+        const messagesContainer = document.getElementById('aiChatMessages');
+        messagesContainer.innerHTML = `
+            <div class="flex gap-3 max-w-[90%]">
+                <div class="w-7 h-7 rounded-lg bg-indigo-600 text-amber-300 flex items-center justify-center shrink-0 shadow-sm mt-0.5">
+                    <i class="fas fa-brain text-xs"></i>
+                </div>
+                <div class="bg-white p-3.5 rounded-2xl rounded-tl-sm border border-slate-200/80 shadow-xs text-slate-800 space-y-2 leading-relaxed">
+                    <p class="font-bold text-slate-900">Started a new conversation! 👋</p>
+                    <p>Ask any question about your data, models, or ModelFlow features.</p>
+                </div>
+            </div>
+        `;
+    }
+
+    async function deleteConversation(convId) {
+        if (!confirm('Delete this conversation?')) return;
+        try {
+            await fetch(`/api/ai/conversations/${convId}`, { method: 'DELETE' });
+            if (currentConversationId === convId) {
+                startNewAiChat();
+            }
+            loadAiHistoryList();
+        } catch (err) {
+            console.error('Failed to delete conversation:', err);
+        }
+    }
+
+    function quickSendPrompt(promptText) {
+        document.getElementById('aiChatInput').value = promptText;
+        handleAiChatSubmit(new Event('submit'));
+    }
+
+    async function handleAiChatSubmit(e) {
+        e.preventDefault();
+        const input = document.getElementById('aiChatInput');
+        const text = input.value.trim();
+        if (!text) return;
+
+        input.value = '';
+        input.style.height = 'auto';
+
+        appendMessageBubble('user', text);
+        scrollToBottom();
+
+        const loading = document.getElementById('aiChatLoading');
+        loading.classList.remove('hidden');
+
+        try {
+            const res = await fetch('/api/ai/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    message: text,
+                    conversation_id: currentConversationId
+                })
+            });
+
+            const data = await res.json();
+            loading.classList.add('hidden');
+
+            if (data.success) {
+                currentConversationId = data.conversation_id;
+                document.getElementById('aiChatActiveTitle').innerText = data.title || 'Conversation';
+                appendMessageBubble('ai', data.response, data.provider || data.ai_badge);
+                scrollToBottom();
+            } else {
+                appendMessageBubble('system', data.error || 'Failed to get response from AI Assistant.');
+            }
+        } catch (err) {
+            loading.classList.add('hidden');
+            appendMessageBubble('system', 'Network error or service unavailable. Please try again.');
+        }
+    }
+
+    function appendMessageBubble(type, text, provider) {
+        const container = document.getElementById('aiChatMessages');
+        const div = document.createElement('div');
+
+        if (type === 'user') {
+            div.className = 'flex justify-end';
+            div.innerHTML = `
+                <div class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-3 rounded-2xl rounded-tr-sm max-w-[85%] shadow-xs leading-relaxed">
+                    ${escapeHtml(text)}
+                </div>
+            `;
+        } else if (type === 'ai') {
+            div.className = 'flex gap-3 max-w-[90%]';
+            let isFallback = provider && (provider.includes('Fallback') || provider.includes('Engine'));
+            let badgeLabel = provider ? (isFallback ? 'AI: ModelFlow Engine Fallback' : 'AI: Gemini') : '';
+
+            let badgeHtml = badgeLabel ? `
+                <div class="mb-1.5 flex items-center">
+                    <span class="inline-flex items-center gap-1 text-[10px] font-extrabold px-2 py-0.5 rounded-md ${isFallback ? 'bg-amber-50 text-amber-800 border border-amber-200' : 'bg-emerald-50 text-emerald-800 border border-emerald-200'}">
+                        <i class="fas ${isFallback ? 'fa-cogs text-amber-600' : 'fa-sparkles text-emerald-600'} text-[9px]"></i>
+                        ${escapeHtml(badgeLabel)}
+                    </span>
+                </div>
+            ` : '';
+
+            div.innerHTML = `
+                <div class="w-7 h-7 rounded-lg bg-indigo-600 text-amber-300 flex items-center justify-center shrink-0 shadow-sm mt-0.5">
+                    <i class="fas fa-brain text-xs"></i>
+                </div>
+                <div class="bg-white p-3.5 rounded-2xl rounded-tl-sm border border-slate-200/80 shadow-xs text-slate-800 leading-relaxed font-normal w-full">
+                    ${badgeHtml}
+                    ${formatMarkdown(text)}
+                </div>
+            `;
+        } else {
+            div.className = 'flex justify-center my-1';
+            div.innerHTML = `
+                <div class="bg-rose-50 text-rose-700 px-3 py-1.5 rounded-xl text-[11px] font-medium border border-rose-100">
+                    <i class="fas fa-exclamation-triangle mr-1"></i> ${escapeHtml(text)}
+                </div>
+            `;
+        }
+        container.appendChild(div);
+    }
+
+    function scrollToBottom() {
+        const container = document.getElementById('aiChatMessages');
+        container.scrollTop = container.scrollHeight;
+    }
+
+    function updateMsgCount(count) {
+        document.getElementById('aiChatMsgCount').innerText = `${count} msgs`;
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+
+    function formatMarkdown(text) {
+        if (!text) return '';
+        let formatted = escapeHtml(text);
+        
+        // Code blocks ```code```
+        formatted = formatted.replace(/```([\s\S]*?)```/g, '<pre class="bg-slate-900 text-slate-100 p-3 rounded-xl font-mono text-[11px] overflow-x-auto my-2">$1</pre>');
+        // Inline code `code`
+        formatted = formatted.replace(/`([^`]+)`/g, '<code class="bg-slate-100 text-indigo-600 px-1.5 py-0.5 rounded font-mono text-[11px]">$1</code>');
+        // Bold **text**
+        formatted = formatted.replace(/\*\*([^*]+)\*\*/g, '<strong class="font-bold text-slate-900">$1</strong>');
+        // Newlines
+        formatted = formatted.replace(/\n/g, '<br>');
+        
+        return formatted;
+    }
+
+    // Handle Enter / Shift+Enter in chat input
+    document.addEventListener('DOMContentLoaded', () => {
+        const input = document.getElementById('aiChatInput');
+        if (input) {
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleAiChatSubmit(e);
+                }
+            });
+        }
+    });
+</script>

@@ -630,7 +630,10 @@ const hasExistingPlot = container.classList.contains('js-plotly-plot') || contai
         });
     </script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <!-- ModelFlow AI Chat Widget -->
+    {% include 'ai_chat_modal.html' %}
     {% block scripts %}{% endblock %}
 </body>
+
 
 </html>

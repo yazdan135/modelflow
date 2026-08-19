@@ -114,7 +114,7 @@
                 <span class="font-mono text-amber-300 font-extrabold">{{ rating.score if rating.score is not none else 0 }}% Achieved</span>
             </div>
             <div class="w-full h-4 bg-indigo-950/80 rounded-full border border-indigo-700/60 p-0.5 overflow-hidden shadow-inner">
-                <div class="h-full rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-amber-400 transition-all duration-1000 shadow-md" style="width: {{ rating.score if rating.score is not none else 0 }}%;"></div>
+                <div class="h-full rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-amber-400 transition-all duration-1000 shadow-md" style="--score-pct: {{ rating.score if rating.score is not none else 0 }}%; width: var(--score-pct);"></div>
             </div>
         </div>
 
@@ -130,7 +130,7 @@
                 </div>
                 <p class="text-xs text-indigo-200 font-medium">{{ data.stats.total_projects if (data.stats and data.stats.total_projects is not none) else 0 }} Active Projects</p>
                 <div class="w-full h-1.5 bg-indigo-950 rounded-full overflow-hidden mt-2">
-                    <div class="h-full bg-indigo-400 rounded-full" style="width: {{ (ws_score / 25 * 100)|round|int }}%;"></div>
+                    <div class="h-full bg-indigo-400 rounded-full" style="--ws-pct: {{ (ws_score / 25 * 100)|round|int }}%; width: var(--ws-pct);"></div>
                 </div>
             </div>
 
@@ -143,7 +143,7 @@
                 </div>
                 <p class="text-xs text-indigo-200 font-medium">{{ data.stats.total_models_trained if (data.stats and data.stats.total_models_trained is not none) else 0 }} Trained Models</p>
                 <div class="w-full h-1.5 bg-indigo-950 rounded-full overflow-hidden mt-2">
-                    <div class="h-full bg-sky-400 rounded-full" style="width: {{ (m_score / 35 * 100)|round|int }}%;"></div>
+                    <div class="h-full bg-sky-400 rounded-full" style="--m-pct: {{ (m_score / 35 * 100)|round|int }}%; width: var(--m-pct);"></div>
                 </div>
             </div>
 
@@ -156,7 +156,7 @@
                 </div>
                 <p class="text-xs text-indigo-200 font-medium">Top Accuracy Performance</p>
                 <div class="w-full h-1.5 bg-indigo-950 rounded-full overflow-hidden mt-2">
-                    <div class="h-full bg-emerald-400 rounded-full" style="width: {{ (q_score / 25 * 100)|round|int }}%;"></div>
+                    <div class="h-full bg-emerald-400 rounded-full" style="--q-pct: {{ (q_score / 25 * 100)|round|int }}%; width: var(--q-pct);"></div>
                 </div>
             </div>
 
@@ -169,7 +169,7 @@
                 </div>
                 <p class="text-xs text-indigo-200 font-medium">{{ data.stats.total_activities if (data.stats and data.stats.total_activities is not none) else 0 }} Total Actions Logged</p>
                 <div class="w-full h-1.5 bg-indigo-950 rounded-full overflow-hidden mt-2">
-                    <div class="h-full bg-amber-400 rounded-full" style="width: {{ (a_score / 15 * 100)|round|int }}%;"></div>
+                    <div class="h-full bg-amber-400 rounded-full" style="--a-pct: {{ (a_score / 15 * 100)|round|int }}%; width: var(--a-pct);"></div>
                 </div>
             </div>
         </div>

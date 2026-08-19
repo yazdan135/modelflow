@@ -16,4 +16,5 @@ openpyxl
 chardet
 requests
 certifi
+google-genai
 

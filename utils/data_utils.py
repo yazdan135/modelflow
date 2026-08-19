@@ -49,8 +49,11 @@ def load_state(project_dir):
 
 
 def detect_encoding(file_bytes):
-    result = chardet.detect(file_bytes[:100000])
-    return result.get("encoding") or "utf-8"
+    try:
+        result = chardet.detect(file_bytes[:100000])
+        return result.get("encoding") or "utf-8"
+    except Exception:
+        return "utf-8"
 
 
 def read_uploaded_file(file_storage):
@@ -63,13 +66,20 @@ def read_uploaded_file(file_storage):
     else:
         raw = file_storage.read()
         encoding = detect_encoding(raw)
-        sample = raw[:5000].decode(encoding, errors="ignore")
+        try:
+            sample = raw[:5000].decode(encoding, errors="ignore")
+        except Exception:
+            sample = raw[:5000].decode("utf-8", errors="ignore")
+
         delimiter = ","
         for cand in [",", ";", "\t", "|"]:
             if sample.count(cand) > sample.count(delimiter):
                 delimiter = cand
         from io import BytesIO
-        df = pd.read_csv(BytesIO(raw), encoding=encoding, sep=delimiter)
+        try:
+            df = pd.read_csv(BytesIO(raw), encoding=encoding, sep=delimiter)
+        except Exception:
+            df = pd.read_csv(BytesIO(raw), encoding="latin1", sep=delimiter)
 
     # Clean column names (strip whitespace and unprintable characters)
     df.columns = [str(c).strip() for c in df.columns]
