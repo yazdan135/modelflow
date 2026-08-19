@@ -2408,11 +2408,26 @@ def api_v2_add_knowledge():
 # Conversational AI Assistant Endpoints (Google Gemini Integration)
 # -------------------------------------------------------------------------
 
+# -------------------------------------------------------------------------
+# Conversational AI Assistant Endpoints (Google Gemini + Native Fallback)
+# -------------------------------------------------------------------------
+
+PUBLIC_CHAT_RATE_LIMITS = {}  # { ip_address: [timestamp1, timestamp2, ...] }
+
+def check_public_rate_limit(ip_address, max_requests=12, window_seconds=60):
+    now = time.time()
+    timestamps = PUBLIC_CHAT_RATE_LIMITS.get(ip_address, [])
+    timestamps = [ts for ts in timestamps if now - ts < window_seconds]
+    if len(timestamps) >= max_requests:
+        PUBLIC_CHAT_RATE_LIMITS[ip_address] = timestamps
+        return False
+    timestamps.append(now)
+    PUBLIC_CHAT_RATE_LIMITS[ip_address] = timestamps
+    return True
+
+
 @app.route("/api/ai/chat", methods=["POST"])
 def api_ai_chat():
-    if not current_user.is_authenticated:
-        return jsonify({"success": False, "error": "Authentication required."}), 401
-
     data = request.get_json() or {}
     user_message = data.get("message", "").strip()
     conv_id = data.get("conversation_id")
@@ -2421,6 +2436,57 @@ def api_ai_chat():
     if not user_message:
         return jsonify({"success": False, "error": "Message content cannot be empty."}), 400
 
+    # Unauthenticated landing page guest support with IP rate limiting
+    if not current_user.is_authenticated:
+        client_ip = request.remote_addr or "127.0.0.1"
+        if not check_public_rate_limit(client_ip):
+            return jsonify({
+                "success": False,
+                "error": "Rate limit exceeded for guest user. Please wait a minute before sending another message or sign up for unlimited access."
+            }), 429
+
+        anon_id = conv_id or session.get("anon_conv_id") or str(uuid.uuid4())
+        session["anon_conv_id"] = anon_id
+
+        history = session.get("anon_chat_history", [])
+        history.append({
+            "role": "user",
+            "content": user_message,
+            "timestamp": datetime.utcnow().isoformat()
+        })
+
+        payload_history = [
+            {"role": m["role"], "content": m["content"]}
+            for m in history[-12:]
+        ]
+
+        try:
+            ai_response, provider_name = au.generate_chat_response_with_fallback(payload_history, project_context=None)
+        except Exception as e:
+            print(f"[Guest AI Chat Error]: {e}")
+            ai_response = au.sanitize_ai_response_output(au._generate_modelflow_engine_chat_response(payload_history, project_context=None))
+            provider_name = "ModelFlow Engine Fallback"
+
+        ai_badge = "AI: Gemini" if provider_name == "Gemini AI" else "AI: ModelFlow Engine Fallback"
+
+        history.append({
+            "role": "model",
+            "content": ai_response,
+            "provider": provider_name,
+            "timestamp": datetime.utcnow().isoformat()
+        })
+        session["anon_chat_history"] = history[-20:]
+
+        return jsonify({
+            "success": True,
+            "conversation_id": anon_id,
+            "title": "Guest Conversation",
+            "response": ai_response,
+            "provider": provider_name,
+            "ai_badge": ai_badge
+        })
+
+    # Authenticated user workflow
     user_id = str(current_user.id)
 
     # Get or create conversation record
@@ -2482,7 +2548,7 @@ def api_ai_chat():
         ai_response, provider_name = au.generate_chat_response_with_fallback(payload_history, project_context=project_context)
     except Exception as e:
         print(f"[API AI Chat Critical Error]: {str(e)}")
-        ai_response = au._generate_modelflow_engine_chat_response(payload_history, project_context=project_context)
+        ai_response = au.sanitize_ai_response_output(au._generate_modelflow_engine_chat_response(payload_history, project_context=project_context))
         provider_name = "ModelFlow Engine Fallback"
 
     ai_badge = "AI: Gemini" if provider_name == "Gemini AI" else "AI: ModelFlow Engine Fallback"
@@ -2514,8 +2580,9 @@ def api_ai_chat():
 
 
 @app.route("/api/ai/conversations", methods=["GET"])
-@login_required
 def api_ai_get_conversations():
+    if not current_user.is_authenticated:
+        return jsonify({"success": True, "conversations": []})
     user_id = str(current_user.id)
     convs = list(db.conversations.find({"user_id": user_id}).sort("updated_at", -1).limit(20))
     result = []
@@ -2530,8 +2597,9 @@ def api_ai_get_conversations():
 
 
 @app.route("/api/ai/conversations/<conv_id>", methods=["GET"])
-@login_required
 def api_ai_get_conversation_detail(conv_id):
+    if not current_user.is_authenticated:
+        return jsonify({"success": False, "error": "Conversation not found."}), 404
     user_id = str(current_user.id)
     conv = db.conversations.find_one({"_id": conv_id, "user_id": user_id})
     if not conv:
@@ -2548,15 +2616,21 @@ def api_ai_get_conversation_detail(conv_id):
 
 
 @app.route("/api/ai/conversations/new", methods=["POST"])
-@login_required
 def api_ai_new_conversation():
+    if not current_user.is_authenticated:
+        session["anon_chat_history"] = []
+        new_id = str(uuid.uuid4())
+        session["anon_conv_id"] = new_id
+        return jsonify({"success": True, "conversation_id": new_id})
     new_id = str(uuid.uuid4())
     return jsonify({"success": True, "conversation_id": new_id})
 
 
 @app.route("/api/ai/conversations/<conv_id>", methods=["DELETE"])
-@login_required
 def api_ai_delete_conversation(conv_id):
+    if not current_user.is_authenticated:
+        session["anon_chat_history"] = []
+        return jsonify({"success": True})
     user_id = str(current_user.id)
     db.conversations.delete_one({"_id": conv_id, "user_id": user_id})
     return jsonify({"success": True})
